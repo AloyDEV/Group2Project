@@ -10,9 +10,26 @@
             min-height:100%;/* make sure it is at least as tall as the viewport */
             position:relative;
         }
+
+        /* Background effect: https://1stwebdesigner.com/15-css-background-effects/ */
         body{
-            height:100%; /* force the BODY element to match the height of the HTML element */
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 30s ease infinite;  /* transition effect for the background, loops infinitely */
+            height: 100vh;
         }
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
         .row {
             border: green solid 3px;
             display: flex;
@@ -45,7 +62,7 @@
 
     </div>
     <div class="column">
-        COLUMN 2
+        Deck & Gameplay Tracker
     </div>
 </div>
 </body>
