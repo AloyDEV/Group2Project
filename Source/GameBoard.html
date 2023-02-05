@@ -4,25 +4,40 @@
     <meta charset="UTF-8">
     <title>UNO Game Board</title>
     <style>
+        /* 100% page height for a background: https://stackoverflow.com/questions/712689/css-div-stretch-100-page-height */
+        html{
+            /* Setting the HTML tag to be with height of the viewport */
+            min-height:100%;/* make sure it is at least as tall as the viewport */
+            position:relative;
+        }
+        body{
+            height:100%; /* force the BODY element to match the height of the HTML element */
+        }
         .row {
+            border: green solid 3px;
             display: flex;
+            /* Sets the column container to 100% height, matching the HTML & BODY tags */
+            position:absolute;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
         }
 
         .column {
+            border: red solid 3px;
             flex: 50%;
         }
     </style>
 </head>
 <body>
-GAME BOARD
-
-2 boxes, one on the left for all the users (up to 4, including the computer
-One on the right top has the game state
-Bottom right has the deck
-
 <div class="row">
     <div class="column">
-        COLUMN 1
+        GAME BOARD:
+
+        2 boxes, one on the left for all the users (up to 4, including the computer
+        One on the right top has the game state
+        Bottom right has the deck
         <div>USER 1</div>
         <div>USER 2</div>
         <div>USER 3</div>
