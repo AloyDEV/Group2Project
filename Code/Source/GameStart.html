@@ -5,7 +5,7 @@
     <title>Group 2 Capstone Project - UNO!!!</title>
     <style>
         body{
-            background: linear-gradient(45deg, #e74646, #d9bd66, #23a6d5, #1cb08d);
+            background: linear-gradient(45deg, #cb1a1a, #d9bd66, #23a6d5, #2b883b); /*e74646 1cb08d*/
             background-size: 400% 400%;
             animation: gradient 30s ease infinite;  /* transition effect for the background, loops infinitely */
             height: 100vh;
@@ -83,8 +83,6 @@
             //OR could use a cookie to store users & game state
             //If using cookies, make sure they are enabled: https://stackoverflow.com/questions/4603289/how-to-detect-that-javascript-and-or-cookies-are-disabled
     document.getElementById("startGame").onclick = function () {
-        console.log("CLICKED!");
-        //console.log(location.href);
 
         var playerNumberStartVar = document.getElementById("playerNumberStart").value;
 
@@ -101,7 +99,7 @@
 
             var playerNamesArraySubmitted = document.getElementsByClassName("playerNameEntryShow"); //Usernames
 
-            //Make sure that #users=#usernames, making sure nothing messed up on the page
+            //Make sure that # users=# usernames, making sure nothing messed up on the page
             //TODO: Removed during Dev
             if(false){//(playerNumberStartVar !== playerNamesArraySubmitted.length){
                 //MISMATCH!
@@ -110,50 +108,28 @@
             }
             //Make sure cookies are enabled, then set a cookie with the user data, and move on to the game board
             else{
-                console.log(navigator.cookieEnabled);
                 let cookiesEnabledBoolean = navigator.cookieEnabled;
                 //If they don't appear to be enabled, try setting a cookie to make sure
                 if (!cookiesEnabledBoolean) {
                     document.cookie = "UNOusers=";
-                    //If the cookie was set, index will be > -1
-                    console.log(document.cookie.indexOf("UNOusers") > -1);
-                    /*
-                    document.cookie contains a string like cookiename=cookievalue
-
-                    indexOf is getting the position of the begining of the value part of the cookie
-
-                    var cookieStartsAt = value.indexOf("cookiename=");
-
-                    That allows you to use that number to get the value portion of the string with substring()
-
-                     */
-
+                    //If the cookie was set, we'll be able to retrieve all cookies and find the one that was set
+                    cookiesEnabledBoolean = document.cookie.indexOf("UNOusers") != -1;
                 }
 
                 if(cookiesEnabledBoolean){
+                    //using "path=/": the cookie will be available to all directories on the domain it is set from
+                    //Set the cookie to expire a year from now
+                    const today = new Date();
+                    document.cookie = "UNOusers=John Doe;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
 
-                }
-
-               // Make sure cookies are enabled
-               //  function checkCookie(){
-               //      var cookieEnabled = navigator.cookieEnabled;
-               //      if (!cookieEnabled){
-               //          document.cookie = "testcookie";
-               //          cookieEnabled = document.cookie.indexOf("testcookie")!=-1; //Check if the cookie was set successfully
-               //      }
-               //      return cookieEnabled;
-               //  }
-
-
-                //using "path=/": the cookie will be available to all directories on the domain it is set from
-                //Set the cookie to expire a year from now
-                const today = new Date();
-                document.cookie = "UNOusers=John Doe;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
-
-                //Go to the game board
+                    //Go to the game board
                     //Note: if this button is part of a Form, the redirect doesn't work
-                //window.location.href = "GameBoard.html";
-
+                    window.location.href = "GameBoard.html";
+                }
+                else{
+                    alert("Cookies were not able to be created.  Enable them and try again.");
+                    //TODO: Future improvement, use another method to store all of the user & game info if cookies aren't working.
+                }
             }
         }
     };

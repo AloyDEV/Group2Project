@@ -13,11 +13,12 @@ document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
 
 //Deck Class
+//When a card is discarded, put it at the bottom of the deck.
 
 
 //Table Class
 //Whenever the table is updated, write the game status to a cookie
-document.cookie = "UNOgameState=John Doe;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
+document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
 
 
 //Computer Player Class
