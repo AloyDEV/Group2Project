@@ -42,4 +42,9 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 //Restart Game function
     //Cancel the existing cookie
+    document.cookie = "UNOGameState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+
+//Create new users function
     document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
