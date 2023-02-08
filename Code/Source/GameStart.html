@@ -69,7 +69,7 @@
                 <button id="startGame">Start Game</button>
             </div>
         </div>
-        *Note: Cookies must be enabled in your browser in order for this game to work.
+        *Note: Cookies & Javascript must be enabled in your browser in order for this game to work.
     </div>
 </body>
 
@@ -80,10 +80,8 @@
         //Better solution, wrap the function below in window.onload = function(){}
         //OR: https://stackoverflow.com/questions/17080502/uncaught-typeerror-cannot-set-property-onclick-of-null
     //TODO: This is where I would include validation checks, before loading the game board.
-    //TODO: Can use LocalStorage to save the user information to pull into the other pages
             //OR could use a cookie to store users & game state
             //If using cookies, make sure they are enabled: https://stackoverflow.com/questions/4603289/how-to-detect-that-javascript-and-or-cookies-are-disabled
-    //https://stackoverflow.com/questions/16206322/how-to-get-js-variable-to-retain-value-after-page-refresh
     document.getElementById("startGame").onclick = function () {
         console.log("CLICKED!");
         //console.log(location.href);
@@ -98,36 +96,65 @@
         }
         //TODO: Check that usernames were entered?? Or just default names if there is none?
         else{
-            //Set the cookie with user number & names
-            //Put the userdata into a cookie, so that it can be accessed on the next page
+            //Set the cookie with user number & names, so that it can be accessed on the next page
+
 
             var playerNamesArraySubmitted = document.getElementsByClassName("playerNameEntryShow"); //Usernames
 
             //Make sure that #users=#usernames, making sure nothing messed up on the page
-            if (playerNumberStartVar !== playerNamesArraySubmitted.length){
+            //TODO: Removed during Dev
+            if(false){//(playerNumberStartVar !== playerNamesArraySubmitted.length){
                 //MISMATCH!
                 //TODO: Not really sure what to do if this happens?  Reload the page?
                 alert("An error has occurred.  Please reload the page to restart.")
             }
+            //Make sure cookies are enabled, then set a cookie with the user data, and move on to the game board
+            else{
+                console.log(navigator.cookieEnabled);
+                let cookiesEnabledBoolean = navigator.cookieEnabled;
+                //If they don't appear to be enabled, try setting a cookie to make sure
+                if (!cookiesEnabledBoolean) {
+                    document.cookie = "UNOusers=";
+                    //If the cookie was set, index will be > -1
+                    console.log(document.cookie.indexOf("UNOusers") > -1);
+                    /*
+                    document.cookie contains a string like cookiename=cookievalue
 
-            //Check if a cookie exists.  If it does not exist, prompt the user for input
-            // let startCookies = document.cookie;
-            // //let username = getCookie("username");
-            // if (startCookies  !== "") {
-            //     alert("Welcome again " + startCookies);
-            // } else {
-            //     startCookies  = prompt("Please enter your name:", "");
-            //     if (startCookies !== "" && startCookies != null) {
-            //         //setCookie("username", username, 365);
-            //         //document.cookie = "username=John Doe; expires=Thu, 18 Dec 2013 12:00:00 UTC";
-            //             //Expiration:
-            //     }
-            // }
+                    indexOf is getting the position of the begining of the value part of the cookie
+
+                    var cookieStartsAt = value.indexOf("cookiename=");
+
+                    That allows you to use that number to get the value portion of the string with substring()
+
+                     */
+
+                }
+
+                if(cookiesEnabledBoolean){
+
+                }
+
+               // Make sure cookies are enabled
+               //  function checkCookie(){
+               //      var cookieEnabled = navigator.cookieEnabled;
+               //      if (!cookieEnabled){
+               //          document.cookie = "testcookie";
+               //          cookieEnabled = document.cookie.indexOf("testcookie")!=-1; //Check if the cookie was set successfully
+               //      }
+               //      return cookieEnabled;
+               //  }
 
 
-            //Go to the game board
-                //Note: if this button is part of a Form, the refirect doesn't work
-            window.location.href = "GameBoard.html";
+                //using "path=/": the cookie will be available to all directories on the domain it is set from
+                //Set the cookie to expire a year from now
+                const today = new Date();
+                document.cookie = "UNOusers=John Doe;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
+
+                //Go to the game board
+                    //Note: if this button is part of a Form, the redirect doesn't work
+                //window.location.href = "GameBoard.html";
+
+            }
         }
     };
 </script>
