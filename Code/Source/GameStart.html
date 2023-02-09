@@ -35,22 +35,27 @@
     <script type="text/javascript">
         //If more than 1 user is playing, show/hide the username input fields
 
+        //Run the display input function after the page loads, so that 1 player name input box will appear
+            //TODO: change to arrow/lambda function instead of eventListener
+        document.addEventListener('DOMContentLoaded', function() {  //DOM loaded, not really concerned with other content being loaded
+            displayPlayerNameInput(1);
+        }, false);
 
-        //Run this function once the page loads, to trigger the first input box displaying.
-        //Then run it anytime the player number selection changes
+        //Function is called when the page loads, and when the player # input is changed
         function displayPlayerNameInput(numberOfPlayers) {
-            console.log("CHANGED " + numberOfPlayers);
-
-            let hiddenElements = document.getElementsByClassName('playerNameEntryHide'); //Returns an array.  More than 1 element can have the same class
-            if (hiddenElements.length > 0) {
-                for (let i = 0; i < hiddenElements.length; i++) {
-                    console.log(hiddenElements[i]);
+            let hiddenElements = document.getElementsByClassName('playerNameEntry'); //Returns an array.  More than 1 element can have the same class
+            for (let i = 0; i < hiddenElements.length; i++) {
+                //Display the name inputs to match the player selection
+                    //Only 3 players, so looping every time is fine
+                if (i < numberOfPlayers){
+                    hiddenElements[i].className = "playerNameEntryShow playerNameEntry"
                 }
-                let hiddenElement = hiddenElements[0];
-                hiddenElement.className = "playerNameEntryShow"
-                //document.getElementById("My_Element").className = "My_Class";
+                else{
+                    hiddenElements[i].className = "playerNameEntryHide playerNameEntry"
+                }
             }
         }
+
 
 
     </script>
@@ -67,9 +72,25 @@
                 <input id="playerNumberStart" type="number" value="1" min="1" max="3" onChange="displayPlayerNameInput(this.value)"/>
             </div>
             <div id="playerNameEntryParent" >
-                <input id="playerNameEntryChild1" class="playerNameEntryHide">
-                <input id="playerNameEntryChild2" class="playerNameEntryHide">
-                <input id="playerNameEntryChild3" class="playerNameEntryHide">
+                <div class="playerNameEntryHide playerNameEntry">
+                    <label for="playerNameEntryChild1">Player 1 Name:</label>
+                    <br/>
+                    <input id="playerNameEntryChild1" />
+                    <br/>
+                </div>
+                <div class="playerNameEntryHide playerNameEntry">
+                    <label for="playerNameEntryChild2">Player 2 Name:</label>
+                    <br/>
+                    <input id="playerNameEntryChild2" />
+                    <br/>
+                </div>
+                <div class="playerNameEntryHide playerNameEntry">
+                    <label for="playerNameEntryChild3">Player 3 Name:</label>
+                    <br/>
+                    <input id="playerNameEntryChild3" />
+                    <br/>
+                </div>
+
             </div>
 
             <div>
