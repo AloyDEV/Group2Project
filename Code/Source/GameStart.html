@@ -112,30 +112,20 @@
             //If using cookies, make sure they are enabled: https://stackoverflow.com/questions/4603289/how-to-detect-that-javascript-and-or-cookies-are-disabled
     document.getElementById("startGame").onclick = function () {
 
-        var playerNumberStartVar = document.getElementById("playerNumberStart").value;
+        let playerNumberStartVar = document.getElementById("playerNumberStart").value;
 
-        console.log(playerNumberStartVar);
-
-        if (playerNumberStartVar < 1 || playerNumberStartVar > 3 || playerNumberStartVar == ""){
+        if (playerNumberStartVar < 1 || playerNumberStartVar > 3){  //This handles NULL as well
             //TODO: Change to a panel that displays, not an alert
-            alert("INCORRECT number of players: " + playerNumberStartVar)
+            alert("INCORRECT number of players: " + playerNumberStartVar +", needs to be 1-3 (The computer won't play against itself!)")
         }
         //TODO: Check that usernames were entered?? Or just default names if there is none?
         else{
-            //Set the cookie with user number & names, so that it can be accessed on the next page
+            //Collect all inputs from the page
+            let playerNamesArraySubmitted = document.getElementsByClassName("playerNameEntryShow"); //Player Names
+            if(playerNumberStartVar == playerNamesArraySubmitted.length){
+                console.log("PLAYER NUMBERS MATCH the player name input field")
 
-
-            var playerNamesArraySubmitted = document.getElementsByClassName("playerNameEntryShow"); //Usernames
-
-            //Make sure that # users=# usernames, making sure nothing messed up on the page
-            //TODO: Removed during Dev
-            if(false){//(playerNumberStartVar !== playerNamesArraySubmitted.length){
-                //MISMATCH!
-                //TODO: Not really sure what to do if this happens?  Reload the page?
-                alert("An error has occurred.  Please reload the page to restart.")
-            }
-            //Make sure cookies are enabled, then set a cookie with the user data, and move on to the game board
-            else{
+                //Make sure cookies are enabled, then set a cookie with the user data, and move on to the game board
                 let cookiesEnabledBoolean = navigator.cookieEnabled;
 
                 //If they don't appear to be enabled, try setting a cookie to make sure
@@ -152,14 +142,44 @@
                     document.cookie = "UNOusers=John Doe;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
 
                     //Go to the game board
-                    //Note: if this button is part of a Form, the redirect doesn't work
-                    window.location.href = "GameBoard.html";
+                    //window.location.href = "GameBoard.html";
                 }
                 else{
                     alert("Cookies were not able to be created.  Enable them and try again.");
                     //TODO: Future improvement, use another method to store all of the user & game info if cookies aren't working.
                 }
             }
+            else{
+                //TODO: Not really sure what to do if this happens?  Reload the page?
+                alert("An error has occurred, inputs did not match.  Please reload the page to restart.")
+            }
+
+            //Make sure cookies are enabled, then set a cookie with the user data, and move on to the game board
+            // else{
+            //     let cookiesEnabledBoolean = navigator.cookieEnabled;
+            //
+            //     //If they don't appear to be enabled, try setting a cookie to make sure
+            //     if (!cookiesEnabledBoolean) {
+            //         document.cookie = "UNOusers=";
+            //         //If the cookie was set, we'll be able to retrieve all cookies and find the one that was set
+            //         cookiesEnabledBoolean = document.cookie.indexOf("UNOusers") != -1;
+            //     }
+            //
+            //     if(cookiesEnabledBoolean){
+            //         //using "path=/": the cookie will be available to all directories on the domain it is set from
+            //         //Set the cookie to expire a year from now
+            //         const today = new Date();
+            //         document.cookie = "UNOusers=John Doe;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
+            //
+            //         //Go to the game board
+            //         //Note: if this button is part of a Form, the redirect doesn't work
+            //         //window.location.href = "GameBoard.html";
+            //     }
+            //     else{
+            //         alert("Cookies were not able to be created.  Enable them and try again.");
+            //         //TODO: Future improvement, use another method to store all of the user & game info if cookies aren't working.
+            //     }
+            // }
         }
     };
 </script>
