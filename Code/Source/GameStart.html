@@ -98,6 +98,8 @@
             </div>
         </div>
         *Note: Cookies & Javascript must be enabled in your browser in order for this game to work.
+        <br/>
+        Pipe characters will also break the cookies.  Please don't break the cookies.  Well not really break, just drop/add a player
     </div>
 </body>
 
@@ -136,13 +138,27 @@
                 }
 
                 if(cookiesEnabledBoolean){
+
+                    //Build a pipe-delimited list of the entered player names to store in the cookie
+                    let playerInputs = String();
+
+                    //Pipe delimited list of player names
+                    for(let j=0; j<playerNamesArraySubmitted.length; j++){
+                        if (playerNamesArraySubmitted[j].getElementsByTagName("input")[0].value == ""){//Default the player name if there isn't one entered
+                            playerInputs += "Player " + (j+1)+ "|";
+                        }
+                        else{
+                            playerInputs += playerNamesArraySubmitted[j].getElementsByTagName("input")[0].value + "|";
+                        }
+                    }
+                    const today = new Date();
+
                     //using "path=/": the cookie will be available to all directories on the domain it is set from
                     //Set the cookie to expire a year from now
-                    const today = new Date();
-                    document.cookie = "UNOusers=John Doe;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
+                    document.cookie = "UNOusers="+ playerInputs+";expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
 
                     //Go to the game board
-                    //window.location.href = "GameBoard.html";
+                    window.location.href = "GameBoard.html";
                 }
                 else{
                     alert("Cookies were not able to be created.  Enable them and try again.");
@@ -153,34 +169,8 @@
                 //TODO: Not really sure what to do if this happens?  Reload the page?
                 alert("An error has occurred, inputs did not match.  Please reload the page to restart.")
             }
-
-            //Make sure cookies are enabled, then set a cookie with the user data, and move on to the game board
-            // else{
-            //     let cookiesEnabledBoolean = navigator.cookieEnabled;
-            //
-            //     //If they don't appear to be enabled, try setting a cookie to make sure
-            //     if (!cookiesEnabledBoolean) {
-            //         document.cookie = "UNOusers=";
-            //         //If the cookie was set, we'll be able to retrieve all cookies and find the one that was set
-            //         cookiesEnabledBoolean = document.cookie.indexOf("UNOusers") != -1;
-            //     }
-            //
-            //     if(cookiesEnabledBoolean){
-            //         //using "path=/": the cookie will be available to all directories on the domain it is set from
-            //         //Set the cookie to expire a year from now
-            //         const today = new Date();
-            //         document.cookie = "UNOusers=John Doe;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
-            //
-            //         //Go to the game board
-            //         //Note: if this button is part of a Form, the redirect doesn't work
-            //         //window.location.href = "GameBoard.html";
-            //     }
-            //     else{
-            //         alert("Cookies were not able to be created.  Enable them and try again.");
-            //         //TODO: Future improvement, use another method to store all of the user & game info if cookies aren't working.
-            //     }
-            // }
         }
+
     };
 </script>
 </html>

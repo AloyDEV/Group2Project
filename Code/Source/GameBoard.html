@@ -54,6 +54,16 @@
     console.log("COOKIES:");
     console.log(usersCookie);
     console.log(document.cookie.indexOf("UNOusers"));
+
+    //Example:
+    var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)list\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+    var list = cookieValue.split(",");
+    console.log(list)
+
+    //My cookie:
+    let playerList = cookieValue.split("|");
+    console.log(playerList)
+
 </script>
 <div class="row">
     <div class="column">
