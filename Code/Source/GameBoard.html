@@ -54,15 +54,9 @@
     console.log("COOKIES:");
     console.log(usersCookie);
     console.log(document.cookie.indexOf("UNOusers"));
-
-    //Example:
-    var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)list\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-    var list = cookieValue.split(",");
-    console.log(list)
-
-    //My cookie:
-    let playerList = cookieValue.split("|");
     console.log(playerList)
+
+
 
 </script>
 <div class="row">
@@ -71,7 +65,7 @@
         <div style="border: blue solid 3px; height:15%">Player 2</div>
         <div style="border: blue solid 3px; height:15%">Player 3</div>
         <div style="border: blue solid 3px; height:15%">Player 4</div>
-        <div style="border: blue solid 3px; height:15%">Computer Player</div>
+        <div style="border: blue solid 3px; height:15%">The Matrix (Computer player)</div>
         GAME BOARD:
 
         Should this HTML just be created by JS when the page loads?

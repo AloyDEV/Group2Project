@@ -98,8 +98,6 @@
             </div>
         </div>
         *Note: Cookies & Javascript must be enabled in your browser in order for this game to work.
-        <br/>
-        Pipe characters will also break the cookies.  Please don't break the cookies.  Well not really break, just drop/add a player
     </div>
 </body>
 
@@ -109,24 +107,14 @@
     //If this is not at the end of the file, it throws an error: Uncaught TypeError: Cannot set properties of null (setting 'onclick')
         //Better solution, wrap the function below in window.onload = function(){}
         //OR: https://stackoverflow.com/questions/17080502/uncaught-typeerror-cannot-set-property-onclick-of-null
-    //TODO: This is where I would include validation checks, before loading the game board.
-            //OR could use a cookie to store users & game state
-            //If using cookies, make sure they are enabled: https://stackoverflow.com/questions/4603289/how-to-detect-that-javascript-and-or-cookies-are-disabled
     document.getElementById("startGame").onclick = function () {
 
         let playerNumberStartVar = document.getElementById("playerNumberStart").value;
 
-        if (playerNumberStartVar < 1 || playerNumberStartVar > 3){  //This handles NULL as well
-            //TODO: Change to a panel that displays, not an alert
-            alert("INCORRECT number of players: " + playerNumberStartVar +", needs to be 1-3 (The computer won't play against itself!)")
-        }
-        //TODO: Check that usernames were entered?? Or just default names if there is none?
-        else{
-            //Collect all inputs from the page
+        if (playerNumberStartVar > 0 && playerNumberStartVar < 4){  //This should effectively handle NULL as well
+             //Collect all inputs from the page
             let playerNamesArraySubmitted = document.getElementsByClassName("playerNameEntryShow"); //Player Names
             if(playerNumberStartVar == playerNamesArraySubmitted.length){
-                console.log("PLAYER NUMBERS MATCH the player name input field")
-
                 //Make sure cookies are enabled, then set a cookie with the user data, and move on to the game board
                 let cookiesEnabledBoolean = navigator.cookieEnabled;
 
@@ -138,7 +126,6 @@
                 }
 
                 if(cookiesEnabledBoolean){
-
                     //Build a pipe-delimited list of the entered player names to store in the cookie
                     let playerInputs = String();
 
@@ -173,6 +160,10 @@
                 //TODO: Not really sure what to do if this happens?  Reload the page?
                 alert("An error has occurred, inputs did not match.  Please reload the page to restart.")
             }
+        }
+        else{
+            //TODO: Change to a panel that displays, not an alert
+            alert("INCORRECT number of players: " + playerNumberStartVar +", needs to be 1-3 (The computer won't play against itself!)")
         }
 
     };
