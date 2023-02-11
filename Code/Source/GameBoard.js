@@ -1,4 +1,8 @@
 //Handles all the code for the actual game
+var debug = true;
+
+if(debug){console.log("Game Board JS is loading");}
+
 
 //Player Class
 class Player {
@@ -81,12 +85,15 @@ class Card {
     //Might need to load them in the DOM, hide then, then access them in the DOM when needed
     //OR: Hardcode all of the file names
 
+//  Folder with the cards: /Code/Cards/Blue_0.png
+
 
 
 
 
 //Table Class
 //Whenever the table is updated, write the game status to a cookie
+const today = new Date();
 document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
 
 
@@ -104,6 +111,12 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 
 //Player Move Function
+//Regular rules:
+/*
+
+
+ */
+
 // Two Player Rules:
 //
 // For two players, there is a slight change of rules:
@@ -120,6 +133,10 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 //Check Win Status Function
 
 
+//Modal Box for messages
+
+
+
 //Restart Game function
     //Cancel the existing cookie
     document.cookie = "UNOGameState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -131,8 +148,14 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 //Starting code: pull the userdata out of the cookie
 let usersCookie = document.cookie;
-document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+//document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 //After the DOM has loaded, adjust the player boxes based on the number of players
 
 
+
+
+
+
+
+if(debug){console.log("Game Board JS has completed loading");}
 

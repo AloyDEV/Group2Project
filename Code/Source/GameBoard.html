@@ -48,6 +48,7 @@
     </style>
 </head>
 <body>
+<script type="text/javascript" src="GameBoard.js"></script>
 <script>
     //Pull the users out of the created cookie
     let usersCookie = document.cookie;
@@ -74,7 +75,12 @@
 
     </div>
     <div class="column">
-        <div style="border: yellow solid 3px; height:40%">Game State.  Current User playing.  Shuffle Deck button.  Other info???</div>
+        <div style="border: yellow solid 3px; height:40%">
+            Game State.  Current User playing.  Shuffle Deck button.  Help Menu & Game Rules
+            <div id="help">
+                <button onclick="alert('HELP!')">Help & Game Rules</button>
+            </div>
+        </div>
         <div style="border: yellow solid 3px; width: 100%; height:40%; position: fixed; bottom: 0; display:flex;">
             <div style="height:100%; border:orange solid 3px; margin-left:5%;">
                 <img src="/Code/Assets/Blue_0.png" alt="Top Card" style="height:100%;width:auto;"/>
