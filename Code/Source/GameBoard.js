@@ -10,10 +10,35 @@ document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
 
 //Player Hand Class
+    //Should immediately sort after adding or removing
+
+
+//Card Class
+class Card {
+    constructor(color, number) {
+        //Color: Red, Blue, Green, Yellow
+        this.color = color;
+        //Number: 0-9, Draw, Reverse, Skip
+        this.number = number;
+    }
+    getColor(){
+        return this.color;
+    }
+    getNumber(){
+        return this.number;
+    }
+}
 
 
 //Deck Class
 //When a card is discarded, put it at the bottom of the deck.
+
+//Color: Red, Blue, Green, Yellow
+//Number: 0-9, Draw, Reverse, Skip
+
+
+
+
 
 
 //Table Class
