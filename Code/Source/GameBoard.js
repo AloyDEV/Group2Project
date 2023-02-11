@@ -1,12 +1,10 @@
 //Handles all the code for the actual game
 
 
-//To start, pull the userdata out of the cookie
-let usersCookie = document.cookie;
-document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-
 //Player Class
+    //Attributes of a player:
+        //Hand
+        //Number of cards, for easy reference
 
 
 //Player Hand Class
@@ -32,12 +30,11 @@ class Card {
 
 //Deck Class
 //When a card is discarded, put it at the bottom of the deck.
+//Loop over all of the card files to build the deck
+
 
 //Color: Red, Blue, Green, Yellow
 //Number: 0-9, Draw, Reverse, Skip
-
-
-
 
 
 
@@ -47,6 +44,8 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 
 //Computer Player Class
+    //Track their hand
+    //Include the ability to cheat???
 
 
 //Computer Player Next Play Function
@@ -54,6 +53,7 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 
 //Shuffle Deck Function
+    //10000 loops over the deck???
 
 
 //Player Move Function
@@ -72,4 +72,12 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 //Create new users function
     document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+
+//Starting code: pull the userdata out of the cookie
+let usersCookie = document.cookie;
+document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+//After the DOM has loaded, adjust the player boxes based on the number of players
+
+
 

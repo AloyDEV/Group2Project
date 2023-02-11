@@ -148,7 +148,11 @@
                             playerInputs += "Player " + (j+1)+ "|";
                         }
                         else{
-                            playerInputs += playerNamesArraySubmitted[j].getElementsByTagName("input")[0].value + "|";
+                            //If the input included a pipe character, remove it, before adding it to the cookie
+                            let playerInput = playerNamesArraySubmitted[j].getElementsByTagName("input")[0].value;
+                            //Use Regex so all pipe characters are removed
+                            playerInput = playerInput.replace(/[|]+/g, ''); //+g is the global modifier
+                            playerInputs += playerInput + "|";
                         }
                     }
                     const today = new Date();
