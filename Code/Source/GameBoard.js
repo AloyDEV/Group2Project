@@ -81,15 +81,26 @@ class Card {
 //Deck Class
 class Deck{
 
-    // constructor(new Card()){
-    //
-    // }
-    addCard(){
+    constructor(){
+        this.deck = [];
+        this.deckSize = 0;
+    }
 
+    getSize(){
+        return this.deckSize;
+    }
+    getDeckContents(){
+        return this.deck;
+    }
+    addCard(newCard){
+        this.deck[this.deckSize] = newCard;
+        this.deckSize++;
     }
     removeCard(){
+        //Removed based on the cards Global Number
 
     }
+
 
 }
 //108 cards
@@ -171,13 +182,14 @@ const cardFilenames = [
         "Wild_14.png",
 ];
 
-let deck = new Deck();
+let gameDeck = new Deck();
 for(let iCardFilenames =0; iCardFilenames<cardFilenames.length; iCardFilenames++){
 
     let cardFileInfo = cardFilenames[iCardFilenames].split("_");
 
     let tempCard = new Card("Blue","0",cardFilenames[iCardFilenames], iCardFilenames);
     if(debug){console.log(tempCard)}
+    gameDeck.addCard(tempCard);
 
 //One zero card per color
     if(cardFileInfo[1] == 0){
@@ -195,10 +207,10 @@ for(let iCardFilenames =0; iCardFilenames<cardFilenames.length; iCardFilenames++
     if(cardFileInfo[1] >= 11 && cardFileInfo[1] <= 14){
 
     }
-
-    //deck.addCard(tempCard);
-
 }
+
+if(debug){console.log(gameDeck)}
+
 
 
 // //Pulls out all elements, and the src tag contains the filename
