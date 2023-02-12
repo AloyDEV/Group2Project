@@ -87,7 +87,9 @@ class Card {
     //OR: Hardcode all of the file names
 
 //  Folder with the cards: /Code/Cards/Blue_0.png
-
+//Pulls out all elements, and the src tag contains the filename
+let deckStart = document.getElementsByClassName("cardIndividual")[0].src;
+if(debug){console.log(deckStart.split("/"))};
 
 
 
