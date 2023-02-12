@@ -51,12 +51,15 @@ class PlayerHand{
 
 //Card Class
 class Card {
-    constructor(color, number, file) {
+    constructor(color, number, file, globalNumber) {
         //Color: Red, Blue, Green, Yellow, Wild
         this.color = color;
         //Number: 0-9, Draw, Reverse, Skip
         this.number = number;
         this.file = file;
+
+        //globalNumber is used to keep every single card unique
+        this.globalNumber = globalNumber;
 
     }
     getColor(){
@@ -68,10 +71,27 @@ class Card {
     getFile(){
         return this.file;
     }
+    getGlobalNumber(){
+        return this.globalNumber;
+    }
+
 }
 
 
 //Deck Class
+class Deck{
+
+    // constructor(new Card()){
+    //
+    // }
+    addCard(){
+
+    }
+    removeCard(){
+
+    }
+
+}
 //108 cards
     //0: once per color
     //1-9, draw, reverse, skip: Twice per color
@@ -87,24 +107,129 @@ class Card {
 
 //It appaers to be more difficult than I expected to loop over the files in the folder.
     //Might need to load them in the DOM, hide then, then access them in the DOM when needed
-    //OR: Hardcode a
-// ll of the file names
+    //OR: Hardcode all of the file names
 
 //  Folder with the cards: /Code/Cards/Blue_0.png
-//Pulls out all elements, and the src tag contains the filename
-let deckCardsStart = document.getElementsByClassName("cardIndividual")[0].src.split("/");
-let deckCard = deckCardsStart[deckCardsStart.length-1];
-let cardInfo = deckCard.split("_");
+const cardFilenames = [
+        "Blue_0.png",
+        "Blue_1.png",
+        "Blue_2.png",
+        "Blue_3.png",
+        "Blue_4.png",
+        "Blue_5.png",
+        "Blue_6.png",
+        "Blue_7.png",
+        "Blue_8.png",
+        "Blue_9.png",
+        "Blue_20.png",
+        "Blue_21.png",
+        "Blue_22.png",
 
-if(cardInfo[1] > 0 && cardInfo[1] < 10){
+        "Green_0.png",
+        "Green_1.png",
+        "Green_2.png",
+        "Green_3.png",
+        "Green_4.png",
+        "Green_5.png",
+        "Green_6.png",
+        "Green_7.png",
+        "Green_8.png",
+        "Green_9.png",
+        "Green_20.png",
+        "Green_21.png",
+        "Green_22.png",
+
+        "Red_0.png",
+        "Red_1.png",
+        "Red_2.png",
+        "Red_3.png",
+        "Red_4.png",
+        "Red_5.png",
+        "Red_6.png",
+        "Red_7.png",
+        "Red_8.png",
+        "Red_9.png",
+        "Red_20.png",
+        "Red_21.png",
+        "Red_22.png",
+
+        "Yellow_0.png",
+        "Yellow_1.png",
+        "Yellow_2.png",
+        "Yellow_3.png",
+        "Yellow_4.png",
+        "Yellow_5.png",
+        "Yellow_6.png",
+        "Yellow_7.png",
+        "Yellow_8.png",
+        "Yellow_9.png",
+        "Yellow_20.png",
+        "Yellow_21.png",
+        "Yellow_22.png",
+
+        "Wild_11.png",
+        "Wild_14.png",
+];
+
+let deck = new Deck();
+for(let iCardFilenames =0; iCardFilenames<cardFilenames.length; iCardFilenames++){
+
+    let cardFileInfo = cardFilenames[iCardFilenames].split("_");
+
+    let tempCard = new Card("Blue","0",cardFilenames[iCardFilenames], iCardFilenames);
+    if(debug){console.log(tempCard)}
+
+//One zero card per color
+    if(cardFileInfo[1] == 0){
+
+    }
+//Two of the 1-9 cards per color
+    if(cardFileInfo[1] > 0 && cardFileInfo[1] < 10){
+
+    }
+//Two of the draw/reverse/skip cards
+    if(cardFileInfo[1] >= 20){
+
+    }
+//Four of the 2 different wild cards
+    if(cardFileInfo[1] >= 11 && cardFileInfo[1] <= 14){
+
+    }
+
+    //deck.addCard(tempCard);
 
 }
 
-//Build an array of the cards
-    //ALSO include a check for the type of card, to add multiples of it.
 
-if(debug){console.log("Deck of cards: " + deckCardsStart)};
-if(debug){console.log("Individual Card: " + deckCard)};
+// //Pulls out all elements, and the src tag contains the filename
+// let allCardsStart = document.getElementsByClassName("cardIndividual");
+// for (let ii = 0; )
+// let deckCardsStart = document.getElementsByClassName("cardIndividual")[0].src.split("/");
+// let deckCard = deckCardsStart[deckCardsStart.length-1];
+// let cardInfo = deckCard.split("_");
+// //
+// //One zero card per color
+// if(cardInfo[1] == 0){
+//
+// }
+// //Two of the 1-9 cards per color
+// if(cardInfo[1] > 0 && cardInfo[1] < 10){
+//
+// }
+// //Two of the draw/reverse/skip cards
+// if(cardInfo[1] >= 20){
+//
+// }
+// //Four of the 2 different wild cards
+// if(cardInfo[1] >= 11 && cardInfo[1] <= 14){
+//
+// }
+//
+// //Build an array of the cards
+//     //ALSO include a check for the type of card, to add multiples of it.
+//
+// if(debug){console.log("Deck of cards: " + deckCardsStart)};
+// if(debug){console.log("Individual Card: " + deckCard)};
 
 
 
