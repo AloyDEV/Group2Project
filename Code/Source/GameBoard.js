@@ -84,15 +84,22 @@ class Card {
 
 //It appaers to be more difficult than I expected to loop over the files in the folder.
     //Might need to load them in the DOM, hide then, then access them in the DOM when needed
-    //OR: Hardcode all of the file names
+    //OR: Hardcode a
+// ll of the file names
 
 //  Folder with the cards: /Code/Cards/Blue_0.png
 //Pulls out all elements, and the src tag contains the filename
-let deckStart = document.getElementsByClassName("cardIndividual")[0].src;
- let elements = deckStart.split("/");
- let temp = elements[elements.length-1];
-// if(debug){console.log(elements.length)};
-if(debug){console.log(temp)};
+let deckCardsStart = document.getElementsByClassName("cardIndividual")[0].src.split("/");
+let deckCard = deckCardsStart[deckCardsStart.length-1];
+let cardInfo = deckCard.split("_");
+
+if(cardInfo[1] == 0)
+
+//Build an array of the cards
+    //ALSO include a check for the type of card, to add multiples of it.
+
+if(debug){console.log("Deck of cards: " + deckCardsStart)};
+if(debug){console.log("Individual Card: " + deckCard)};
 
 
 
