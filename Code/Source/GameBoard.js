@@ -75,6 +75,9 @@ class Card {
 //108 cards
     //0: once per color
     //1-9, draw, reverse, skip: Twice per color
+        //20 = draw
+        //21 = reverse
+        //22 = skip
     //Wild cards: 4 of each type
     //When a card is discarded, put it at the bottom of the deck.
     //Loop over all the card files to build the deck
@@ -93,7 +96,9 @@ let deckCardsStart = document.getElementsByClassName("cardIndividual")[0].src.sp
 let deckCard = deckCardsStart[deckCardsStart.length-1];
 let cardInfo = deckCard.split("_");
 
-if(cardInfo[1] == 0)
+if(cardInfo[1] > 0 && cardInfo[1] < 10){
+
+}
 
 //Build an array of the cards
     //ALSO include a check for the type of card, to add multiples of it.
