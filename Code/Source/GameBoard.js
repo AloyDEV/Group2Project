@@ -82,8 +82,8 @@ class Card {
 class Deck{
 
     constructor(){
-        this.deck = [];
-        this.deckSize = 0;
+        this.deck = []; //TODO: Maybe this could be a Hashmap, for better performance?
+        this.deckSize = 0;  //For easy reference to the size.  Might need for a check in each player move that the deck hasn't run out of cards.
     }
 
     getSize(){
@@ -96,8 +96,14 @@ class Deck{
         this.deck[this.deckSize] = newCard;
         this.deckSize++;
     }
-    removeCard(){
+    //TODO: Add logic to remove cards
+    removeCard(removedCard){
         //Removed based on the cards Global Number
+        removedCard.getGlobalNumber();
+
+    }
+    //Loop over the deck 10000 times, randomly swapping items in it
+    shuffle(){
 
     }
 
@@ -121,6 +127,7 @@ class Deck{
     //OR: Hardcode all of the file names
 
 //  Folder with the cards: /Code/Cards/Blue_0.png
+//TODO: Put deck creation in a function.  Maybe a separate file
 const cardFilenames = [
         "Blue_0.png",
         "Blue_1.png",
@@ -183,29 +190,47 @@ const cardFilenames = [
 ];
 
 let gameDeck = new Deck();
-for(let iCardFilenames =0; iCardFilenames<cardFilenames.length; iCardFilenames++){
-
+//TODO: This won't work for duplicate cards.  Need to use a different way to track the loop
+for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames++){
+    let cardGlobalNumber = 1; //Start global number at 1, up to 108, for slightly easier tracking
     let cardFileInfo = cardFilenames[iCardFilenames].split("_");
-
-    let tempCard = new Card("Blue","0",cardFilenames[iCardFilenames], iCardFilenames);
+    //TODO:split the card number from the .png extension
+    let tempCard = new Card(cardFileInfo[0],cardFileInfo[1],cardFilenames[iCardFilenames], iCardFilenames);
     if(debug){console.log(tempCard)}
-    gameDeck.addCard(tempCard);
+    //gameDeck.addCard(tempCard);
 
 //One zero card per color
     if(cardFileInfo[1] == 0){
-
+        gameDeck.addCard(tempCard);
+        cardGlobalNumber++;
     }
 //Two of the 1-9 cards per color
     if(cardFileInfo[1] > 0 && cardFileInfo[1] < 10){
+        gameDeck.addCard(tempCard);
+        cardGlobalNumber++;
+        gameDeck.addCard(tempCard);
+        cardGlobalNumber++;
 
     }
 //Two of the draw/reverse/skip cards
     if(cardFileInfo[1] >= 20){
+        gameDeck.addCard(tempCard);
+        cardGlobalNumber++;
+        gameDeck.addCard(tempCard);
+        cardGlobalNumber++;
 
     }
 //Four of the 2 different wild cards
     if(cardFileInfo[1] >= 11 && cardFileInfo[1] <= 14){
-
+        //TODO: put into a loop.  Or a function where the # of cards to be added (and the card) is passed in)
+        gameDeck.addCard(tempCard);
+        cardGlobalNumber++;
+        gameDeck.addCard(tempCard);
+        cardGlobalNumber++;
+        gameDeck.addCard(tempCard);
+        cardGlobalNumber++;
+        gameDeck.addCard(tempCard);
+        cardGlobalNumber++;
     }
 }
 
