@@ -1,4 +1,5 @@
 //Handles all the code for the actual game
+
 var debug = true;
 
 if(debug){console.log("Game Board JS is loading");}
@@ -147,10 +148,45 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 
 //Starting code: pull the userdata out of the cookie
-let usersCookie = document.cookie;
+//let usersCookie = document.cookie;
 //document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 //After the DOM has loaded, adjust the player boxes based on the number of players
 
+
+
+
+
+//TODO: Make this variable.  So that the different buttons & places can bring up a modal box
+    //Pass in the HTML that will go in the Modal box
+//Modal Box Script:
+// Get the modal
+var modalBackground = document.getElementById("myModal");
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+// Get the button that opens the modal
+var btn = document.getElementById("helpButton");
+
+
+// When the user clicks the button, open the modal
+btn.onclick = function() {
+    modalBackground.style.display = "block";
+}
+
+// When the user clicks on <span>/X, close the modal
+span.onclick = function() {
+    modalBackground.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modalBackground) {
+        if(debug){console.log(event.target)};
+        modalBackground.style.display = "none";
+    }
+    else{
+        if(debug){console.log(event.target)};
+    }
+}
 
 
 
