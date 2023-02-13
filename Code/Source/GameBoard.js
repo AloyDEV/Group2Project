@@ -190,22 +190,28 @@ const cardFilenames = [
 ];
 
 let gameDeck = new Deck();
-//TODO: This won't work for duplicate cards.  Need to use a different way to track the loop
+
 for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames++){
+
+    //Used to globally identify different cards, since there are duplicates of almost every card.
     let cardGlobalNumber = 1; //Start global number at 1, up to 108, for slightly easier tracking
+
+    //Split the card color from the card number
     let cardFileInfo = cardFilenames[iCardFilenames].split("_");
-    //TODO:split the card number from the .png extension
-    let tempCard = new Card(cardFileInfo[0],cardFileInfo[1],cardFilenames[iCardFilenames], iCardFilenames);
+
+    //Split the card number from the PNG extension
+    let cardFileNumber = cardFileInfo[1].split(".");
+
+    let tempCard = new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber);
     if(debug){console.log(tempCard)}
-    //gameDeck.addCard(tempCard);
 
 //One zero card per color
-    if(cardFileInfo[1] == 0){
+    if(cardFileNumber[0] == 0){
         gameDeck.addCard(tempCard);
         cardGlobalNumber++;
     }
 //Two of the 1-9 cards per color
-    if(cardFileInfo[1] > 0 && cardFileInfo[1] < 10){
+    if(cardFileNumber[0] > 0 && cardFileNumber[0] < 10){
         gameDeck.addCard(tempCard);
         cardGlobalNumber++;
         gameDeck.addCard(tempCard);
@@ -213,7 +219,7 @@ for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames+
 
     }
 //Two of the draw/reverse/skip cards
-    if(cardFileInfo[1] >= 20){
+    if(cardFileNumber[0] >= 20){
         gameDeck.addCard(tempCard);
         cardGlobalNumber++;
         gameDeck.addCard(tempCard);
@@ -221,7 +227,7 @@ for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames+
 
     }
 //Four of the 2 different wild cards
-    if(cardFileInfo[1] >= 11 && cardFileInfo[1] <= 14){
+    if(cardFileNumber[0] >= 11 && cardFileNumber[0] <= 14){
         //TODO: put into a loop.  Or a function where the # of cards to be added (and the card) is passed in)
         gameDeck.addCard(tempCard);
         cardGlobalNumber++;
@@ -232,9 +238,17 @@ for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames+
         gameDeck.addCard(tempCard);
         cardGlobalNumber++;
     }
+
+    if(cardGlobalNumber>108){
+        if(debug){console.log("ISSUE: Somehow there are more than 108 cards:")};
+        if(debug){console.log(gameDeck)};
+    }
+
+    if(debug){console.log(gameDeck)};
 }
 
 if(debug){console.log(gameDeck)}
+if(debug){console.log(gameDeck.getSize())}
 
 
 
@@ -273,6 +287,7 @@ if(debug){console.log(gameDeck)}
 
 //Table Class
 //Whenever the table is updated, write the game status to a cookie
+    //Actually this might be too much data for a cookie.  Maybe local storage?
 const today = new Date();
 document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
 
