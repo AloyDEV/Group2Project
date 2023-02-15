@@ -319,7 +319,7 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 //After the DOM has loaded, adjust the player boxes based on the number of players
 
 //Build the deck, then shuffle it
-if(debug){console.log("Deck before shuffling: " + gameDeck)}
+if(debug){console.log("Deck before shuffling: " + gameDeck)}  //TODO: This returns [object Object] right now, need to figure out why
 (debug ? console.log("Deck before shuffling: " + gameDeck): null)
 gameDeck = gameDeck.shuffle();
 (debug ? console.log("Deck after shuffling: " + gameDeck): null)
