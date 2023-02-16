@@ -8,15 +8,16 @@ if(debug){console.log("Game Board JS is loading");}
 //Player Class
 class Player {
     constructor(playerNumber, playerName) {
-
+        this.playerNumber = playerNumber;
+        this.playerName = playerName;
     }
 
     getPlayerNumber() {
-
+        return this.playerNumber;
     }
 
-    getName() {
-
+    getPlayerName() {
+        return this.playerName;
     }
 
     getHand() {
@@ -41,7 +42,7 @@ class PlayerHand{
 
         return trueorfalse;
     }
-    removeCard(color, number){
+    removeCard(cardGlobalNumber){
 
     }
 
@@ -129,10 +130,9 @@ class Deck{
         }
     }
 
-    //Loop over the deck 10000 times, randomly swapping items in it
+    //To shuffle the deck, loop over it 10000 times, randomly swapping items in it
     shuffle(){
         for(let iShuffle = 0; iShuffle < 10000; iShuffle++){
-            // Returns a random integer from 0 to 10:
             let position1 = Math.floor(Math.random() * this.deck.length);
             let position2 = Math.floor(Math.random() * this.deck.length);
             let card1 = this.deck[position1];
@@ -224,81 +224,71 @@ const cardFilenames = [
         "Wild_14.png",
 ];
 
-let gameDeck = new Deck();
+var gameDeck = new Deck();
 
-//Used to globally identify different cards, since there are duplicates of almost every card.
-let cardGlobalNumber = 1; //Start global number at 1, up to 108, for slightly easier tracking
+function createDeck(){
+    //Build the deck, then shuffle it
+    //Used to globally identify different cards, since there are duplicates of almost every card.
+    let cardGlobalNumber = 1; //Start global number at 1, up to 108, for slightly easier tracking
 
-for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames++){
-    //Card filenames are hard coded to always be consistent.  So there are no checks needed for the processing in this loop
+    for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames++){
+        //Card filenames are hard coded to always be consistent.  So there are no checks needed for the processing in this loop
 
-    //Split the card color from the card number
-    let cardFileInfo = cardFilenames[iCardFilenames].split("_");
+        //Split the card color from the card number
+        let cardFileInfo = cardFilenames[iCardFilenames].split("_");
 
-    //Split the card number from the PNG extension
-    let cardFileNumber = cardFileInfo[1].split(".");
+        //Split the card number from the PNG extension
+        let cardFileNumber = cardFileInfo[1].split(".");
 
-    //let tempCard = new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber);
-    //if(debug){console.log(tempCard)}
+        //let tempCard = new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber);
+        //if(debug){console.log(tempCard)}
 
 //One zero card per color
-    if(cardFileNumber[0] == 0){
-        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
-        cardGlobalNumber++;
-    }
+        if(cardFileNumber[0] == 0){
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            cardGlobalNumber++;
+        }
 //Two of the 1-9 cards per color
-    if(cardFileNumber[0] > 0 && cardFileNumber[0] < 10){
-        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
-        cardGlobalNumber++;
-        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
-        cardGlobalNumber++;
+        if(cardFileNumber[0] > 0 && cardFileNumber[0] < 10){
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            cardGlobalNumber++;
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            cardGlobalNumber++;
 
-    }
+        }
 //Two of the draw/reverse/skip cards
-    if(cardFileNumber[0] >= 20){
-        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
-        cardGlobalNumber++;
-        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
-        cardGlobalNumber++;
+        if(cardFileNumber[0] >= 20){
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            cardGlobalNumber++;
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            cardGlobalNumber++;
 
-    }
+        }
 //Four of the 2 different wild cards
-    if(cardFileNumber[0] >= 11 && cardFileNumber[0] <= 14){
-        //TODO: put into a loop.  Or a function where the # of cards to be added (and the card) is passed in)
-        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
-        cardGlobalNumber++;
-        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
-        cardGlobalNumber++;
-        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
-        cardGlobalNumber++;
-        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
-        cardGlobalNumber++;
+        if(cardFileNumber[0] >= 11 && cardFileNumber[0] <= 14){
+            //TODO: put into a loop.  Or a function where the # of cards to be added (and the card) is passed in)
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            cardGlobalNumber++;
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            cardGlobalNumber++;
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            cardGlobalNumber++;
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            cardGlobalNumber++;
+        }
+
+        //This should technically end up 1 over 108, since it is always incremented up even in the final loop
+        if(cardGlobalNumber>109){
+            if(debug){console.log("ISSUE: Somehow there are more than 108 cards:")};
+            if(debug){console.log("Card Global Number: " + cardGlobalNumber)};
+            if(debug){console.log("Deck:")};
+            if(debug){console.log(gameDeck)};
+        }
     }
 
-    if(cardGlobalNumber>108){
-        if(debug){console.log("ISSUE: Somehow there are more than 108 cards:")};
-        if(debug){console.log(gameDeck)};
-    }
+    if(debug){console.log(gameDeck)}
+
 }
-
-
-//if(debug){console.log(gameDeck)}
-if(debug){console.log("Deck Size, should be 108: " + gameDeck.getSize())}
-if(debug){console.log(gameDeck.getTopCard())}
-if(debug){console.log("Deck Size, should be 107: " + gameDeck.getSize())}
-
-
-//TODO: Testing removing a specific card from the deck
-let tempCard2 = new Card("Blue", "02", "test.png", 4);
-
-//TODO: This doesn't work right now
-if(debug){console.log(gameDeck.getCard(tempCard2))}
-//if(debug){console.log(gameDeck)}
-if(debug){console.log("Deck Size, should be 106: " + gameDeck.getSize())}
-gameDeck.shuffle();
-if(debug){console.log(gameDeck)}
-
-
 
 
 // END DECK BUILDING ---------------------------------------------------------------------------------------------------------------------
@@ -363,20 +353,27 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 //document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 //After the DOM has loaded, adjust the player boxes based on the number of players
 
-//Build the deck, then shuffle it
-if(debug){console.log("Deck before shuffling: " + gameDeck)}  //TODO: This returns [object Object] right now, need to figure out why
-(debug ? console.log("Deck before shuffling: " + gameDeck): null)
-gameDeck = gameDeck.shuffle();
-(debug ? console.log("Deck after shuffling: " + gameDeck): null)
+//Once the original page structure has loaded, begin the backend game prep
+document.addEventListener('DOMContentLoaded', function gamePrep(){
 
-//Deal each player their starting hand
+    //First build the deck
+    createDeck();
+    if(debug)(console.log("Starting deck has been built."));
+    //Second deal each player their starting hand
 
-//Pick the first card for the discard pile.
 
-//Update the UI to match player hands, discard card, and the state of the game.
 
+    //Third pick the first card for the discard pile.
+
+    //Last, update the UI to match player hands, discard card, and the state of the game.
+
+});
 
 // END GAME PREP -------------------------------------------------------------------------------------------------------------------------
+
+
+
+
 
 
 
