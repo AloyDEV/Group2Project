@@ -235,40 +235,40 @@ for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames+
     //Split the card number from the PNG extension
     let cardFileNumber = cardFileInfo[1].split(".");
 
-    let tempCard = new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber);
+    //let tempCard = new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber);
     //if(debug){console.log(tempCard)}
 
 //One zero card per color
     if(cardFileNumber[0] == 0){
-        gameDeck.addCard(tempCard);
+        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
         cardGlobalNumber++;
     }
 //Two of the 1-9 cards per color
     if(cardFileNumber[0] > 0 && cardFileNumber[0] < 10){
-        gameDeck.addCard(tempCard);
+        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
         cardGlobalNumber++;
-        gameDeck.addCard(tempCard);
+        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
         cardGlobalNumber++;
 
     }
 //Two of the draw/reverse/skip cards
     if(cardFileNumber[0] >= 20){
-        gameDeck.addCard(tempCard);
+        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
         cardGlobalNumber++;
-        gameDeck.addCard(tempCard);
+        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
         cardGlobalNumber++;
 
     }
 //Four of the 2 different wild cards
     if(cardFileNumber[0] >= 11 && cardFileNumber[0] <= 14){
         //TODO: put into a loop.  Or a function where the # of cards to be added (and the card) is passed in)
-        gameDeck.addCard(tempCard);
+        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
         cardGlobalNumber++;
-        gameDeck.addCard(tempCard);
+        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
         cardGlobalNumber++;
-        gameDeck.addCard(tempCard);
+        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
         cardGlobalNumber++;
-        gameDeck.addCard(tempCard);
+        gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
         cardGlobalNumber++;
     }
 
