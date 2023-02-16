@@ -110,15 +110,11 @@ class Deck{
             return false;
         }
         else {
-            console.log("Card to remove's number, after it is the deck loops card global number:")
-            console.log(removedCard.getGlobalNumber());
-            console.log(this.deck.length);
             for (let iDeck = 0; iDeck < this.deck.length; iDeck++){
-                console.log(this.deck[iDeck]);
-                // if(this.deck[iDeck].getGlobalNumber() == removedCard.getGlobalNumber()){
-                //     let tempRemove = this.deck.splice(iDeck,1);
-                //     return true;
-                // }
+                if(this.deck[iDeck].getGlobalNumber() == removedCard.getGlobalNumber()){
+                    let tempRemove = this.deck.splice(iDeck,1);
+                    return true;
+                }
             }
             return false;
         }
@@ -227,12 +223,11 @@ const cardFilenames = [
 
 let gameDeck = new Deck();
 
+//Used to globally identify different cards, since there are duplicates of almost every card.
+let cardGlobalNumber = 1; //Start global number at 1, up to 108, for slightly easier tracking
+
 for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames++){
     //Card filenames are hard coded to always be consistent.  So there are no checks needed for the processing in this loop
-
-
-    //Used to globally identify different cards, since there are duplicates of almost every card.
-    let cardGlobalNumber = 1; //Start global number at 1, up to 108, for slightly easier tracking
 
     //Split the card color from the card number
     let cardFileInfo = cardFilenames[iCardFilenames].split("_");
@@ -294,10 +289,12 @@ if(debug){console.log("Deck Size, should be 107: " + gameDeck.getSize())}
 let tempCard2 = new Card("Blue", "02", "test.png", 4);
 
 //TODO: This doesn't work right now
-if(debug){console.log("Line above Get Card:")}
 if(debug){console.log(gameDeck.getCard(tempCard2))}
 //if(debug){console.log(gameDeck)}
-//if(debug){console.log(gameDeck.getSize)}
+if(debug){console.log("Deck Size, should be 106: " + gameDeck.getSize())}
+if(debug){console.log(gameDeck.getSize)}
+if(debug){console.log(gameDeck)}
+
 
 
 // END DECK BUILDING ---------------------------------------------------------------------------------------------------------------------
