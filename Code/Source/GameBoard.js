@@ -97,14 +97,31 @@ class Deck{
         this.deckSize++;
     }
     //TODO: Add logic to remove cards
-    removeCard(removedCard){
+    getCard(removedCard){
+        //TODO: make sure there is at least 1 card in the deck.  Otherwise, the game has reached an unplayable state???
         //Removed based on the cards Global Number
-        removedCard.getGlobalNumber();
+        //
+        if(this.deck.length < 1){
+            console.log("No more cards!!!!!")
+            //TODO: Do something here
+        }
+        else {
+
+            removedCard.getGlobalNumber();
+        }
 
     }
     getTopCard(){
-        //TODO: make sure there is at least 1 card in the deck.  Otherwise, the game has reached an unplayable state???
-        return this.deck[0];
+        //Make sure there is at least 1 card in the deck
+        if(this.deck.length < 1){
+            console.log("No more cards!!!!!")
+            //TODO: Do something here
+        }
+        else {
+            return this.deck[0];
+            //TODO: AND REMOVE THE CARD from the array
+
+        }
     }
 
     //Loop over the deck 10000 times, randomly swapping items in it
