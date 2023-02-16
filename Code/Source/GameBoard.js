@@ -83,20 +83,22 @@ class Deck{
 
     constructor(){
         this.deck = []; //TODO: Maybe this could be a Hashmap, for better performance?
-        this.deckSize = 0;  //For easy reference to the size.  Might need for a check in each player move that the deck hasn't run out of cards.
+        //this.deckSize = 0;  //For easy reference to the size.  Might need for a check in each player move that the deck hasn't run out of cards.
     }
 
     getSize(){
-        return this.deckSize;
+        //return this.deckSize;
+        return this.deck.length;
     }
     getDeckContents(){
         return this.deck;
     }
     addCard(newCard){
-        this.deck[this.deckSize] = newCard;
-        this.deckSize++;
+        this.deck[this.deck.length] = newCard;
+        //this.deckSize++;
     }
     //TODO: Add logic to remove cards
+
     getCard(removedCard){
         //TODO: make sure there is at least 1 card in the deck.  Otherwise, the game has reached an unplayable state???
         //Removed based on the cards Global Number
@@ -107,19 +109,22 @@ class Deck{
         }
         else {
 
-            removedCard.getGlobalNumber();
+            //removedCard.getGlobalNumber();
         }
 
     }
     getTopCard(){
+        let intermediateCardHolder = null;
         //Make sure there is at least 1 card in the deck
         if(this.deck.length < 1){
             console.log("No more cards!!!!!")
             //TODO: Do something here
         }
         else {
-            return this.deck[0];
-            //TODO: AND REMOVE THE CARD from the array
+            //return this.deck[0];
+            //TODO: Add in a check that this successfully pulls back a card.
+            intermediateCardHolder = this.deck.splice(0,1);  //SPLICE returns an array.  We need the card IN that array
+            return intermediateCardHolder[0];
 
         }
     }
@@ -127,6 +132,7 @@ class Deck{
     //Loop over the deck 10000 times, randomly swapping items in it
     shuffle(){
         return null;
+
     }
 
 
@@ -270,8 +276,11 @@ for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames+
     }
 }
 
+
 if(debug){console.log(gameDeck)}
 if(debug){console.log("Deck Size, should be 108: " + gameDeck.getSize())}
+//if(debug){console.log(gameDeck.getTopCard())}
+//if(debug){console.log("Deck Size, should be 107: " + gameDeck.getSize())}
 
 // END DECK BUILDING ---------------------------------------------------------------------------------------------------------------------
 
