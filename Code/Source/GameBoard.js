@@ -82,7 +82,7 @@ class Card {
 class Deck{
 
     constructor(){
-        this.deck = []; //TODO: Maybe this could be a Hashmap, for better performance?
+        this.deck = []; //Javascript doesn't support hashmaps by default, so just using an array.
         //this.deckSize = 0;  //For easy reference to the size.  Might need for a check in each player move that the deck hasn't run out of cards.
     }
 
@@ -106,26 +106,33 @@ class Deck{
         if(this.deck.length < 1){
             console.log("No more cards!!!!!")
             //TODO: Do something here
+
+            return false;
         }
         else {
-
-            //removedCard.getGlobalNumber();
+            console.log("Card to remove's number, after it is the deck loops card global number:")
+            console.log(removedCard.getGlobalNumber());
+            console.log(this.deck.length);
+            for (let iDeck = 0; iDeck < this.deck.length; iDeck++){
+                console.log(this.deck[iDeck]);
+                // if(this.deck[iDeck].getGlobalNumber() == removedCard.getGlobalNumber()){
+                //     let tempRemove = this.deck.splice(iDeck,1);
+                //     return true;
+                // }
+            }
+            return false;
         }
 
     }
     getTopCard(){
-        let intermediateCardHolder = null;
         //Make sure there is at least 1 card in the deck
         if(this.deck.length < 1){
             console.log("No more cards!!!!!")
             //TODO: Do something here
         }
         else {
-            //return this.deck[0];
             //TODO: Add in a check that this successfully pulls back a card.
-            intermediateCardHolder = this.deck.splice(0,1);  //SPLICE returns an array.  We need the card IN that array
-            return intermediateCardHolder[0];
-
+            return this.deck.splice(0,1)[0];  //SPLICE returns an array.  We need the card IN that array
         }
     }
 
@@ -234,7 +241,7 @@ for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames+
     let cardFileNumber = cardFileInfo[1].split(".");
 
     let tempCard = new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber);
-    if(debug){console.log(tempCard)}
+    //if(debug){console.log(tempCard)}
 
 //One zero card per color
     if(cardFileNumber[0] == 0){
@@ -277,10 +284,21 @@ for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames+
 }
 
 
-if(debug){console.log(gameDeck)}
+//if(debug){console.log(gameDeck)}
 if(debug){console.log("Deck Size, should be 108: " + gameDeck.getSize())}
-//if(debug){console.log(gameDeck.getTopCard())}
-//if(debug){console.log("Deck Size, should be 107: " + gameDeck.getSize())}
+if(debug){console.log(gameDeck.getTopCard())}
+if(debug){console.log("Deck Size, should be 107: " + gameDeck.getSize())}
+
+
+//TODO: Testing removing a specific card from the deck
+let tempCard2 = new Card("Blue", "02", "test.png", 4);
+
+//TODO: This doesn't work right now
+if(debug){console.log("Line above Get Card:")}
+if(debug){console.log(gameDeck.getCard(tempCard2))}
+//if(debug){console.log(gameDeck)}
+//if(debug){console.log(gameDeck.getSize)}
+
 
 // END DECK BUILDING ---------------------------------------------------------------------------------------------------------------------
 
