@@ -97,12 +97,9 @@ class Deck{
         this.deck[this.deck.length] = newCard;
         //this.deckSize++;
     }
-    //TODO: Add logic to remove cards
 
     getCard(removedCard){
-        //TODO: make sure there is at least 1 card in the deck.  Otherwise, the game has reached an unplayable state???
         //Removed based on the cards Global Number
-        //
         if(this.deck.length < 1){
             console.log("No more cards!!!!!")
             //TODO: Do something here
@@ -134,8 +131,14 @@ class Deck{
 
     //Loop over the deck 10000 times, randomly swapping items in it
     shuffle(){
-        return null;
-
+        for(let iShuffle = 0; iShuffle < 10000; iShuffle++){
+            // Returns a random integer from 0 to 10:
+            let position1 = Math.floor(Math.random() * this.deck.length);
+            let position2 = Math.floor(Math.random() * this.deck.length);
+            let card1 = this.deck[position1];
+            this.deck[position1] = this.deck[position2];
+            this.deck[position2] = this.deck;
+        }
     }
 
 
@@ -292,8 +295,9 @@ let tempCard2 = new Card("Blue", "02", "test.png", 4);
 if(debug){console.log(gameDeck.getCard(tempCard2))}
 //if(debug){console.log(gameDeck)}
 if(debug){console.log("Deck Size, should be 106: " + gameDeck.getSize())}
-if(debug){console.log(gameDeck.getSize)}
+gameDeck.shuffle();
 if(debug){console.log(gameDeck)}
+
 
 
 
