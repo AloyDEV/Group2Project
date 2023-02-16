@@ -137,7 +137,7 @@ class Deck{
             let position2 = Math.floor(Math.random() * this.deck.length);
             let card1 = this.deck[position1];
             this.deck[position1] = this.deck[position2];
-            this.deck[position2] = this.deck;
+            this.deck[position2] = card1;
         }
     }
 
