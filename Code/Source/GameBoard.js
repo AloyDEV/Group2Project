@@ -357,7 +357,9 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 //After the DOM has loaded, adjust the player boxes based on the number of players
 
 var playersArray = [];
-var totalPlayerNumber = 0;
+var discardCard = new Card();
+//I don't think this is needed.  I can just grab the playerArray length if I need the number of players
+//var totalPlayerNumber = 0;
 
 
 //Once the original page structure has loaded, begin the backend game prep
@@ -365,7 +367,9 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
     //First build the deck
     createDeck();
-    if(debug)(console.log("Starting deck has been built."));
+    gameDeck.shuffle();
+    if(debug){console.log("Starting deck has been built & shuffled:")};
+    if(debug){console.log(gameDeck)};
 
     //Second create the players
     //document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -382,29 +386,43 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     else{
         let playersTempArray = playersCookie.split("|");
         for(let iPlayerSetup = 0; iPlayerSetup < playersTempArray.length-1; iPlayerSetup++){ //Minus one off the array length, the players in the cookie always end with a "|" which puts an empty string as the last array item after its split
-            totalPlayerNumber++;
-            playersArray.push(new Player(totalPlayerNumber, playersTempArray[iPlayerSetup]));
+            //totalPlayerNumber++;
+            playersArray.push(new Player(iPlayerSetup, playersTempArray[iPlayerSetup]));
         }
         //Add the computer player
-        totalPlayerNumber++;
-        playersArray.push(new Player(totalPlayerNumber, "Mike the All Knowing"));
-
+        //totalPlayerNumber++;
+        playersArray.push(new Player(playersArray.length, "Mike the All Knowing"));
     }
 
-    if(debug){console.log("Players array: ")};
+    if(debug){console.log("Players created:")};
     if(debug){console.log(playersArray)};
 
 
-
-
-
     //Third deal each player their hand
-
-
+        //Nested loops! Always a good idea!
+    //At this point, there is no need to check that the deck has enough cards
+    for(let iPlayerHandSetup = 0; iPlayerHandSetup < playersArray.length; iPlayerHandSetup++){
+        let dealingNumber = 0;
+        while(dealingNumber < 7){
+            //TODO: Make sure it returns TRUE after each push
+            playersArray[iPlayerHandSetup].addCard(gameDeck.getTopCard());
+            dealingNumber++;
+        }
+    }
+    if(debug){console.log("Players dealt their hands:")};
+    if(debug){console.log(playersArray)};
 
     //Fourth pick the first card for the discard pile.
+    discardCard = gameDeck.getTopCard()
+        //console.log(gameDeck.getTopCard());
+    if(debug){console.log("Discard Card: " + discardCard)};
+
 
     //Last, update the UI to match player names, hands, discard card, and the state of the game.
+    let temp = document.getElementById("UIDiscardCard");
+    //temp.src = "";
+    console.log(temp);
+
 
 });
 
@@ -428,7 +446,6 @@ function getCookie(cookieName) {
     }
     return "";
 }
-
 
 
 
