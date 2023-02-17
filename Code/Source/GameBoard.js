@@ -33,12 +33,7 @@ class Player {
         let handLengthStart = this.playerHand.length;
         this.playerHand.push(addedCard);
         //If the players hand array increased, the card was added successfully.
-        if (handLengthStart < this.playerHand.length){
-            return true
-        }
-        else{
-            return false;
-        }
+        return handLengthStart < this.playerHand.length;
     }
     removeCard(cardGlobalNumber){
 
@@ -357,7 +352,8 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 //After the DOM has loaded, adjust the player boxes based on the number of players
 
 var playersArray = [];
-var discardCard = new Card();
+var discardCard;
+
 //I don't think this is needed.  I can just grab the playerArray length if I need the number of players
 //var totalPlayerNumber = 0;
 
@@ -413,15 +409,15 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     if(debug){console.log(playersArray)};
 
     //Fourth pick the first card for the discard pile.
-    discardCard = gameDeck.getTopCard()
-        //console.log(gameDeck.getTopCard());
-    if(debug){console.log("Discard Card: " + discardCard)};
+    discardCard = gameDeck.getTopCard();
+    if(debug){console.log("Starting Discard Card:")};
+    if(debug){console.log(discardCard)};
+
+    //Last, update the UI to hide un-needed players, match player names, display hands, show the new discard card, and the state of the game.
+    let UIDiscardCard = document.getElementById("UIDiscardCard");
+    UIDiscardCard.src = "/Code/Cards/" + discardCard.getFile();
 
 
-    //Last, update the UI to match player names, hands, discard card, and the state of the game.
-    let temp = document.getElementById("UIDiscardCard");
-    //temp.src = "";
-    console.log(temp);
 
 
 });
@@ -429,6 +425,14 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 // END GAME PREP -------------------------------------------------------------------------------------------------------------------------
 
 function getCookie(cookieName) {
+    /*
+    Different way to get the players from the cookie:
+    let usersCookie = document.cookie;
+    console.log(usersCookie);
+    console.log(document.cookie.indexOf("UNOusers"));
+     */
+
+
     let name = cookieName + "=";
     let decodedCookie = decodeURIComponent(document.cookie);
     let cokiesArray = decodedCookie.split(';');
