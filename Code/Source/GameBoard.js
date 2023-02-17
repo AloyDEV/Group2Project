@@ -10,6 +10,7 @@ class Player {
     constructor(playerNumber, playerName) {
         this.playerNumber = playerNumber;
         this.playerName = playerName;
+        this.playerHand = [];
     }
 
     getPlayerNumber() {
@@ -20,27 +21,24 @@ class Player {
         return this.playerName;
     }
 
-    getHand() {
-
+    gePlayertHand() {
+        return this.playerHand;
     }
 
     getNumberOfCards() {
-
-    }
-}
-
-
-//Player Hand Class
-class PlayerHand{
-    //Does this class need to do any sorting?  Or random order should be fine?
-    constructor(){
-        this.hand = [];
+        return this.playerHand.length;
     }
 
-    addCard(){
-        this.hand.add()
-
-        return trueorfalse;
+    addCard(addedCard){
+        let handLengthStart = this.playerHand.length;
+        this.playerHand.push(addedCard);
+        //If the players hand array increased, the card was added successfully.
+        if (handLengthStart < this.playerHand.length){
+            return true
+        }
+        else{
+            return false;
+        }
     }
     removeCard(cardGlobalNumber){
 
@@ -49,6 +47,14 @@ class PlayerHand{
     removeCard(){
     }
 }
+
+
+// //Player Hand Class
+// class PlayerHand{
+//     //Does this class need to do any sorting?  Or random order should be fine?
+//     constructor(){
+//
+// }
 
 //Card Class
 class Card {
@@ -314,6 +320,8 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 //Player Move Function
 //When a card is discacrded, immediately move the previous discard card  back into the deck????
 
+
+
 //Regular rules:
 /*
 
@@ -333,17 +341,12 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 //Check Win Status Function
 
 
-//Modal Box for messages
-
-
-
 //Restart Game function
     //Cancel the existing cookie
-    document.cookie = "UNOGameState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    //document.cookie = "UNOGameState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    //document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
 
-//Create new users function
-    document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
 
 // BEGIN GAME PREP -------------------------------------------------------------------------------------------------------------------------
@@ -353,27 +356,57 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 //document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 //After the DOM has loaded, adjust the player boxes based on the number of players
 
+var playersArray = [];
+
 //Once the original page structure has loaded, begin the backend game prep
 document.addEventListener('DOMContentLoaded', function gamePrep(){
 
     //First build the deck
     createDeck();
     if(debug)(console.log("Starting deck has been built."));
-    //Second deal each player their starting hand
+
+    //Second create the players
+    //document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    var player1 = new Player(1,"Player1");
+    var player2 = new Player(2,"Player2");
+    var player3 = new Player(3,"Player3");
+    var player4 = new Player(4,"Computer");
+    playersArray.push(player1, player2, player3, player4);
 
 
 
-    //Third pick the first card for the discard pile.
 
-    //Last, update the UI to match player hands, discard card, and the state of the game.
+    //Third deal each player their hand
+
+
+
+    //Fourth pick the first card for the discard pile.
+
+    //Last, update the UI to match player names, hands, discard card, and the state of the game.
 
 });
 
 // END GAME PREP -------------------------------------------------------------------------------------------------------------------------
 
+let decodedCookie = decodeURIComponent(document.cookie);
+let ca = decodedCookie.split(';');
+console.log(ca);
 
-
-
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 
 
 
