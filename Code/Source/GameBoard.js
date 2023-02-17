@@ -367,11 +367,22 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
     //Second create the players
     //document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    var player1 = new Player(1,"Player1");
-    var player2 = new Player(2,"Player2");
-    var player3 = new Player(3,"Player3");
-    var player4 = new Player(4,"Computer");
-    playersArray.push(player1, player2, player3, player4);
+    let playersCookie = getCookie("UNOusers");
+    if(playersCookie == ""){
+        console.log("Something has gone wrong, the player info is not in the cookie");
+        console.log("Defaulting to 3 players with default names");
+        var player1 = new Player(1,"Player1");
+        var player2 = new Player(2,"Player2");
+        var player3 = new Player(3,"Player3");
+        var player4 = new Player(4,"Computer");
+        playersArray.push(player1, player2, player3, player4);
+    }
+    else{
+        playersArray = playersCookie.split("|");
+
+    }
+
+
 
 
 
@@ -392,16 +403,19 @@ let decodedCookie = decodeURIComponent(document.cookie);
 let ca = decodedCookie.split(';');
 console.log(ca);
 
-function getCookie(cname) {
-    let name = cname + "=";
+function getCookie(cookieName) {
+    let name = cookieName + "=";
     let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
-        let c = ca[i];
+    let cokiesArray = decodedCookie.split(';');
+    for(let i = 0; i <cokiesArray.length; i++) {
+        let c = cokiesArray[i];
+        //Trim excess spaces from the cookie
         while (c.charAt(0) == ' ') {
             c = c.substring(1);
         }
+        //Return the cookie if its found
         if (c.indexOf(name) == 0) {
+            //Pull out the value stored in the cookie, by grabbing the string after the cookie name
             return c.substring(name.length, c.length);
         }
     }
