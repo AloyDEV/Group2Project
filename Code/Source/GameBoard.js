@@ -357,6 +357,8 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 //After the DOM has loaded, adjust the player boxes based on the number of players
 
 var playersArray = [];
+var totalPlayerNumber = 0;
+
 
 //Once the original page structure has loaded, begin the backend game prep
 document.addEventListener('DOMContentLoaded', function gamePrep(){
@@ -374,14 +376,23 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         var player1 = new Player(1,"Player1");
         var player2 = new Player(2,"Player2");
         var player3 = new Player(3,"Player3");
-        var player4 = new Player(4,"Computer");
+        var player4 = new Player(4,"Computron");
         playersArray.push(player1, player2, player3, player4);
     }
     else{
-        playersArray = playersCookie.split("|");
+        let playersTempArray = playersCookie.split("|");
+        for(let iPlayerSetup = 0; iPlayerSetup < playersTempArray.length-1; iPlayerSetup++){ //Minus one off the array length, the players in the cookie always end with a "|" which puts an empty string as the last array item after its split
+            totalPlayerNumber++;
+            playersArray.push(new Player(totalPlayerNumber, playersTempArray[iPlayerSetup]));
+        }
+        //Add the computer player
+        totalPlayerNumber++;
+        playersArray.push(new Player(totalPlayerNumber, "Mike the All Knowing"));
 
     }
 
+    if(debug){console.log("Players array: ")};
+    if(debug){console.log(playersArray)};
 
 
 
@@ -398,10 +409,6 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 });
 
 // END GAME PREP -------------------------------------------------------------------------------------------------------------------------
-
-let decodedCookie = decodeURIComponent(document.cookie);
-let ca = decodedCookie.split(';');
-console.log(ca);
 
 function getCookie(cookieName) {
     let name = cookieName + "=";
