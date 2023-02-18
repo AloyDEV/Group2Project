@@ -414,8 +414,48 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     if(debug){console.log(discardCard)};
 
     //Last, update the UI to hide un-needed players, match player names, display hands, show the new discard card, and the state of the game.
+
+    //Set the top discard card
     let UIDiscardCard = document.getElementById("UIDiscardCard");
     UIDiscardCard.src = "/Code/Cards/" + discardCard.getFile();
+
+    //Hide players 2 & 3
+    let playerBoxes;
+    if(debug){console.log("Players: " + playersArray.length)};
+    switch(playersArray.length) {
+        case 3:
+            if(debug){console.log("Case 3")};
+
+
+            //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
+            playerBoxes = document.getElementById("player3Box");
+            playerBoxes.className="playerBoxHide";
+
+            playerBoxes = document.getElementById("player2Box");
+            playerBoxes.style.height="26.66%"
+            playerBoxes = document.getElementById("player1Box");
+            playerBoxes.style.height="26.66%"
+            playerBoxes = document.getElementById("player4Box");
+            playerBoxes.style.height="26.66%"
+
+            break;
+        case 2:
+            if(debug){console.log("Case 2")};
+
+            playerBoxes = document.getElementById("player3Box");
+            playerBoxes.className="playerBoxHide";
+            playerBoxes = document.getElementById("player2Box");
+            playerBoxes.className="playerBoxHide";
+
+            playerBoxes = document.getElementById("player1Box");
+            playerBoxes.style.height="40%"
+            playerBoxes = document.getElementById("player4Box");
+            playerBoxes.style.height="40%"
+
+            break;
+        default:
+            //DO NOTHING!!!!
+    }
 
 
 

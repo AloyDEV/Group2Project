@@ -45,6 +45,13 @@
             border: red solid 3px;
             flex: 50%;
         }
+        .playerBoxShow{
+            border: blue solid 3px;
+            height:20%
+        }
+        .playerBoxHide {
+            display:none;
+        }
 
         /*------------------------------Modal Box Styling -------------------------------------------------*/
 
@@ -103,10 +110,10 @@
 </script>
 <div class="row">
     <div class="column">
-        <div id="player1Box" class="" style="border: blue solid 3px; height:20%">Player 1</div>
-        <div id="player2Box" class="" style="border: blue solid 3px; height:20%">Player 2</div>
-        <div id="player3Box" class="" style="border: blue solid 3px; height:20%">Player 3</div>
-        <div id="player5Box" class="" style="border: blue solid 3px; height:20%">John the All-Knowing (Computer player)</div>
+        <div id="player1Box" class="playerBoxShow">Player 1</div>
+        <div id="player2Box" class="playerBoxShow">Player 2</div>
+        <div id="player3Box" class="playerBoxShow">Player 3</div>
+        <div id="player4Box" class="playerBoxShow">Computer player</div>
         GAME BOARD:
 
         Should this HTML just be created by JS when the page loads?
