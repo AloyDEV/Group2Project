@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         case 3:
             if(debug){console.log("Case 3")};
 
-
+            //TODO: Could the resizing be accomplished with a flex box, to handle it dynamically?
             //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
             playerBoxes = document.getElementById("player3Box");
             playerBoxes.className="playerBoxHide";
@@ -457,6 +457,20 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             //DO NOTHING!!!!
     }
 
+    //Put player names into the UI
+    let UIPlayerNames = document.getElementsByClassName("playerBoxShow");
+    for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++){
+        if(UIPlayerNames.length != UIPlayerNames){
+            console.log("Somethings gone wrong. The # of players in the cookie is not matching the # players in the UI.")
+            console.log("ABORT!!!!!")
+            //Reset the game, and default the players (3 players, default names)
+        }
+        else{
+            console.log(playersArray[iUIPnames].getPlayerName());
+            console.log(UIPlayerNames[iUIPnames]);
+        }
+
+    }
 
 
 
