@@ -459,18 +459,19 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
     //Put player names into the UI
     let UIPlayerNames = document.getElementsByClassName("playerBoxShow");
-    for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++){
-        if(UIPlayerNames.length != UIPlayerNames){
-            console.log("Somethings gone wrong. The # of players in the cookie is not matching the # players in the UI.")
-            console.log("ABORT!!!!!")
-            //Reset the game, and default the players (3 players, default names)
-        }
-        else{
-            console.log(playersArray[iUIPnames].getPlayerName());
-            console.log(UIPlayerNames[iUIPnames]);
-        }
 
+    if(playersArray.length != UIPlayerNames.length){
+        console.log("Somethings gone wrong. The # of players in the cookie is not matching the # players in the UI.")
+        console.log("ABORT!!!!!")
+        //TODO: Reset the game, and default the players (3 players, default names)
     }
+    else{
+        for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
+            UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName();
+        }
+    }
+
+
 
 
 
