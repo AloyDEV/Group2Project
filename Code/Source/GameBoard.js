@@ -1,9 +1,10 @@
 //Handles all the code for the actual game
-
 var debug = true;
 
 if(debug){console.log("Game Board JS is loading");}
 
+//TODO: There are about half a dozen global variables currently.  Might want to put them in a wrapper or namespace for better handling
+    //EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
 
 //Player Class
 class Player {
@@ -460,6 +461,8 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     //Put player names into the UI
     let UIPlayerNames = document.getElementsByClassName("playerBoxShow");
 
+    //TODO for Sunday: In process of changing how player names & player cards are setup in the UI
+
     if(playersArray.length != UIPlayerNames.length){
         console.log("Somethings gone wrong. The # of players in the cookie is not matching the # players in the UI.")
         console.log("ABORT!!!!!")
@@ -467,9 +470,16 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     }
     else{
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
-            UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName();
+            UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName() + '<div id="player1Hand" class="playerHand"> ' +
+                    <img src="/Code/Cards/Blue_0.png"/> +
+                '</div>';
         }
     }
+
+    //let UIPlayerHands = document.getElementsByClassName("playerHand");
+    //console.log(UIPlayerHands)
+    //Display the player hands
+    //UIPlayerHands[0].innerHTML = '<img src="/Code/Cards/Blue_0.png"/>';
 
 
 

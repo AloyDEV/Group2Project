@@ -100,26 +100,29 @@
 <!-- defer is used so that the entire DOM is loaded before the JS is run, so that the event handlers are correctly tied to their UI elements-->
 <script>
     //Pull the users out of the created cookie
-    let usersCookie = document.cookie;
-    console.log("COOKIES:");
-    console.log(usersCookie);
-    console.log(document.cookie.indexOf("UNOusers"));
+    // let usersCookie = document.cookie;
+    // console.log("COOKIES:");
+    // console.log(usersCookie);
+    // console.log(document.cookie.indexOf("UNOusers"));
 
 
 
 </script>
 <div class="row">
     <div class="column">
-        <div id="player1Box" class="playerBoxShow">Player 1</div>
-        <div id="player2Box" class="playerBoxShow">Player 2</div>
-        <div id="player3Box" class="playerBoxShow">Player 3</div>
-        <div id="player4Box" class="playerBoxShow">Computer player</div>
-        GAME BOARD:
-
-        Should this HTML just be created by JS when the page loads?
-        At the very least, first check for a cookie
-        And if there's no cookie, redirect to the Start page
-
+        <div id="player1Box" class="playerBoxShow">
+            <div id="player1Name">Player 1</div>
+            <div id="player1Hand" class="playerHand"> HAND!!!</div>
+        </div>
+        <div id="player2Box" class="playerBoxShow">Player 2
+            <div id="player2Hand" class="playerHand"> HAND!!!</div>
+        </div>
+        <div id="player3Box" class="playerBoxShow">Player 3
+            <div id="player3Hand" class="playerHand"> HAND!!!</div>
+        </div>
+        <div id="player4Box" class="playerBoxShow">Computer player
+            <div id="player4Hand" class="playerHand"> HAND!!!</div>
+        </div>
     </div>
     <div class="column">
         <div style="border: yellow solid 3px; height:40%">
