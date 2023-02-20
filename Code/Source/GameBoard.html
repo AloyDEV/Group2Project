@@ -68,6 +68,7 @@
             overflow: auto; /* Enable scroll if needed */
             background-color: rgb(0,0,0); /* Fallback color */
             background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            cursor: pointer; /* To indicate to the user that they can click outside the box to close it */
         }
 
         /* Modal Content */
@@ -77,13 +78,15 @@
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
+            border-radius:2em; /* Rounded so it looks similar to the cards */
+            cursor: default;
         }
 
         /* The Close Button */
         .close {
             color: #aaaaaa;
             float: right;
-            font-size: 28px;
+            font-size: 50px;
             font-weight: bold;
         }
 
@@ -114,15 +117,20 @@
             <div id="player1Name">Player 1</div>
             <div id="player1Hand" class="playerHand"> HAND!!!</div>
         </div>
-        <div id="player2Box" class="playerBoxShow">Player 2
+        <div id="player2Box" class="playerBoxShow">
+            <div id="player2Name">Player 2</div>
             <div id="player2Hand" class="playerHand"> HAND!!!</div>
         </div>
-        <div id="player3Box" class="playerBoxShow">Player 3
+        <div id="player3Box" class="playerBoxShow">
+            <div id="player3Name">Player 3</div>
             <div id="player3Hand" class="playerHand"> HAND!!!</div>
         </div>
-        <div id="player4Box" class="playerBoxShow">Computer player
+        <div id="player4Box" class="playerBoxShow">
+            <div id="player4Name">Player 4/Computer</div>
             <div id="player4Hand" class="playerHand"> HAND!!!</div>
         </div>
+
+
     </div>
     <div class="column">
         <div style="border: yellow solid 3px; height:40%">
@@ -149,9 +157,8 @@
     <!-- Modal Box - Actual Modal box & its contents -->
     <div class="modal-content">
         <span class="close">&times;</span>
-        <p>Game Rules & Help Menu</p>
-        <p>Uno Rules are taken from here: https://www.unorules.com/</p>
-        <p> Based on a 108 card deck, NOT 112.  No additional Wild cards</p>
+        <div id="modalContentDiv">
+        </div>
     </div>
 </div>
 

@@ -6,6 +6,18 @@ if(debug){console.log("Game Board JS is loading");}
 //TODO: There are about half a dozen global variables currently.  Might want to put them in a wrapper or namespace for better handling
     //EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
 
+//Thoughts from last night:
+/*
+Need a popup at the beginning, explaining how to play the game/interact with the UI
+
+Event handler for each button, that passes in the HTML in the modal box.
+
+How to track which card is which?  store its Global Number somewhere in the HTML?
+Tie each card to an OnClick function, that passes in the card identifier
+
+ */
+
+
 //Player Class
 class Player {
     constructor(playerNumber, playerName) {
@@ -245,6 +257,7 @@ function createDeck(){
         //let tempCard = new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber);
         //if(debug){console.log(tempCard)}
 
+//TODO: put into a loop.  Or a function where the # of cards to be added (and the card) is passed in)
 //One zero card per color
         if(cardFileNumber[0] == 0){
             gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
@@ -268,7 +281,6 @@ function createDeck(){
         }
 //Four of the 2 different wild cards
         if(cardFileNumber[0] >= 11 && cardFileNumber[0] <= 14){
-            //TODO: put into a loop.  Or a function where the # of cards to be added (and the card) is passed in)
             gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
             cardGlobalNumber++;
             gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
@@ -314,7 +326,7 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 
 //Player Move Function
-//When a card is discacrded, immediately move the previous discard card  back into the deck????
+//When a card is discarded, immediately move the previous discard card  back into the deck????
 
 
 
@@ -471,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     else{
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
             UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName() + '<div id="player1Hand" class="playerHand"> ' +
-                    <img src="/Code/Cards/Blue_0.png"/> +
+                    '<img src="/Code/Cards/Blue_0.png"/>' +
                 '</div>';
         }
     }
@@ -518,39 +530,45 @@ function getCookie(cookieName) {
 
 
 
-// BEGIN MODAL BOX FUNCTION ------------------------------------------------------------------------------------------------------------------
-
-//TODO: Make this variable.  So that the different buttons & places can bring up a modal box
-    //Pass in the HTML that will go in the Modal box
-//Modal Box Script:
-// Get the modal
-var modalBackground = document.getElementById("myModal");
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-// Get the button that opens the modal
-var btn = document.getElementById("helpButton");
-
-
-// When the user clicks the button, open the modal
-btn.onclick = function() {
-    modalBackground.style.display = "block";
-}
-
-// When the user clicks on <span>/X, close the modal
-span.onclick = function() {
-    modalBackground.style.display = "none";
-}
-
-// When the user clicks anywhere outside the modal, close it
-window.onclick = function(event) {
-    if (event.target == modalBackground) {
-        if(debug){console.log(event.target)};
+// BEGIN MODAL BOX FUNCTIONS ------------------------------------------------------------------------------------------------------------------
+function hideModalBoxFunction(mouseEvent){
+    if (mouseEvent.target == modalBackground || mouseEvent.target ==modalCloseButton) {
+        if(debug){console.log("Modal box element clicked: " + mouseEvent.target)};
         modalBackground.style.display = "none";
     }
-    else{
-        if(debug){console.log(event.target)};
-    }
 }
+
+function showModalBoxFunction(mouseEvent, modalHTML){
+    modalBackground.style.display = "block";
+    let modalContents = document.getElementById("modalContentDiv");
+    modalContents.innerHTML = modalHTML;
+
+}
+
+//Modal Box pieces
+// Background behind the modal box, that overlays the rest of the page
+var modalBackground = document.getElementById("myModal");
+// Get the <span>/X element that closes the modal
+var modalCloseButton = document.getElementsByClassName("close")[0];
+//Closing the modal box
+// When the user clicks on <span>/X, close the modal
+modalCloseButton.onclick = function(mouseEvent){
+    hideModalBoxFunction(mouseEvent);
+}
+// When the user clicks anywhere outside the modal, close it
+window.onclick = function(mouseEvent) {
+    hideModalBoxFunction(mouseEvent);
+}
+
+
+// Help Button
+var helpButton = document.getElementById("helpButton");
+helpButton.onclick = function(mouseEvent) {
+    showModalBoxFunction(mouseEvent, "<p>Game Rules & Help Menu</p><p>Uno Rules are taken from here: https://www.unorules.com/</p><p> Based on a 108 card deck, NOT 112.  No additional Wild cards</p>");
+}
+
+
+
 
 // END MODAL BOX FUNCTION ------------------------------------------------------------------------------------------------------------------
 
