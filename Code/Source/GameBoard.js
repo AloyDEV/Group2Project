@@ -1,12 +1,18 @@
 //Handles all the code for the actual game
 var debug = true;
 
+//Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
+//TODO: Might want to put them in a wrapper or namespace for better handling
+    //EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
+var gameDeck = new Deck();
+var playersArray = [];
+var discardCard;
+
 if(debug){console.log("Game Board JS is loading");}
 
-//TODO: There are about half a dozen global variables currently.  Might want to put them in a wrapper or namespace for better handling
-    //EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
 
-//Thoughts from last night:
+
+//TODO
 /*
 Need a popup at the beginning, explaining how to play the game/interact with the UI
 
@@ -34,7 +40,7 @@ class Player {
         return this.playerName;
     }
 
-    gePlayertHand() {
+    getPlayertHand() {
         return this.playerHand;
     }
 
@@ -48,12 +54,18 @@ class Player {
         //If the players hand array increased, the card was added successfully.
         return handLengthStart < this.playerHand.length;
     }
+
+    //TODO: Need to change how getting cards in the hand is handled
     removeCard(cardGlobalNumber){
 
     }
+    getCardSecific(){
 
-    removeCard(){
     }
+    getPlayerCardFile(cardNumber){
+        return this.playerHand[cardNumber].getFile();
+    }
+
 }
 
 
@@ -165,18 +177,13 @@ class Deck{
         //22 = skip
     //Wild cards: 4 of each type
     //When a card is discarded, put it at the bottom of the deck.
-    //Loop over all the card files to build the deck
-    //Determine the card type based on the file name
 //Color: Red, Blue, Green, Yellow, Wild
 //Number: 0-9, Draw, Reverse, Skip
 
-//It appears to be more difficult than I expected to loop over the files in the folder.
-    //Might need to load them in the DOM, hide then, then access them in the DOM when needed
-    //OR: Hardcode all of the file names
-
 // BEGIN DECK BUILDING ---------------------------------------------------------------------------------------------------------------------
-//  Folder with the cards: /Code/Cards/Blue_0.png
-//TODO: Put deck creation in a function.  Maybe a separate file
+//Since there is no backend, the JS can't access files on the server directly.  To get all the card files, names of them are hardcoded below.
+//  Folder with the cards: /Code/Cards/
+
 const cardFilenames = [
         "Blue_0.png",
         "Blue_1.png",
@@ -238,7 +245,7 @@ const cardFilenames = [
         "Wild_14.png",
 ];
 
-var gameDeck = new Deck();
+
 
 function createDeck(){
     //Build the deck, then shuffle it
@@ -326,16 +333,16 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 
 //Player Move Function
-//When a card is discarded, immediately move the previous discard card  back into the deck????
+//When a card is discarded, immediately move the previous discard card  back into the deck
 
 
 
 //Regular rules:
 /*
 
-// Two Player Rules:
+// Two & Four Player Rules:
 //
-// For two players, there is a slight change of rules:
+// For two or four players, there is a slight change of rules:
 //
 //     Reverse works like Skip
 // Play Skip, and you may immediately play another card
@@ -354,6 +361,12 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
     //document.cookie = "UNOGameState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     //document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
+    //Reset the deck & discard card
+
+    //Reset all player hands
+
+    //Reset the UI
+
 
 
 
@@ -364,8 +377,7 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 //document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 //After the DOM has loaded, adjust the player boxes based on the number of players
 
-var playersArray = [];
-var discardCard;
+
 
 //I don't think this is needed.  I can just grab the playerArray length if I need the number of players
 //var totalPlayerNumber = 0;
@@ -380,8 +392,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     if(debug){console.log("Starting deck has been built & shuffled:")};
     if(debug){console.log(gameDeck)};
 
-    //Second create the players
-    //document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    //Second create the players by pulling their info out of the cookie
     let playersCookie = getCookie("UNOusers");
     if(playersCookie == ""){
         console.log("Something has gone wrong, the player info is not in the cookie");
@@ -481,10 +492,13 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         //TODO: Reset the game, and default the players (3 players, default names)
     }
     else{
+        //Loop over all players
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
+            //Loop over all player hands
+            UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName() + '<div id="player1Hand" class="playerHand">';
+
             UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName() + '<div id="player1Hand" class="playerHand"> ' +
-                    '<img src="/Code/Cards/Blue_0.png"/>' +
-                '</div>';
+                    '<img id= src="/Code/Cards/'+playersArray[iUIPnames].getPlayerCardFile(iUIPnames)+'"/></div>';
         }
     }
 

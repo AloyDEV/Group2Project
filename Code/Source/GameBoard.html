@@ -99,18 +99,10 @@
     </style>
 </head>
 <body>
-<script defer type="text/javascript" src="GameBoard.js"></script>
 <!-- defer is used so that the entire DOM is loaded before the JS is run, so that the event handlers are correctly tied to their UI elements-->
-<script>
-    //Pull the users out of the created cookie
-    // let usersCookie = document.cookie;
-    // console.log("COOKIES:");
-    // console.log(usersCookie);
-    // console.log(document.cookie.indexOf("UNOusers"));
+<script defer type="text/javascript" src="GameBoard.js"></script>
 
 
-
-</script>
 <div class="row">
     <div class="column">
         <div id="player1Box" class="playerBoxShow">
@@ -152,9 +144,7 @@
 
 
 
-<!-- Modal Box - Full page overlay -->
 <div id="myModal" class="modalBackground">
-    <!-- Modal Box - Actual Modal box & its contents -->
     <div class="modal-content">
         <span class="close">&times;</span>
         <div id="modalContentDiv">
