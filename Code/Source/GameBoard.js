@@ -2,9 +2,9 @@
 var debug = true;
 
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
+    //Note: There's 1 more global, var gameDeck, after the Deck class (Otherwise it threw an error)
 //TODO: Might want to put them in a wrapper or namespace for better handling
     //EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
-var gameDeck = new Deck();
 var playersArray = [];
 var discardCard;
 
@@ -12,7 +12,7 @@ if(debug){console.log("Game Board JS is loading");}
 
 
 
-//TODO
+//TODO:
 /*
 Need a popup at the beginning, explaining how to play the game/interact with the UI
 
@@ -40,7 +40,7 @@ class Player {
         return this.playerName;
     }
 
-    getPlayertHand() {
+    getPlayerHand() {
         return this.playerHand;
     }
 
@@ -246,7 +246,7 @@ const cardFilenames = [
 ];
 
 
-
+var gameDeck = new Deck();
 function createDeck(){
     //Build the deck, then shuffle it
     //Used to globally identify different cards, since there are duplicates of almost every card.
@@ -445,12 +445,12 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
     //Hide players 2 & 3
     let playerBoxes;
-    if(debug){console.log("Players: " + playersArray.length)};
+    (debug ? console.log("Players: " + playersArray.length) : null);
     switch(playersArray.length) {
         case 3:
             if(debug){console.log("Case 3")};
 
-            //TODO: Could the resizing be accomplished with a flex box, to handle it dynamically?
+            //TODO: Change this to use a FLEXBOX, that would be MUCH easier
             //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
             playerBoxes = document.getElementById("player3Box");
             playerBoxes.className="playerBoxHide";
@@ -484,21 +484,40 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     //Put player names into the UI
     let UIPlayerNames = document.getElementsByClassName("playerBoxShow");
 
-    //TODO for Sunday: In process of changing how player names & player cards are setup in the UI
-
     if(playersArray.length != UIPlayerNames.length){
         console.log("Somethings gone wrong. The # of players in the cookie is not matching the # players in the UI.")
         console.log("ABORT!!!!!")
         //TODO: Reset the game, and default the players (3 players, default names)
     }
+    /*
+    Player box in the UI:
+        <div id="player1Box" class="playerBoxShow">
+            <div id="player1Name">Player 1</div>
+            <div id="player1Hand" class="playerHand"> HAND!!!</div>
+        </div>
+     */
     else{
         //Loop over all players
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
-            //Loop over all player hands
-            UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName() + '<div id="player1Hand" class="playerHand">';
+            let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: orange solid 1px;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
+            let playerHand = playersArray[iUIPnames].getPlayerHand();
+            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:90%; border: purple solid 3px;">';
+            //Loop over the players hand
+            for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
+                //TODO: Resize the cards, and stack then next to each other
+                playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
+                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'"/>';
+            }
 
-            UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName() + '<div id="player1Hand" class="playerHand"> ' +
-                    '<img id= src="/Code/Cards/'+playersArray[iUIPnames].getPlayerCardFile(iUIPnames)+'"/></div>';
+
+            playerHTML = playerHTML + '</div>';
+            UIPlayerNames[iUIPnames].innerHTML = playerHTML;
+
+            //UIPlayerNames[iUIPnames].innerHTML = '<div id="player1Name">'+playersArray[iUIPnames].getPlayerName()+'</div>';
+            //TODO: Work in progress
+            //Loop over all player hands, to put the cards into the UI
+            // UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName() + '<div id="player1Hand" class="playerHand"> ' +
+            //         '<img id="" src="/Code/Cards/'+playersArray[iUIPnames].getPlayerCardFile(iUIPnames)+'"/></div>';
         }
     }
 
@@ -573,6 +592,15 @@ modalCloseButton.onclick = function(mouseEvent){
 window.onclick = function(mouseEvent) {
     hideModalBoxFunction(mouseEvent);
 }
+
+//Start game box: Notify the users about how to play the game.
+document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
+    (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
+    showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  Click the deck to draw a card, or pick the discard card to draw it</p>" +
+        "<p> To play a card, click on it. After you play, the game will automatically move to the next player (top to bottom). If an additional selection is needed, a popup will appear (Like specifying the player for a Skip)</p>" +
+        "<p>Click outside of this box, or the X on the right, to start the game</p>");
+
+});
 
 
 // Help Button
