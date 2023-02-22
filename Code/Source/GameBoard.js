@@ -14,8 +14,6 @@ if(debug){console.log("Game Board JS is loading");}
 
 //TODO:
 /*
-Need a popup at the beginning, explaining how to play the game/interact with the UI
-
 Event handler for each button, that passes in the HTML in the modal box.
 
 How to track which card is which?  store its Global Number somewhere in the HTML?
@@ -593,6 +591,7 @@ document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
 var helpButton = document.getElementById("helpButton");
 helpButton.onclick = function(mouseEvent) {
     showModalBoxFunction(mouseEvent, "<p><h3>Game Rules & Help Menu</h3></p>" +
+        //TODO: Reformat & cleanup the text below.  Also additional rules for 2 & 4 player games
         "<p>See here for offical rules: <a href='https://www.unorules.com/'>www.unorules.com</a></p>" +
         "<p>This game is based on a 108 card deck</p>" +
         "<p>Every player views his/her cards and tries to match the card in the Discard Pile." +
