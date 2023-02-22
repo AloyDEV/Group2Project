@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
                 //TODO: Resize the cards, and stack then next to each other
                 playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
-                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'"/>';
+                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:30%;"/>';
             }
 
 
