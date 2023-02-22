@@ -499,37 +499,23 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     else{
         //Loop over all players
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
-            let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: orange solid 1px;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
+            let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: white solid 1px;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
             playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:90%; border: purple solid 3px;">';
+
+            //TODO: Put the player cards into a flexbox
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
                 //TODO: Resize the cards, and stack then next to each other
                 playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
-                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:30%;"/>';
+                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:40%; margin-left: 1%;"/>';
             }
-
-
             playerHTML = playerHTML + '</div>';
             UIPlayerNames[iUIPnames].innerHTML = playerHTML;
 
-            //UIPlayerNames[iUIPnames].innerHTML = '<div id="player1Name">'+playersArray[iUIPnames].getPlayerName()+'</div>';
-            //TODO: Work in progress
-            //Loop over all player hands, to put the cards into the UI
-            // UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName() + '<div id="player1Hand" class="playerHand"> ' +
-            //         '<img id="" src="/Code/Cards/'+playersArray[iUIPnames].getPlayerCardFile(iUIPnames)+'"/></div>';
+            //TODO: For non-active players, flip the cards over and only show the back
         }
     }
-
-    //let UIPlayerHands = document.getElementsByClassName("playerHand");
-    //console.log(UIPlayerHands)
-    //Display the player hands
-    //UIPlayerHands[0].innerHTML = '<img src="/Code/Cards/Blue_0.png"/>';
-
-
-
-
-
 });
 
 // END GAME PREP -------------------------------------------------------------------------------------------------------------------------
@@ -606,7 +592,18 @@ document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
 // Help Button
 var helpButton = document.getElementById("helpButton");
 helpButton.onclick = function(mouseEvent) {
-    showModalBoxFunction(mouseEvent, "<p>Game Rules & Help Menu</p><p>Uno Rules are taken from here: https://www.unorules.com/</p><p> Based on a 108 card deck, NOT 112.  No additional Wild cards</p>");
+    showModalBoxFunction(mouseEvent, "<p><h3>Game Rules & Help Menu</h3></p>" +
+        "<p>See here for offical rules: <a href='https://www.unorules.com/'>www.unorules.com</a></p>" +
+        "<p>This game is based on a 108 card deck</p>" +
+        "<p>Every player views his/her cards and tries to match the card in the Discard Pile." +
+        "\n" +
+        "You have to match either by the number, color, or the symbol/Action. For instance, if the Discard Pile has a red card that is an 8 you have to place either a red card or a card with an 8 on it. You can also play a Wild card (which can alter current color in play).\n" +
+        "\n" +
+        "If the player has no matches or they choose not to play any of their cards even though they might have a match, they must draw a card from the Draw pile. If that card can be played, play it. Otherwise, keep the card, and the game moves on to the next person in turn. You can also play a Wild card, or a Wild Draw Four card on your turn.\n" +
+        "\n" +
+        "Take note that you can only put down one card at a time; you cannot stack two or more cards together on the same turn. For example, you cannot put down a Draw Two on top of another Draw Two, or Wild Draw Four during the same turn, or put down two Wild Draw Four cards together.\n" +
+        "\n" +
+        "The game continues until a player has no cards left.  That player then wins the game” </p>");
 }
 
 
