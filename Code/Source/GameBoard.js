@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             dealingNumber++;
         }
     }
-    if(debug){console.log("Players dealt their hands:")};
+    (debug ? console.log("Players dealt their hands:") : null);
     if(debug){console.log(playersArray)};
 
     //Fourth pick the first card for the discard pile.
@@ -446,7 +446,10 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     (debug ? console.log("Players: " + playersArray.length) : null);
     switch(playersArray.length) {
         case 3:
-            if(debug){console.log("Case 3")};
+            (debug ? console.log("Case 3") : null);
+
+            //ISSUE: RESUME HERE ON WEDNESDAY/THURSDAY, FLEXBOX CONVERSION!!!!!!!!!!!!!!!!!!!!!!!!
+            //  Don't forget to merge this branch into the WIP one when flexbox is working.
 
             //TODO: Change this to use a FLEXBOX, that would be MUCH easier
             //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
@@ -462,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
             break;
         case 2:
-            if(debug){console.log("Case 2")};
+            (debug ? console.log("Case 2") : null);
 
             playerBoxes = document.getElementById("player3Box");
             playerBoxes.className="playerBoxHide";
@@ -501,7 +504,8 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             let playerHand = playersArray[iUIPnames].getPlayerHand();
             playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:90%; border: purple solid 3px;">';
 
-            //TODO: Put the player cards into a flexbox
+            //ISSUE: Put the player cards into a flexbox
+            //  Once this flexbox and the one for the overall player boxes are done, merge this branch into the WIP branch
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
                 //TODO: Resize the cards, and stack then next to each other
