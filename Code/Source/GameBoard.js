@@ -581,7 +581,7 @@ window.onclick = function(mouseEvent) {
 document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
     showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  Click the deck to draw a card, or pick the discard card to draw it</p>" +
-        "<p> To play a card, click on it. After you play, the game will automatically move to the next player (top to bottom). If an additional selection is needed, a popup will appear (Like specifying the player for a Skip)</p>" +
+        "<p> To play a card, click on it. After you play, the game will automatically move to the next player (top to bottom).</p>" +
         "<p>Click outside of this box, or the X on the right, to start the game</p>");
 
 });
@@ -595,6 +595,7 @@ helpButton.onclick = function(mouseEvent) {
         "<p>See here for offical rules: <a href='https://www.unorules.com/'>www.unorules.com</a></p>" +
         "<p>This game is based on a 108 card deck</p>" +
         "<p>Every player views his/her cards and tries to match the card in the Discard Pile." +
+        "<p>Variation from official rules: After wild card is played, the next player gets to choose the color????  No need to shout UNO.  Wild 4 does not require you to NOT have other playable cards</p>" +
         "\n" +
         "You have to match either by the number, color, or the symbol/Action. For instance, if the Discard Pile has a red card that is an 8 you have to place either a red card or a card with an 8 on it. You can also play a Wild card (which can alter current color in play).\n" +
         "\n" +
