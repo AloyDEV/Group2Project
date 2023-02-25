@@ -7,6 +7,8 @@ var debug = true;
     //EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
 var playersArray = [];
 var discardCard;
+var currentPlayer = 0;
+var gameDirection = true; //true = top to bottom, false = bottom to top
 
 if(debug){console.log("Game Board JS is loading");}
 
@@ -348,8 +350,6 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 */
 
-//Current Player Function
-
 
 //Check Win Status Function
 
@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         case 3:
             (debug ? console.log("Case 3") : null);
 
-            //ISSUE: RESUME HERE ON WEDNESDAY/THURSDAY, FLEXBOX CONVERSION!!!!!!!!!!!!!!!!!!!!!!!!
+            //ISSUE: RESUME HERE, FLEXBOX CONVERSION!!!!!!!!!!!!!!!!!!!!!!!!
             //  Don't forget to merge this branch into the WIP one when flexbox is working.
 
             //TODO: Change this to use a FLEXBOX, that would be MUCH easier

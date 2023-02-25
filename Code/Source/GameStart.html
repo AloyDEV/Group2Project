@@ -72,6 +72,10 @@
                 <br>
                 <input id="playerNumberStart" type="number" value="1" min="1" max="3" onChange="displayPlayerNameInput(this.value)"/>
             </div>
+            <div>
+                <label for="includeCompPlayer"> Include a computer player?</label>
+                <input id="includeCompPlayer" type="checkbox" checked="true"/>
+            </div>
             <div id="playerNameEntryParent" >
                 <div class="playerNameEntryHide playerNameEntry">
                     <label for="playerNameEntryChild1">Player 1 Name:</label>
@@ -104,6 +108,28 @@
 
 <script defer type="text/javascript">
     //defer is used to hold off loading this script until the rest of the HTML is loaded
+
+
+    //used to handle if a computer player is included or not
+        //TODO: This should change the minimum number of players to 2 when its unchecked
+    var comPlayerChoice = document.getElementById("includeCompPlayer").checked
+    //TODO: Change the logic & minimums depending on if a computer player is included
+        //TODO: The below code DOESN'T WORK RIGHT NOW.  Need to overhaul the logic.
+    document.getElementById("includeCompPlayer").onchange = function(){
+        var playerNumber = document.getElementById("playerNumberStart").value;
+        if (!comPlayerChoice) {
+            if (playerNumber < 2) {
+                displayPlayerNameInput(2);
+                playerNumber.value = 2;
+                playerNumber.innerHTML = 2;
+            }
+        }
+        comPlayerChoice = document.getElementById("includeCompPlayer").checked
+        console.log("Comp player included: ");
+        console.log(comPlayerChoice);
+    }
+
+
 
     //If this is not at the end of the file, it throws an error: Uncaught TypeError: Cannot set properties of null (setting 'onclick')
         //Better solution, wrap the function below in window.onload = function(){}
