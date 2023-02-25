@@ -44,7 +44,7 @@
 
         .column {
             border: red solid 3px;
-            flex: 50%;
+
         }
         .playerBoxShow{
             border: blue solid 3px;
@@ -105,7 +105,7 @@
 
 
 <div class="row">
-    <div class="column">
+    <div class="column" style="flex: 60% !important;">
         <div id="player1Box" class="playerBoxShow">
             <div id="player1Name">Player 1</div>
             <div id="player1Hand" class="playerHand"> HAND!!!</div>
@@ -125,18 +125,22 @@
 
 
     </div>
-    <div class="column">
-        <div style="border: yellow solid 3px; height:40%">
+    <div class="column" style="flex: 40% !important;">
+        <div style="border: yellow solid 3px; height:45%">
             Game State.  Current User playing.  Shuffle Deck button.  Help Menu & Game Rules
             <div id="help">
                 <button id="helpButton" onclick="">Help & Game Rules</button>
             </div>
+            <p>Currently playing player</p>
+            <p>Next up player (will change with a Reverse)</p>
+            <p>Color selected for Wild</p>
+            <p>Other info</p>
         </div>
-        <div style="border: yellow solid 3px; width: 100%; height:40%; position: fixed; bottom: 0; display:flex;">
-            <div style="height:100%; border:orange solid 3px; margin-left:5%;">
-                <img id="UIDiscardCard" src="/Code/Assets/Blue_0.png" alt="Top Card" style="height:100%;width:auto;"/>
+        <div style="border: yellow solid 3px; width: 98%; height:45%; position: fixed; bottom: 0; display:flex;">
+            <div style="height:90%; border:orange solid 3px; margin-left:1%; margin-bottom:5%;">
+                <img id="UIDiscardCard" src="/Code/Assets/Blue_0.png" alt="Discard Card" style="height:100%;width:auto;"/>
             </div>
-            <div style="height:100%; border:orange solid 3px; margin-left:5%;">
+            <div style="height:90%; border:orange solid 3px; margin-left:1%;margin-bottom:5%;">
                 <img id="UIDeck" src="/Code/Assets/Deck.png" alt="Deck" style="height:100%;width:auto;"/>
             </div>
         </div>
