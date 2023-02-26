@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Group 2 Capstone Project - UNO!!!</title>
+    <style>
+        body{
+            background: linear-gradient(45deg, #cb1a1a, #d9bd66, #23a6d5, #2b883b); /*e74646 1cb08d*/
+            background-size: 400% 400%;
+            animation: gradient 30s ease infinite;  /* transition effect for the background, loops infinitely */
+            height: 100vh;
+        }
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .playerNameEntryHide{
+            display:none;
+        }
+        .playerNameEntryShow{
+            display: contents;
+        }
+
+    </style>
+</head>
+<body>
+    <script type="text/javascript">
+        //If more than 1 user is playing, show/hide the username input fields
+
+        //Run the display input function after the page loads, so that 1 player name input box will appear
+            //TODO: change to arrow/lambda function instead of eventListener
+        document.addEventListener('DOMContentLoaded', function() {  //DOM loaded, not really concerned with other content being loaded
+            displayPlayerNameInput(1);
+        }, false);
+
+        //Function is called when the page loads, and when the player # input is changed
+        function displayPlayerNameInput(numberOfPlayers) {
+            let hiddenElements = document.getElementsByClassName('playerNameEntry'); //Returns an array.  More than 1 element can have the same class
+            for (let i = 0; i < hiddenElements.length; i++) {
+                //Display the name inputs to match the player selection
+                    //Only 3 players, so looping every time is fine
+                if (i < numberOfPlayers){
+                    hiddenElements[i].className = "playerNameEntryShow playerNameEntry"
+                }
+                else{
+                    hiddenElements[i].className = "playerNameEntryHide playerNameEntry"
+                }
+            }
+        }
+
+
+
+    </script>
+    <div id="startInput" style=" align-items: center; justify-content: center; border: 0.05em solid blue;">
+        <!--  display: flex; resulted in the DIVs below being next to each other, instead of stacked -->
+        <div>
+            <h3>UNO Card Game!  Group 2's software engineering capstone project.</h3>
+        </div>
+        <!--  Using RGB values for the background before the opacity prevents the opacity being used for the child elements inside the form -->
+        <div style="background: rgba(255,255,255,0.5); box-shadow: 0px 0px 5px 15px white /* offset, offset, blur, spread radius*/" >
+            <div style="border: 0.05em solid black; opacity: 1;">
+                <label for="playerNumberStart">Select the number of users playing, 1-3:</label>
+                <br>
+                <input id="playerNumberStart" type="number" value="1" min="1" max="3" onChange="displayPlayerNameInput(this.value)"/>
+            </div>
+            <div id="playerNameEntryParent" >
+                <div class="playerNameEntryHide playerNameEntry">
+                    <label for="playerNameEntryChild1">Player 1 Name:</label>
+                    <br/>
+                    <input id="playerNameEntryChild1" />
+                    <br/>
+                </div>
+                <div class="playerNameEntryHide playerNameEntry">
+                    <label for="playerNameEntryChild2">Player 2 Name:</label>
+                    <br/>
+                    <input id="playerNameEntryChild2" />
+                    <br/>
+                </div>
+                <div class="playerNameEntryHide playerNameEntry">
+                    <label for="playerNameEntryChild3">Player 3 Name:</label>
+                    <br/>
+                    <input id="playerNameEntryChild3" />
+                    <br/>
+                </div>
+
+            </div>
+
+            <div>
+                <button id="startGame">Start Game</button>
+            </div>
+        </div>
+        *Note: Cookies & Javascript must be enabled in your browser in order for this game to work.
+    </div>
+</body>
+
+<script defer type="text/javascript">
+    //defer is used to hold off loading this script until the rest of the HTML is loaded
+
+    //If this is not at the end of the file, it throws an error: Uncaught TypeError: Cannot set properties of null (setting 'onclick')
+        //Better solution, wrap the function below in window.onload = function(){}
+        //OR: https://stackoverflow.com/questions/17080502/uncaught-typeerror-cannot-set-property-onclick-of-null
+    document.getElementById("startGame").onclick = function () {
+
+        let playerNumberStartVar = document.getElementById("playerNumberStart").value;
+
+        if (playerNumberStartVar > 0 && playerNumberStartVar < 4){  //This should effectively handle NULL as well
+             //Collect all inputs from the page
+            let playerNamesArraySubmitted = document.getElementsByClassName("playerNameEntryShow"); //Player Names
+            if(playerNumberStartVar == playerNamesArraySubmitted.length){
+                //Make sure cookies are enabled, then set a cookie with the user data, and move on to the game board
+                let cookiesEnabledBoolean = navigator.cookieEnabled;
+
+                //If they don't appear to be enabled, try setting a cookie to make sure
+                if (!cookiesEnabledBoolean) {
+                    document.cookie = "UNOusers=";
+                    //If the cookie was set, we'll be able to retrieve all cookies and find the one that was set
+                    cookiesEnabledBoolean = document.cookie.indexOf("UNOusers") != -1;
+                }
+
+                if(cookiesEnabledBoolean){
+                    //Build a pipe-delimited list of the entered player names to store in the cookie
+                    let playerInputs = String();
+
+                    //Pipe delimited list of player names
+                    for(let j=0; j<playerNamesArraySubmitted.length; j++){
+                        if (playerNamesArraySubmitted[j].getElementsByTagName("input")[0].value == ""){//Default the player name if there isn't one entered
+                            playerInputs += "Player " + (j+1)+ "|";
+                        }
+                        else{
+                            //If the input included a pipe character, remove it, before adding it to the cookie
+                            let playerInput = playerNamesArraySubmitted[j].getElementsByTagName("input")[0].value;
+                            //Use Regex so all pipe characters are removed
+                            playerInput = playerInput.replace(/[|]+/g, ''); //+g is the global modifier
+                            playerInputs += playerInput + "|";
+                        }
+                    }
+                    const today = new Date();
+
+                    //using "path=/": the cookie will be available to all directories on the domain it is set from
+                    //Set the cookie to expire a year from now
+                    document.cookie = "UNOusers="+ playerInputs+";expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
+
+                    //Go to the game board
+                    window.location.href = "GameBoard.html";
+                }
+                else{
+                    alert("Cookies were not able to be created.  Enable them and try again.");
+                    //TODO: Future improvement, use another method to store all of the user & game info if cookies aren't working.
+                }
+            }
+            else{
+                //TODO: Not really sure what to do if this happens?  Reload the page?
+                alert("An error has occurred, inputs did not match.  Please reload the page to restart.")
+            }
+        }
+        else{
+            //TODO: Change to a panel that displays, not an alert
+            alert("INCORRECT number of players: " + playerNumberStartVar +", needs to be 1-3 (The computer won't play against itself!)")
+        }
+
+    };
+</script>
+</html>

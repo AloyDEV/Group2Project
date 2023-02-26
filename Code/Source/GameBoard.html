@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UNO Game Board</title>
+    <style>
+        /* 100% page height for a background: https://stackoverflow.com/questions/712689/css-div-stretch-100-page-height */
+        html{
+            /* Setting the HTML tag to be with height of the viewport */
+            min-height:100%;/* make sure it is at least as tall as the viewport */
+            position:relative;
+        }
+
+        /* Background effect: https://1stwebdesigner.com/15-css-background-effects/ */
+        body{
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 30s ease infinite;  /* transition effect for the background, loops infinitely */
+            height: 100vh;
+        }
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .row {
+            border: green solid 3px;
+            display: flex;
+            /* Sets the column container to 100% height, matching the HTML & BODY tags */
+            position:absolute;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
+        }
+
+        .column {
+            border: red solid 3px;
+            flex: 50%;
+        }
+        .playerBoxShow{
+            border: blue solid 3px;
+            height:20%
+        }
+        .playerBoxHide {
+            display:none;
+        }
+
+        /*------------------------------Modal Box Styling -------------------------------------------------*/
+
+        /* The Modal (background) */
+        .modalBackground {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 20em; /* Location of the box from the top of the page*/
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            cursor: pointer; /* To indicate to the user that they can click outside the box to close it */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius:2em; /* Rounded so it looks similar to the cards */
+            cursor: default;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 50px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<!-- defer is used so that the entire DOM is loaded before the JS is run, so that the event handlers are correctly tied to their UI elements-->
+<script defer type="text/javascript" src="GameBoard.js"></script>
+
+
+<div class="row">
+    <div class="column">
+        <div id="player1Box" class="playerBoxShow">
+            <div id="player1Name">Player 1</div>
+            <div id="player1Hand" class="playerHand"> HAND!!!</div>
+        </div>
+        <div id="player2Box" class="playerBoxShow">
+            <div id="player2Name">Player 2</div>
+            <div id="player2Hand" class="playerHand"> HAND!!!</div>
+        </div>
+        <div id="player3Box" class="playerBoxShow">
+            <div id="player3Name">Player 3</div>
+            <div id="player3Hand" class="playerHand"> HAND!!!</div>
+        </div>
+        <div id="player4Box" class="playerBoxShow">
+            <div id="player4Name">Player 4/Computer</div>
+            <div id="player4Hand" class="playerHand"> HAND!!!</div>
+        </div>
+
+
+    </div>
+    <div class="column">
+        <div style="border: yellow solid 3px; height:40%">
+            Game State.  Current User playing.  Shuffle Deck button.  Help Menu & Game Rules
+            <div id="help">
+                <button id="helpButton" onclick="">Help & Game Rules</button>
+            </div>
+        </div>
+        <div style="border: yellow solid 3px; width: 100%; height:40%; position: fixed; bottom: 0; display:flex;">
+            <div style="height:100%; border:orange solid 3px; margin-left:5%;">
+                <img id="UIDiscardCard" src="/Code/Assets/Blue_0.png" alt="Top Card" style="height:100%;width:auto;"/>
+            </div>
+            <div style="height:100%; border:orange solid 3px; margin-left:5%;">
+                <img id="UIDeck" src="/Code/Assets/Deck.png" alt="Deck" style="height:100%;width:auto;"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="myModal" class="modalBackground">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modalContentDiv">
+        </div>
+    </div>
+</div>
+
+<div id="cardPlaceholder" style="display:none;" class="cardPlaceholder">
+    <img src="/Code/Cards/Blue_0.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_1.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_2.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_3.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_4.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_5.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_6.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_7.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_8.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_9.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_20.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_21.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Blue_22.png" class="cardIndividual"/>
+
+    <img src="/Code/Cards/Green_0.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_1.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_2.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_3.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_4.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_5.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_6.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_7.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_8.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_9.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_20.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_21.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Green_22.png" class="cardIndividual"/>
+
+    <img src="/Code/Cards/Red_0.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_1.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_2.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_3.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_4.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_5.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_6.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_7.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_8.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_9.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_20.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_21.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Red_22.png" class="cardIndividual"/>
+
+    <img src="/Code/Cards/Yellow_0.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_1.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_2.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_3.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_4.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_5.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_6.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_7.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_8.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_9.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_20.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_21.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Yellow_22.png" class="cardIndividual"/>
+
+    <img src="/Code/Cards/Wild_11.png" class="cardIndividual"/>
+    <img src="/Code/Cards/Wild_14.png" class="cardIndividual"/>
+</div>
+
+</body>
+</html>
