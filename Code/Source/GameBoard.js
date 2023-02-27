@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             playerBoxes.className="playerBoxHide";
 
             playerBoxes = document.getElementById("player2Box");
-            playerBoxes.style.height="26.66%"
+            playerBoxes.style.height="26.66%" //26.66%
             playerBoxes = document.getElementById("player1Box");
             playerBoxes.style.height="26.66%"
             playerBoxes = document.getElementById("player4Box");
@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             playerBoxes.className="playerBoxHide";
 
             playerBoxes = document.getElementById("player1Box");
-            playerBoxes.style.height="40%"
+            playerBoxes.style.height="40%" //40
             playerBoxes = document.getElementById("player4Box");
             playerBoxes.style.height="40%"
 
