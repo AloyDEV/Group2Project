@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     //At this point, there is no need to check that the deck has enough cards
     for(let iPlayerHandSetup = 0; iPlayerHandSetup < playersArray.length; iPlayerHandSetup++){
         let dealingNumber = 0;
-        while(dealingNumber < 7){
+        while(dealingNumber < 7){ //TODO: CHANGED FROM 7
             //TODO: Make sure it returns TRUE after each push
             playersArray[iPlayerHandSetup].addCard(gameDeck.getTopCard());
             dealingNumber++;
@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
             let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: white solid 1px;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
-            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:90%; border: purple solid 3px;">';
+            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:90%; border: purple solid 3px; display:flex; flex-wrap: wrap; overflow-y: auto;">';
 
             //ISSUE: Put the player cards into a flexbox
             //  Once this flexbox and the one for the overall player boxes are done, merge this branch into the WIP branch
@@ -510,7 +510,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
                 //TODO: Resize the cards, and stack then next to each other
                 playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
-                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:50%; margin-left: 1%;"/>';
+                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:45%; margin-left: 1%; bottom: .5%;"/>';
             }
             playerHTML = playerHTML + '</div>';
             UIPlayerNames[iUIPnames].innerHTML = playerHTML;

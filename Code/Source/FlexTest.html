@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+  <style>
+    .column{
+    }
+  </style>
 </head>
 <body style="margin:0;">
-
-<div style="border: green solid 3px; display: flex; padding: 10px; flex-wrap: wrap">
+display: flex applies to the CONTENTS/children of an element
+flex-flow: column allows you to stack the elements vertically.  Width is the parent element (in this case the row) width
+<div style="border: green solid 3px; display: flex; flex-flow; padding: 10px; flex-wrap: wrap">
   The width of the Green box is 100%.  I'm not sure why though
   <div class="column" style="border: 3px solid #9a1d1d;">
     <p>These 2 div line up next to each other</p>
