@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     //At this point, there is no need to check that the deck has enough cards
     for(let iPlayerHandSetup = 0; iPlayerHandSetup < playersArray.length; iPlayerHandSetup++){
         let dealingNumber = 0;
-        while(dealingNumber < 7){ //TODO: CHANGED FROM 7
+        while(dealingNumber < 25){ //ISSUE: When testing the player hands & boxes, increase this to 20+
             //TODO: Make sure it returns TRUE after each push
             playersArray[iPlayerHandSetup].addCard(gameDeck.getTopCard());
             dealingNumber++;
@@ -451,7 +451,6 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             //ISSUE: RESUME HERE, FLEXBOX CONVERSION!!!!!!!!!!!!!!!!!!!!!!!!
             //  Don't forget to merge this branch into the WIP one when flexbox is working.
 
-            //TODO: Change this to use a FLEXBOX, that would be MUCH easier
             //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
             playerBoxes = document.getElementById("player3Box");
             playerBoxes.className="playerBoxHide";
@@ -490,13 +489,6 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         console.log("ABORT!!!!!")
         //TODO: Reset the game, and default the players (3 players, default names)
     }
-    /*
-    Player box in the UI:
-        <div id="player1Box" class="playerBoxShow">
-            <div id="player1Name">Player 1</div>
-            <div id="player1Hand" class="playerHand"> HAND!!!</div>
-        </div>
-     */
     else{
         //Loop over all players
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
@@ -504,13 +496,12 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             let playerHand = playersArray[iUIPnames].getPlayerHand();
             playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:90%; border: purple solid 3px; display:flex; flex-wrap: wrap; overflow-y: auto;">';
 
-            //ISSUE: Put the player cards into a flexbox
-            //  Once this flexbox and the one for the overall player boxes are done, merge this branch into the WIP branch
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
-                //TODO: Resize the cards, and stack then next to each other
+
+                //TODO: The purple container with the cards slightly overflows the overall user container(blue)
                 playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
-                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:45%; margin-left: 1%; bottom: .5%;"/>';
+                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:40%; margin-left: 1%; margin-bottom: .5%;"/>';
             }
             playerHTML = playerHTML + '</div>';
             UIPlayerNames[iUIPnames].innerHTML = playerHTML;
@@ -518,6 +509,9 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             //TODO: For non-active players, flip the cards over and only show the back
         }
     }
+
+    //Put starting player name into the UI
+
 });
 
 // END GAME PREP -------------------------------------------------------------------------------------------------------------------------
