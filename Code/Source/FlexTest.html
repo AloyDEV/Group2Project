@@ -9,20 +9,42 @@
   </style>
 </head>
 <body style="margin:0;">
-<div style="border: green solid 3px; display: flex; flex-flow: column;padding: 10px; flex-wrap: wrap; height: 95%; width: 95%; position: fixed;   align-items: center;
-  justify-content: space-around;">
+<div style="border: green solid 3px; display: flex; flex-flow: column;padding: 10px; flex-wrap: wrap; height: 95%; width: 50%; position: fixed;   align-items: center;
+  justify-content: space-around; overflow: auto">
   <div  class="column" style="border: 3px solid #bd3112;">
     display: flex applies to the CONTENTS/children of an element
     flex-flow: column allows you to stack the elements vertically.  Width is the parent element (in this case the row) width
   </div>
   <div class="column" style="border: 3px solid #9a1d1d;">
-    <p>These 2 div line up next to each other</p>
+    <p>These 2 div line up next to each other when using the default flex-flow of ROW</p>
     <p>Without a Width, their width is the width of the content</p>
     <p>Ditto with their height</p>
     Orig Width: flex: 50% !important;
   </div>
-  <div class="column" style="border: 3px solid #bec40d;">
+  <div class="column" style="border: 3px solid #bec40d; max-height: 50%; overflow: auto">
     DIV 2
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+    <p>TEST TEXT, TO TEST EXPANDING</p>
+
     flex: 50% !important;
   </div>
   <div class="column" style="border: 3px solid #bec40d;">
