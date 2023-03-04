@@ -497,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
             let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: white solid 1px;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
-            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:90%; border: purple solid 3px; display:flex; flex-wrap: wrap; overflow-y: auto;">';
+            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:90%; border: purple solid 3px;">';
 
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
@@ -516,8 +516,6 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             }
             playerHTML = playerHTML + '</div>';
             UIPlayerNames[iUIPnames].innerHTML = playerHTML;
-
-            //TODO: For non-active players, flip the cards over and only show the back
         }
     }
 

@@ -34,6 +34,7 @@
         .row {
             border: green solid 3px;
             display: flex; /* So the Columns in the row display next to each other */
+            flex-flow: row;
 
             /* Sets the column container to 100% height, matching the HTML & BODY tags */
             position:absolute;
@@ -50,6 +51,7 @@
         .playerBoxShow{
             border: blue solid 3px;
             /* height:20%; */
+            height:20%; /*THIS BEING REMOVED RESULTS IN THE CARDS RESIZING TO THEIR DEFAULT SIZE!!!! */
             margin: 1%;
             border-radius:1em;
         }
@@ -108,7 +110,7 @@
 
 
 <div class="row">
-    <div class="column" style="flex: 60% !important; flex-flow: column;">
+    <div class="column" style="flex: 60% !important;">
         <div id="player1Box" class="playerBoxShow">
             <div id="player1Name">Player 1</div>
             <div id="player1Hand" class="playerHand"> HAND!!!</div>
