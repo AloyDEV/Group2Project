@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     //At this point, there is no need to check that the deck has enough cards
     for(let iPlayerHandSetup = 0; iPlayerHandSetup < playersArray.length; iPlayerHandSetup++){
         let dealingNumber = 0;
-        while(dealingNumber < 25){ //ISSUE: When testing the player hands & boxes, increase this to 20+
+        while(dealingNumber < 7){
             //TODO: Make sure it returns TRUE after each push
             playersArray[iPlayerHandSetup].addCard(gameDeck.getTopCard());
             dealingNumber++;
@@ -472,9 +472,12 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             playerBoxes.className="playerBoxHide";
 
             playerBoxes = document.getElementById("player1Box");
-            playerBoxes.style.height="40%" //40
+            //playerBoxes.style.height="40%"; //40
+            playerBoxes.style.maxheight="50%";
             playerBoxes = document.getElementById("player4Box");
-            playerBoxes.style.height="40%"
+            //playerBoxes.style.height="40%";
+            playerBoxes.style.maxheight="50%";
+
 
             break;
         default:
@@ -498,10 +501,18 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
-
                 //TODO: The purple container with the cards slightly overflows the overall user container(blue)
-                playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
-                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:40%; margin-left: 1%; margin-bottom: .5%;"/>';
+                //Starting player
+                if(iUIPnames == 0){
+                    playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
+                        '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:40%; margin-left: 1%; margin-bottom: .5%;"/>';
+                }
+                //Other players, they get the back of the card
+                else{
+                    playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
+                        '" src="/Code/Cards/Deck.png" style="height:40%; margin-left: 1%; margin-bottom: .5%;"/>';
+                }
+
             }
             playerHTML = playerHTML + '</div>';
             UIPlayerNames[iUIPnames].innerHTML = playerHTML;
