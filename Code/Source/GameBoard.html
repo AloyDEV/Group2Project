@@ -17,6 +17,7 @@
             background-size: 400% 400%;
             animation: gradient 30s ease infinite;  /* transition effect for the background, loops infinitely */
             height: 100vh;
+            font-family:Calibri;
         }
         @keyframes gradient {
             0% {
@@ -31,8 +32,10 @@
         }
 
         .row {
-            border: green solid 3px;
-            display: flex;
+            border: green solid 1px;
+            display: flex; /* So the Columns in the row display next to each other */
+            flex-flow: row;
+
             /* Sets the column container to 100% height, matching the HTML & BODY tags */
             position:absolute;
             top:0;
@@ -42,12 +45,17 @@
         }
 
         .column {
-            border: red solid 3px;
-            flex: 50%;
+            border: red solid 1px;
+
         }
         .playerBoxShow{
-            border: blue solid 3px;
-            height:20%
+            border: blue solid 2px;
+            height:24%; /*THIS BEING REMOVED RESULTS IN THE CARDS RESIZING TO THEIR DEFAULT SIZE!!!! */
+            /*Otherwise the play box doesn't HAVE a height, so it auto-resizes to the size of the cards.
+            Then the card height have a % in it doesn't matter, cuz its a percent of nothing
+             */
+            margin: .2%;
+            border-radius:1em;
         }
         .playerBoxHide {
             display:none;
@@ -82,7 +90,7 @@
             cursor: default;
         }
 
-        /* The Close Button */
+        /* Modal Close Button */
         .close {
             color: #aaaaaa;
             float: right;
@@ -104,7 +112,7 @@
 
 
 <div class="row">
-    <div class="column">
+    <div class="column" style="flex: 60% !important;">
         <div id="player1Box" class="playerBoxShow">
             <div id="player1Name">Player 1</div>
             <div id="player1Hand" class="playerHand"> HAND!!!</div>
@@ -124,19 +132,23 @@
 
 
     </div>
-    <div class="column">
-        <div style="border: yellow solid 3px; height:40%">
+    <div class="column" style="flex: 40% !important;">
+        <div style="border: yellow solid 3px; height:45%">
             Game State.  Current User playing.  Shuffle Deck button.  Help Menu & Game Rules
             <div id="help">
                 <button id="helpButton" onclick="">Help & Game Rules</button>
             </div>
+            <p>Currently playing player</p>
+            <p>Next up player (will change with a Reverse)</p>
+            <p>Color selected for Wild</p>
+            <p>Other info</p>
         </div>
-        <div style="border: yellow solid 3px; width: 100%; height:40%; position: fixed; bottom: 0; display:flex;">
-            <div style="height:100%; border:orange solid 3px; margin-left:5%;">
-                <img id="UIDiscardCard" src="/Code/Assets/Blue_0.png" alt="Top Card" style="height:100%;width:auto;"/>
+        <div style="border: yellow solid 3px; width: 98%; height:45%; position: fixed; bottom: 0; display:flex;">
+            <div style="height:90%; border:orange solid 3px; margin-left:1%; margin-bottom:5%;">
+                <img id="UIDiscardCard" src="/Code/Cards/Deck.png" alt="Discard Card" style="height:100%;width:auto;"/>
             </div>
-            <div style="height:100%; border:orange solid 3px; margin-left:5%;">
-                <img id="UIDeck" src="/Code/Assets/Deck.png" alt="Deck" style="height:100%;width:auto;"/>
+            <div style="height:90%; border:orange solid 3px; margin-left:1%;margin-bottom:5%;">
+                <img id="UIDeck" src="/Code/Cards/Deck.png" alt="Deck" style="height:100%;width:auto;"/>
             </div>
         </div>
     </div>
@@ -151,67 +163,5 @@
         </div>
     </div>
 </div>
-
-<div id="cardPlaceholder" style="display:none;" class="cardPlaceholder">
-    <img src="/Code/Cards/Blue_0.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_1.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_2.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_3.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_4.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_5.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_6.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_7.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_8.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_9.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_20.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_21.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_22.png" class="cardIndividual"/>
-
-    <img src="/Code/Cards/Green_0.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_1.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_2.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_3.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_4.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_5.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_6.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_7.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_8.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_9.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_20.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_21.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_22.png" class="cardIndividual"/>
-
-    <img src="/Code/Cards/Red_0.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_1.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_2.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_3.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_4.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_5.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_6.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_7.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_8.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_9.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_20.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_21.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_22.png" class="cardIndividual"/>
-
-    <img src="/Code/Cards/Yellow_0.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_1.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_2.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_3.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_4.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_5.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_6.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_7.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_8.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_9.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_20.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_21.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_22.png" class="cardIndividual"/>
-
-    <img src="/Code/Cards/Wild_11.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Wild_14.png" class="cardIndividual"/>
-</div>
-
 </body>
 </html>
