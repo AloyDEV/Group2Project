@@ -448,9 +448,6 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         case 3:
             (debug ? console.log("Case 3") : null);
 
-            //ISSUE: RESUME HERE, FLEXBOX CONVERSION!!!!!!!!!!!!!!!!!!!!!!!!
-            //  Don't forget to merge this branch into the WIP one when flexbox is working.
-
             //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
             playerBoxes = document.getElementById("player3Box");
             playerBoxes.className="playerBoxHide";
@@ -472,11 +469,9 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             playerBoxes.className="playerBoxHide";
 
             playerBoxes = document.getElementById("player1Box");
-            //playerBoxes.style.height="40%"; //40
-            playerBoxes.style.maxheight="50%";
+            playerBoxes.style.height="40%"; //40
             playerBoxes = document.getElementById("player4Box");
-            //playerBoxes.style.height="40%";
-            playerBoxes.style.maxheight="50%";
+            playerBoxes.style.height="40%";
 
 
             break;
@@ -497,11 +492,11 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
             let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: white solid 1px;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
-            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:90%; border: purple solid 3px;">';
+            //88% height to prevent the cards from slightly going over the player box
+            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:88%; border: purple solid 3px; overflow-y: auto">';
 
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
-                //TODO: The purple container with the cards slightly overflows the overall user container(blue)
                 //Starting player
                 if(iUIPnames == 0){
                     playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+

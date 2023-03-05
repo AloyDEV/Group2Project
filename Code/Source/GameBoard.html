@@ -32,7 +32,7 @@
         }
 
         .row {
-            border: green solid 3px;
+            border: green solid 1px;
             display: flex; /* So the Columns in the row display next to each other */
             flex-flow: row;
 
@@ -45,14 +45,16 @@
         }
 
         .column {
-            border: red solid 3px;
+            border: red solid 1px;
 
         }
         .playerBoxShow{
-            border: blue solid 3px;
-            /* height:20%; */
-            height:20%; /*THIS BEING REMOVED RESULTS IN THE CARDS RESIZING TO THEIR DEFAULT SIZE!!!! */
-            margin: 1%;
+            border: blue solid 2px;
+            height:24%; /*THIS BEING REMOVED RESULTS IN THE CARDS RESIZING TO THEIR DEFAULT SIZE!!!! */
+            /*Otherwise the play box doesn't HAVE a height, so it auto-resizes to the size of the cards.
+            Then the card height have a % in it doesn't matter, cuz its a percent of nothing
+             */
+            margin: .2%;
             border-radius:1em;
         }
         .playerBoxHide {
