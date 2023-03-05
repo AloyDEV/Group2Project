@@ -7,6 +7,8 @@ var debug = true;
     //EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
 var playersArray = [];
 var discardCard;
+var currentPlayer = 0;
+var gameDirection = true; //true = top to bottom, false = bottom to top
 
 if(debug){console.log("Game Board JS is loading");}
 
@@ -14,8 +16,6 @@ if(debug){console.log("Game Board JS is loading");}
 
 //TODO:
 /*
-Need a popup at the beginning, explaining how to play the game/interact with the UI
-
 Event handler for each button, that passes in the HTML in the modal box.
 
 How to track which card is which?  store its Global Number somewhere in the HTML?
@@ -350,8 +350,6 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 */
 
-//Current Player Function
-
 
 //Check Win Status Function
 
@@ -429,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             dealingNumber++;
         }
     }
-    if(debug){console.log("Players dealt their hands:")};
+    (debug ? console.log("Players dealt their hands:") : null);
     if(debug){console.log(playersArray)};
 
     //Fourth pick the first card for the discard pile.
@@ -448,15 +446,14 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     (debug ? console.log("Players: " + playersArray.length) : null);
     switch(playersArray.length) {
         case 3:
-            if(debug){console.log("Case 3")};
+            (debug ? console.log("Case 3") : null);
 
-            //TODO: Change this to use a FLEXBOX, that would be MUCH easier
             //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
             playerBoxes = document.getElementById("player3Box");
             playerBoxes.className="playerBoxHide";
 
             playerBoxes = document.getElementById("player2Box");
-            playerBoxes.style.height="26.66%"
+            playerBoxes.style.height="26.66%" //26.66%
             playerBoxes = document.getElementById("player1Box");
             playerBoxes.style.height="26.66%"
             playerBoxes = document.getElementById("player4Box");
@@ -464,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
             break;
         case 2:
-            if(debug){console.log("Case 2")};
+            (debug ? console.log("Case 2") : null);
 
             playerBoxes = document.getElementById("player3Box");
             playerBoxes.className="playerBoxHide";
@@ -472,9 +469,10 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             playerBoxes.className="playerBoxHide";
 
             playerBoxes = document.getElementById("player1Box");
-            playerBoxes.style.height="40%"
+            playerBoxes.style.height="40%"; //40
             playerBoxes = document.getElementById("player4Box");
-            playerBoxes.style.height="40%"
+            playerBoxes.style.height="40%";
+
 
             break;
         default:
@@ -489,46 +487,34 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         console.log("ABORT!!!!!")
         //TODO: Reset the game, and default the players (3 players, default names)
     }
-    /*
-    Player box in the UI:
-        <div id="player1Box" class="playerBoxShow">
-            <div id="player1Name">Player 1</div>
-            <div id="player1Hand" class="playerHand"> HAND!!!</div>
-        </div>
-     */
     else{
         //Loop over all players
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
-            let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: orange solid 1px;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
+            let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: white solid 1px;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
-            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:90%; border: purple solid 3px;">';
+            //88% height to prevent the cards from slightly going over the player box
+            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:88%; border: purple solid 3px; overflow-y: auto">';
+
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
-                //TODO: Resize the cards, and stack then next to each other
-                playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
-                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:30%;"/>';
+                //Starting player
+                if(iUIPnames == 0){
+                    playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
+                        '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:40%; margin-left: 1%; margin-bottom: .5%;"/>';
+                }
+                //Other players, they get the back of the card
+                else{
+                    playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
+                        '" src="/Code/Cards/Deck.png" style="height:40%; margin-left: 1%; margin-bottom: .5%;"/>';
+                }
+
             }
-
-
             playerHTML = playerHTML + '</div>';
             UIPlayerNames[iUIPnames].innerHTML = playerHTML;
-
-            //UIPlayerNames[iUIPnames].innerHTML = '<div id="player1Name">'+playersArray[iUIPnames].getPlayerName()+'</div>';
-            //TODO: Work in progress
-            //Loop over all player hands, to put the cards into the UI
-            // UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName() + '<div id="player1Hand" class="playerHand"> ' +
-            //         '<img id="" src="/Code/Cards/'+playersArray[iUIPnames].getPlayerCardFile(iUIPnames)+'"/></div>';
         }
     }
 
-    //let UIPlayerHands = document.getElementsByClassName("playerHand");
-    //console.log(UIPlayerHands)
-    //Display the player hands
-    //UIPlayerHands[0].innerHTML = '<img src="/Code/Cards/Blue_0.png"/>';
-
-
-
-
+    //Put starting player name into the UI
 
 });
 
@@ -597,7 +583,7 @@ window.onclick = function(mouseEvent) {
 document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
     showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  Click the deck to draw a card, or pick the discard card to draw it</p>" +
-        "<p> To play a card, click on it. After you play, the game will automatically move to the next player (top to bottom). If an additional selection is needed, a popup will appear (Like specifying the player for a Skip)</p>" +
+        "<p> To play a card, click on it. After you play, the game will automatically move to the next player (top to bottom).</p>" +
         "<p>Click outside of this box, or the X on the right, to start the game</p>");
 
 });
@@ -606,7 +592,20 @@ document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
 // Help Button
 var helpButton = document.getElementById("helpButton");
 helpButton.onclick = function(mouseEvent) {
-    showModalBoxFunction(mouseEvent, "<p>Game Rules & Help Menu</p><p>Uno Rules are taken from here: https://www.unorules.com/</p><p> Based on a 108 card deck, NOT 112.  No additional Wild cards</p>");
+    showModalBoxFunction(mouseEvent, "<p><h3>Game Rules & Help Menu</h3></p>" +
+        //TODO: Reformat & cleanup the text below.  Also additional rules for 2 & 4 player games
+        "<p>See here for offical rules: <a href='https://www.unorules.com/'>www.unorules.com</a></p>" +
+        "<p>This game is based on a 108 card deck</p>" +
+        "<p>Every player views his/her cards and tries to match the card in the Discard Pile." +
+        "<p>Variation from official rules: After wild card is played, the next player gets to choose the color????  No need to shout UNO.  Wild 4 does not require you to NOT have other playable cards</p>" +
+        "\n" +
+        "You have to match either by the number, color, or the symbol/Action. For instance, if the Discard Pile has a red card that is an 8 you have to place either a red card or a card with an 8 on it. You can also play a Wild card (which can alter current color in play).\n" +
+        "\n" +
+        "If the player has no matches or they choose not to play any of their cards even though they might have a match, they must draw a card from the Draw pile. If that card can be played, play it. Otherwise, keep the card, and the game moves on to the next person in turn. You can also play a Wild card, or a Wild Draw Four card on your turn.\n" +
+        "\n" +
+        "Take note that you can only put down one card at a time; you cannot stack two or more cards together on the same turn. For example, you cannot put down a Draw Two on top of another Draw Two, or Wild Draw Four during the same turn, or put down two Wild Draw Four cards together.\n" +
+        "\n" +
+        "The game continues until a player has no cards left.  That player then wins the game” </p>");
 }
 
 
