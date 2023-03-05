@@ -2,11 +2,13 @@
 var debug = true;
 
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
-    //Note: There's 1 more global, var gameDeck, after the Deck class (Otherwise it threw an error)
+//Note: There's 1 more global, var gameDeck, after the Deck class (Otherwise it threw an error)
 //TODO: Might want to put them in a wrapper or namespace for better handling
-    //EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
+//EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
 var playersArray = [];
 var discardCard;
+var currentPlayer = 0;
+var gameDirection = true; //true = top to bottom, false = bottom to top
 
 if(debug){console.log("Game Board JS is loading");}
 
@@ -14,8 +16,6 @@ if(debug){console.log("Game Board JS is loading");}
 
 //TODO:
 /*
-Need a popup at the beginning, explaining how to play the game/interact with the UI
-
 Event handler for each button, that passes in the HTML in the modal box.
 
 How to track which card is which?  store its Global Number somewhere in the HTML?
@@ -170,13 +170,13 @@ class Deck{
 
 }
 //108 cards
-    //0: once per color
-    //1-9, draw, reverse, skip: Twice per color
-        //20 = draw
-        //21 = reverse
-        //22 = skip
-    //Wild cards: 4 of each type
-    //When a card is discarded, put it at the bottom of the deck.
+//0: once per color
+//1-9, draw, reverse, skip: Twice per color
+//20 = draw
+//21 = reverse
+//22 = skip
+//Wild cards: 4 of each type
+//When a card is discarded, put it at the bottom of the deck.
 //Color: Red, Blue, Green, Yellow, Wild
 //Number: 0-9, Draw, Reverse, Skip
 
@@ -185,64 +185,64 @@ class Deck{
 //  Folder with the cards: /Code/Cards/
 
 const cardFilenames = [
-        "Blue_0.png",
-        "Blue_1.png",
-        "Blue_2.png",
-        "Blue_3.png",
-        "Blue_4.png",
-        "Blue_5.png",
-        "Blue_6.png",
-        "Blue_7.png",
-        "Blue_8.png",
-        "Blue_9.png",
-        "Blue_20.png",
-        "Blue_21.png",
-        "Blue_22.png",
+    "Blue_0.png",
+    "Blue_1.png",
+    "Blue_2.png",
+    "Blue_3.png",
+    "Blue_4.png",
+    "Blue_5.png",
+    "Blue_6.png",
+    "Blue_7.png",
+    "Blue_8.png",
+    "Blue_9.png",
+    "Blue_20.png",
+    "Blue_21.png",
+    "Blue_22.png",
 
-        "Green_0.png",
-        "Green_1.png",
-        "Green_2.png",
-        "Green_3.png",
-        "Green_4.png",
-        "Green_5.png",
-        "Green_6.png",
-        "Green_7.png",
-        "Green_8.png",
-        "Green_9.png",
-        "Green_20.png",
-        "Green_21.png",
-        "Green_22.png",
+    "Green_0.png",
+    "Green_1.png",
+    "Green_2.png",
+    "Green_3.png",
+    "Green_4.png",
+    "Green_5.png",
+    "Green_6.png",
+    "Green_7.png",
+    "Green_8.png",
+    "Green_9.png",
+    "Green_20.png",
+    "Green_21.png",
+    "Green_22.png",
 
-        "Red_0.png",
-        "Red_1.png",
-        "Red_2.png",
-        "Red_3.png",
-        "Red_4.png",
-        "Red_5.png",
-        "Red_6.png",
-        "Red_7.png",
-        "Red_8.png",
-        "Red_9.png",
-        "Red_20.png",
-        "Red_21.png",
-        "Red_22.png",
+    "Red_0.png",
+    "Red_1.png",
+    "Red_2.png",
+    "Red_3.png",
+    "Red_4.png",
+    "Red_5.png",
+    "Red_6.png",
+    "Red_7.png",
+    "Red_8.png",
+    "Red_9.png",
+    "Red_20.png",
+    "Red_21.png",
+    "Red_22.png",
 
-        "Yellow_0.png",
-        "Yellow_1.png",
-        "Yellow_2.png",
-        "Yellow_3.png",
-        "Yellow_4.png",
-        "Yellow_5.png",
-        "Yellow_6.png",
-        "Yellow_7.png",
-        "Yellow_8.png",
-        "Yellow_9.png",
-        "Yellow_20.png",
-        "Yellow_21.png",
-        "Yellow_22.png",
+    "Yellow_0.png",
+    "Yellow_1.png",
+    "Yellow_2.png",
+    "Yellow_3.png",
+    "Yellow_4.png",
+    "Yellow_5.png",
+    "Yellow_6.png",
+    "Yellow_7.png",
+    "Yellow_8.png",
+    "Yellow_9.png",
+    "Yellow_20.png",
+    "Yellow_21.png",
+    "Yellow_22.png",
 
-        "Wild_11.png",
-        "Wild_14.png",
+    "Wild_11.png",
+    "Wild_14.png",
 ];
 
 
@@ -318,18 +318,18 @@ function createDeck(){
 
 //Table Class
 //Whenever the table is updated, write the game status to a cookie
-    //Actually this might be too much data for a cookie.  Maybe local storage?
+//Actually this might be too much data for a cookie.  Maybe local storage?
 const today = new Date();
 document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
 
 
 //Computer Player Class
-    //Track their hand
-    //Include the ability to cheat???
+//Track their hand
+//Include the ability to cheat???
 
 
 //Computer Player Next Play Function
-    //Logic, with some randomization & prioritization, when deciding what card to play and/or who to play it against
+//Logic, with some randomization & prioritization, when deciding what card to play and/or who to play it against
 
 
 //Player Move Function
@@ -350,22 +350,20 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 */
 
-//Current Player Function
-
 
 //Check Win Status Function
 
 
 //Restart Game function
-    //Cancel the existing cookie
-    //document.cookie = "UNOGameState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    //document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+//Cancel the existing cookie
+//document.cookie = "UNOGameState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+//document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-    //Reset the deck & discard card
+//Reset the deck & discard card
 
-    //Reset all player hands
+//Reset all player hands
 
-    //Reset the UI
+//Reset the UI
 
 
 
@@ -419,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
 
     //Third deal each player their hand
-        //Nested loops! Always a good idea!
+    //Nested loops! Always a good idea!
     //At this point, there is no need to check that the deck has enough cards
     for(let iPlayerHandSetup = 0; iPlayerHandSetup < playersArray.length; iPlayerHandSetup++){
         let dealingNumber = 0;
@@ -429,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             dealingNumber++;
         }
     }
-    if(debug){console.log("Players dealt their hands:")};
+    (debug ? console.log("Players dealt their hands:") : null);
     if(debug){console.log(playersArray)};
 
     //Fourth pick the first card for the discard pile.
@@ -448,15 +446,14 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     (debug ? console.log("Players: " + playersArray.length) : null);
     switch(playersArray.length) {
         case 3:
-            if(debug){console.log("Case 3")};
+            (debug ? console.log("Case 3") : null);
 
-            //TODO: Change this to use a FLEXBOX, that would be MUCH easier
             //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
             playerBoxes = document.getElementById("player3Box");
             playerBoxes.className="playerBoxHide";
 
             playerBoxes = document.getElementById("player2Box");
-            playerBoxes.style.height="26.66%"
+            playerBoxes.style.height="26.66%" //26.66%
             playerBoxes = document.getElementById("player1Box");
             playerBoxes.style.height="26.66%"
             playerBoxes = document.getElementById("player4Box");
@@ -464,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
             break;
         case 2:
-            if(debug){console.log("Case 2")};
+            (debug ? console.log("Case 2") : null);
 
             playerBoxes = document.getElementById("player3Box");
             playerBoxes.className="playerBoxHide";
@@ -472,13 +469,14 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             playerBoxes.className="playerBoxHide";
 
             playerBoxes = document.getElementById("player1Box");
-            playerBoxes.style.height="40%"
+            playerBoxes.style.height="40%"; //40
             playerBoxes = document.getElementById("player4Box");
-            playerBoxes.style.height="40%"
+            playerBoxes.style.height="40%";
+
 
             break;
         default:
-            //DO NOTHING!!!!
+        //DO NOTHING!!!!
     }
 
     //Put player names into the UI
@@ -489,46 +487,34 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         console.log("ABORT!!!!!")
         //TODO: Reset the game, and default the players (3 players, default names)
     }
-    /*
-    Player box in the UI:
-        <div id="player1Box" class="playerBoxShow">
-            <div id="player1Name">Player 1</div>
-            <div id="player1Hand" class="playerHand"> HAND!!!</div>
-        </div>
-     */
     else{
         //Loop over all players
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
-            let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: orange solid 1px;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
+            let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: white solid 1px;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
-            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:90%; border: purple solid 3px;">';
+            //88% height to prevent the cards from slightly going over the player box
+            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:88%; border: purple solid 3px; overflow-y: auto">';
+
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
-                //TODO: Resize the cards, and stack then next to each other
-                playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
-                    '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:30%;"/>';
+                //Starting player
+                if(iUIPnames == 0){
+                    playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
+                        '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:40%; margin-left: 1%; margin-bottom: .5%;"/>';
+                }
+                //Other players, they get the back of the card
+                else{
+                    playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
+                        '" src="/Code/Cards/Deck.png" style="height:40%; margin-left: 1%; margin-bottom: .5%;"/>';
+                }
+
             }
-
-
             playerHTML = playerHTML + '</div>';
             UIPlayerNames[iUIPnames].innerHTML = playerHTML;
-
-            //UIPlayerNames[iUIPnames].innerHTML = '<div id="player1Name">'+playersArray[iUIPnames].getPlayerName()+'</div>';
-            //TODO: Work in progress
-            //Loop over all player hands, to put the cards into the UI
-            // UIPlayerNames[iUIPnames].innerHTML = playersArray[iUIPnames].getPlayerName() + '<div id="player1Hand" class="playerHand"> ' +
-            //         '<img id="" src="/Code/Cards/'+playersArray[iUIPnames].getPlayerCardFile(iUIPnames)+'"/></div>';
         }
     }
 
-    //let UIPlayerHands = document.getElementsByClassName("playerHand");
-    //console.log(UIPlayerHands)
-    //Display the player hands
-    //UIPlayerHands[0].innerHTML = '<img src="/Code/Cards/Blue_0.png"/>';
-
-
-
-
+    //Put starting player name into the UI
 
 });
 
@@ -597,7 +583,7 @@ window.onclick = function(mouseEvent) {
 document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
     showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  Click the deck to draw a card, or pick the discard card to draw it</p>" +
-        "<p> To play a card, click on it. After you play, the game will automatically move to the next player (top to bottom). If an additional selection is needed, a popup will appear (Like specifying the player for a Skip)</p>" +
+        "<p> To play a card, click on it. After you play, the game will automatically move to the next player (top to bottom).</p>" +
         "<p>Click outside of this box, or the X on the right, to start the game</p>");
 
 });
@@ -606,7 +592,20 @@ document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
 // Help Button
 var helpButton = document.getElementById("helpButton");
 helpButton.onclick = function(mouseEvent) {
-    showModalBoxFunction(mouseEvent, "<p>Game Rules & Help Menu</p><p>Uno Rules are taken from here: https://www.unorules.com/</p><p> Based on a 108 card deck, NOT 112.  No additional Wild cards</p>");
+    showModalBoxFunction(mouseEvent, "<p><h3>Game Rules & Help Menu</h3></p>" +
+        //TODO: Reformat & cleanup the text below.  Also additional rules for 2 & 4 player games
+        "<p>See here for offical rules: <a href='https://www.unorules.com/'>www.unorules.com</a></p>" +
+        "<p>This game is based on a 108 card deck</p>" +
+        "<p>Every player views his/her cards and tries to match the card in the Discard Pile." +
+        "<p>Variation from official rules: After wild card is played, the next player gets to choose the color????  No need to shout UNO.  Wild 4 does not require you to NOT have other playable cards</p>" +
+        "\n" +
+        "You have to match either by the number, color, or the symbol/Action. For instance, if the Discard Pile has a red card that is an 8 you have to place either a red card or a card with an 8 on it. You can also play a Wild card (which can alter current color in play).\n" +
+        "\n" +
+        "If the player has no matches or they choose not to play any of their cards even though they might have a match, they must draw a card from the Draw pile. If that card can be played, play it. Otherwise, keep the card, and the game moves on to the next person in turn. You can also play a Wild card, or a Wild Draw Four card on your turn.\n" +
+        "\n" +
+        "Take note that you can only put down one card at a time; you cannot stack two or more cards together on the same turn. For example, you cannot put down a Draw Two on top of another Draw Two, or Wild Draw Four during the same turn, or put down two Wild Draw Four cards together.\n" +
+        "\n" +
+        "The game continues until a player has no cards left.  That player then wins the game” </p>");
 }
 
 
