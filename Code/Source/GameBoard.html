@@ -50,7 +50,7 @@
         }
         .playerBoxShow{
             border: blue solid 2px;
-            height:24%; /*THIS BEING REMOVED RESULTS IN THE CARDS RESIZING TO THEIR DEFAULT SIZE!!!! */
+            height:23%; /*THIS BEING REMOVED RESULTS IN THE CARDS RESIZING TO THEIR DEFAULT SIZE!!!! */
             /*Otherwise the play box doesn't HAVE a height, so it auto-resizes to the size of the cards.
             Then the card height have a % in it doesn't matter, cuz its a percent of nothing
              */
@@ -59,6 +59,10 @@
         }
         .playerBoxHide {
             display:none;
+        }
+
+        .playerActive:hover, .playerActive:focus{
+            cursor: pointer;
         }
 
         /*------------------------------Modal Box Styling -------------------------------------------------*/
@@ -132,7 +136,7 @@
 
 
     </div>
-    <div class="column" style="flex: 40% !important;">
+    <div class="column" style="flex: 39% !important;">
         <div style="border: yellow solid 3px; height:45%">
             Game State.  Current User playing.  Shuffle Deck button.  Help Menu & Game Rules
             <div id="help">

@@ -1,25 +1,32 @@
 //Handles all the code for the actual game
 var debug = true;
 
+
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
 //Note: There's 1 more global, var gameDeck, after the Deck class (Otherwise it threw an error)
 //TODO: Might want to put them in a wrapper or namespace for better handling
 //EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
 var playersArray = [];
 var discardCard;
-var currentPlayer = 0;
+var activePlayer = 0;
 var gameDirection = true; //true = top to bottom, false = bottom to top
 
 if(debug){console.log("Game Board JS is loading");}
 
 
 
-//TODO:
+//TODO for the overall game:
 /*
-Event handler for each button, that passes in the HTML in the modal box.
 
 How to track which card is which?  store its Global Number somewhere in the HTML?
 Tie each card to an OnClick function, that passes in the card identifier
+
+Fix the Flexbox for the player boxes
+
+
+Change the GlobalID for a card to ALWAYS BE A NUMBER.  No implicit conversions to numbers/strings
+    EX: let num = Number(cardID);
+
 
  */
 
@@ -44,8 +51,8 @@ class Player {
         return this.playerHand;
     }
 
-    getNumberOfCards() {
-        return this.playerHand.length;
+    getPlayerHandSize() {
+        return Number(this.playerHand.length);
     }
 
     addCard(addedCard){
@@ -55,17 +62,32 @@ class Player {
         return handLengthStart < this.playerHand.length;
     }
 
-    //TODO: Need to change how getting cards in the hand is handled
-    removeCard(cardGlobalNumber){
+    peekCard(cardGlobalID){ //WITHOUT REMOVING!
+        //Anytime this function is called, make sure a number is passed into it
+        //TODO: Throw in an error handler to make sure its a number
+        let cardGlobalIDNum = Number(cardGlobalID);
+        for(let i=0; i<this.playerHand.length; i++){
+            if(this.playerHand[i].getGlobalNumber() === cardGlobalIDNum){
+                return this.playerHand[i]
+            }
+        }
+        return false;
+    }
+    removeCard(cardGlobalID){
+        //Anytime this function is called, make sure a number is passed into it
+        //TODO: Throw in an error handler to make sure its a number
+        //TODO: Should this also make sure that the player hand has at least 1 card in it???
+        let cardGlobalIDNum = Number(cardGlobalID);
+        for(let i=0; i<this.playerHand.length; i++){
+            if(this.playerHand[i].getGlobalNumber() === cardGlobalIDNum){
+                //TODO: Remove the card
+                this.playerHand[i]
+                return true
+            }
+        }
+        return false;
 
     }
-    getCardSecific(){
-
-    }
-    getPlayerCardFile(cardNumber){
-        return this.playerHand[cardNumber].getFile();
-    }
-
 }
 
 
@@ -79,14 +101,19 @@ class Player {
 //Card Class
 class Card {
     constructor(color, number, file, globalNumber) {
-        //Color: Red, Blue, Green, Yellow, Wild
+        //Colors: Red, Blue, Green, Yellow, Wild
         this.color = color;
-        //Number: 0-9, Draw, Reverse, Skip
+        //0: once per color
+        //1-9, draw, reverse, skip: Twice per color
+        //20 = draw
+        //21 = reverse
+        //22 = skip
+        //11 = 1 Wild, 14 = Wild Draw 4
         this.number = number;
         this.file = file;
 
         //globalNumber is used to keep every single card unique
-        this.globalNumber = globalNumber;
+        this.globalNumber = Number(globalNumber);
 
     }
     getColor(){
@@ -125,11 +152,11 @@ class Deck{
         //this.deckSize++;
     }
 
-    getCard(removedCard){
+    removeCard(cardGlobalID){
         //Removed based on the cards Global Number
         if(this.deck.length < 1){
-            console.log("No more cards!!!!!")
-            //TODO: Do something here
+            console.log("No more cards, the game is unplayable!!!!!!")
+            //TODO: Throw up a modal box to notify the player and reset the game board
 
             return false;
         }
@@ -137,6 +164,7 @@ class Deck{
             for (let iDeck = 0; iDeck < this.deck.length; iDeck++){
                 if(this.deck[iDeck].getGlobalNumber() == removedCard.getGlobalNumber()){
                     let tempRemove = this.deck.splice(iDeck,1);
+                    //TODO: Should this return the card, instead of true???
                     return true;
                 }
             }
@@ -144,7 +172,7 @@ class Deck{
         }
 
     }
-    getTopCard(){
+    removeTopCard(){
         //Make sure there is at least 1 card in the deck
         if(this.deck.length < 1){
             console.log("No more cards!!!!!")
@@ -423,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         let dealingNumber = 0;
         while(dealingNumber < 7){
             //TODO: Make sure it returns TRUE after each push
-            playersArray[iPlayerHandSetup].addCard(gameDeck.getTopCard());
+            playersArray[iPlayerHandSetup].addCard(gameDeck.removeTopCard());
             dealingNumber++;
         }
     }
@@ -431,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     if(debug){console.log(playersArray)};
 
     //Fourth pick the first card for the discard pile.
-    discardCard = gameDeck.getTopCard();
+    discardCard = gameDeck.removeTopCard();
     if(debug){console.log("Starting Discard Card:")};
     if(debug){console.log(discardCard)};
 
@@ -499,13 +527,15 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
                 //Starting player
                 if(iUIPnames == 0){
-                    playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
-                        '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:40%; margin-left: 1%; margin-bottom: .5%;"/>';
+                    //TODO: Add a CLASS for the active player hand
+                    playerHTML = playerHTML + '<img class="playerActive" onclick="processCard(this.id)" id="'+playerHand[iUIPhand].getGlobalNumber()+
+                        '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:45%; margin-left: 1%; margin-bottom: .5%;"/>';
+                    activePlayer = iUIPnames;
                 }
                 //Other players, they get the back of the card
                 else{
                     playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
-                        '" src="/Code/Cards/Deck.png" style="height:40%; margin-left: 1%; margin-bottom: .5%;"/>';
+                        '" src="/Code/Cards/Deck.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;"/>';
                 }
 
             }
@@ -519,6 +549,76 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 });
 
 // END GAME PREP -------------------------------------------------------------------------------------------------------------------------
+
+
+function processCard(cardIDUI){
+    let cardID = Number(cardIDUI);
+    (debug ? console.log("CARD CLICKED. Card ID:" + playersArray.length) : null);
+    (debug ? console.log(cardID) : null);
+    //gameDirection
+    console.log(playersArray[activePlayer].getPlayerHand());
+
+
+    //Get the card info
+    let playedCard = playersArray[activePlayer].peekCard(cardID);
+
+    //Compare it to the DISCARD CARD
+    //If its 0-9, check if numbers and color match
+    if(playedCard >= 0 && playedCard <= 9){
+        if(playedCard.getColor() == discardCard.getColor() && playedCard.getNumber() == discardCard.getNumber()){
+
+            //Remove the card from the player hand
+
+            //Move the previous discard card into the deck & put the new discard card into the UI
+            updateDiscardCard(playedCard)
+        }
+    }
+    else if(playedCard){
+
+    }
+
+    //11 and above, need special handling
+
+    //Check if the player won the game, after having verified that the played card was valid & if it is, its been removed from the players hand
+    checkWinCondition();
+
+    //If they didn't win, advance to the next player
+
+
+}
+
+function updateDiscardCard(newDiscardCard){
+
+    return true;
+}
+
+function changeActivePlayer(){
+    //Direction is determined by gameDirection global
+    //Need to change the CLASS used by the IMG tags.  Remove that class from the current player, add it to the next player
+
+    //TODO: Implement this.
+    if (gameDirection){
+        activePlayer = activePlayer++; //INCORRECT CURRENTLY!!!!!!!!
+        return activePlayer
+    }
+    else{
+
+        return activePlayer
+
+    }
+}
+
+function checkWinCondition(){
+    //If the last play results in a player having 0 cards, they win and the game ends.
+    //Check if the active player's hand is now empty
+    return activePlayer.getPlayerHandSize() === 0;
+
+}
+
+
+function drawCard(){
+
+}
 
 function getCookie(cookieName) {
     /*
