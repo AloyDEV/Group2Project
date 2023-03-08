@@ -553,20 +553,20 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 // END GAME PREP -------------------------------------------------------------------------------------------------------------------------
 
 
-function processCard(cardIDUI){
-    let cardID = Number(cardIDUI);
+function processCard(cardID){
+    let cardIDNum = Number(cardID);
     (debug ? console.log("CARD CLICKED. Card ID:" + playersArray.length) : null);
-    (debug ? console.log(cardID) : null);
+    (debug ? console.log(cardIDNum) : null);
     //gameDirection
     console.log(playersArray[activePlayer].getPlayerHand());
 
 
     //Get the card info
-    let playedCard = playersArray[activePlayer].peekPlayerCard(cardID);
+    let playedCard = playersArray[activePlayer].peekPlayerCard(cardIDNum);
 
     //Compare it to the DISCARD CARD
     //If its 0-9, check if numbers and color match
-    if(playedCard >= 0 && playedCard <= 9){
+    if(Number(playedCard.getNumber()) >= 0 && Number(playedCard.getNumber()) <= 9){
         if(playedCard.getColor() == discardCard.getColor() && playedCard.getNumber() == discardCard.getNumber()){
 
             //Remove the card from the player hand
@@ -585,6 +585,7 @@ function processCard(cardIDUI){
     checkWinCondition();
 
     //If they didn't win, advance to the next player
+    changeActivePlayer();
 
 
 }
