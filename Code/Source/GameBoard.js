@@ -55,34 +55,41 @@ class Player {
         return Number(this.playerHand.length);
     }
 
-    addCard(addedCard){
+    addPlayerCard(addedCard){
         let handLengthStart = this.playerHand.length;
         this.playerHand.push(addedCard);
         //If the players hand array increased, the card was added successfully.
         return handLengthStart < this.playerHand.length;
     }
 
-    peekCard(cardGlobalID){ //WITHOUT REMOVING!
+    peekPlayerCard(cardGlobalID){ //WITHOUT REMOVING!
         //Anytime this function is called, make sure a number is passed into it
         //TODO: Throw in an error handler to make sure its a number
         let cardGlobalIDNum = Number(cardGlobalID);
         for(let i=0; i<this.playerHand.length; i++){
-            if(this.playerHand[i].getGlobalNumber() === cardGlobalIDNum){
+            if(Number(this.playerHand[i].getGlobalNumber()) === cardGlobalIDNum){
                 return this.playerHand[i]
             }
         }
         return false;
     }
-    removeCard(cardGlobalID){
+    removePlayerCard(cardGlobalID){
         //Anytime this function is called, make sure a number is passed into it
         //TODO: Throw in an error handler to make sure its a number
-        //TODO: Should this also make sure that the player hand has at least 1 card in it???
         let cardGlobalIDNum = Number(cardGlobalID);
-        for(let i=0; i<this.playerHand.length; i++){
-            if(this.playerHand[i].getGlobalNumber() === cardGlobalIDNum){
-                //TODO: Remove the card
-                this.playerHand[i]
-                return true
+
+        //TODO: Refactor this logic, could be a single IF
+        //Make sure the player hand has at least 1 card in it.  Should never have 0 without the game ending, but you never know
+        if(Number(this.playerHand.length) === 0){
+            //TODO: DO SOMETHING HERE!!!!
+            return false;
+        }
+        else {
+            for (let i = 0; i < this.playerHand.length; i++) {
+                if (Number(this.playerHand[i].getGlobalNumber()) === cardGlobalIDNum) {
+                    let removedCard = this.playerHand.splice(i,1);
+                    return removedCard[0]; //SPLICE returns an array
+                }
             }
         }
         return false;
@@ -90,13 +97,6 @@ class Player {
     }
 }
 
-
-// //Player Hand Class
-// class PlayerHand{
-//     //Does this class need to do any sorting?  Or random order should be fine?
-//     constructor(){
-//
-// }
 
 //Card Class
 class Card {
@@ -109,7 +109,7 @@ class Card {
         //21 = reverse
         //22 = skip
         //11 = 1 Wild, 14 = Wild Draw 4
-        this.number = number;
+        this.number = Number(number);
         this.file = file;
 
         //globalNumber is used to keep every single card unique
@@ -120,13 +120,13 @@ class Card {
         return this.color;
     }
     getNumber(){
-        return this.number;
+        return Number(this.number);
     }
     getFile(){
         return this.file;
     }
     getGlobalNumber(){
-        return this.globalNumber;
+        return Number(this.globalNumber);
     }
 
 }
@@ -152,7 +152,12 @@ class Deck{
         //this.deckSize++;
     }
 
-    removeCard(cardGlobalID){
+    removeCardByGlobalID(cardGlobalID){
+        //Anytime this function is called, make sure a number is passed into it
+        //TODO: Throw in an error handler to make sure its a number
+        let cardGlobalIDNum = Number(cardGlobalID);
+
+        //TODO: Refactor this logic, could be a single IF
         //Removed based on the cards Global Number
         if(this.deck.length < 1){
             console.log("No more cards, the game is unplayable!!!!!!")
@@ -162,10 +167,9 @@ class Deck{
         }
         else {
             for (let iDeck = 0; iDeck < this.deck.length; iDeck++){
-                if(this.deck[iDeck].getGlobalNumber() == removedCard.getGlobalNumber()){
-                    let tempRemove = this.deck.splice(iDeck,1);
-                    //TODO: Should this return the card, instead of true???
-                    return true;
+                if(Number(this.deck[iDeck].getGlobalNumber()) === Number(cardGlobalIDNum)){
+                    let removedCard = this.deck.splice(iDeck,1);
+                    return removedCard[0]; //SPLICE returns an array
                 }
             }
             return false;
@@ -295,34 +299,34 @@ function createDeck(){
 //TODO: put into a loop.  Or a function where the # of cards to be added (and the card) is passed in)
 //One zero card per color
         if(cardFileNumber[0] == 0){
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
             cardGlobalNumber++;
         }
 //Two of the 1-9 cards per color
         if(cardFileNumber[0] > 0 && cardFileNumber[0] < 10){
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
             cardGlobalNumber++;
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
             cardGlobalNumber++;
 
         }
 //Two of the draw/reverse/skip cards
         if(cardFileNumber[0] >= 20){
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
             cardGlobalNumber++;
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
             cardGlobalNumber++;
 
         }
 //Four of the 2 different wild cards
         if(cardFileNumber[0] >= 11 && cardFileNumber[0] <= 14){
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
             cardGlobalNumber++;
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
             cardGlobalNumber++;
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
             cardGlobalNumber++;
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], cardGlobalNumber));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
             cardGlobalNumber++;
         }
 
@@ -432,11 +436,9 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     else{
         let playersTempArray = playersCookie.split("|");
         for(let iPlayerSetup = 0; iPlayerSetup < playersTempArray.length-1; iPlayerSetup++){ //Minus one off the array length, the players in the cookie always end with a "|" which puts an empty string as the last array item after its split
-            //totalPlayerNumber++;
             playersArray.push(new Player(iPlayerSetup, playersTempArray[iPlayerSetup]));
         }
         //Add the computer player
-        //totalPlayerNumber++;
         playersArray.push(new Player(playersArray.length, "Mike the All Knowing"));
     }
 
@@ -451,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         let dealingNumber = 0;
         while(dealingNumber < 7){
             //TODO: Make sure it returns TRUE after each push
-            playersArray[iPlayerHandSetup].addCard(gameDeck.removeTopCard());
+            playersArray[iPlayerHandSetup].addPlayerCard(gameDeck.removeTopCard());
             dealingNumber++;
         }
     }
@@ -560,7 +562,7 @@ function processCard(cardIDUI){
 
 
     //Get the card info
-    let playedCard = playersArray[activePlayer].peekCard(cardID);
+    let playedCard = playersArray[activePlayer].peekPlayerCard(cardID);
 
     //Compare it to the DISCARD CARD
     //If its 0-9, check if numbers and color match
