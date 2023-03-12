@@ -11,13 +11,13 @@
             position:relative;
         }
 
-        /* Background effect: https://1stwebdesigner.com/15-css-background-effects/ */
+        /* Background effect taken from: https://1stwebdesigner.com/15-css-background-effects/ */
         body{
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradient 30s ease infinite;  /* transition effect for the background, loops infinitely */
             height: 100vh;
-            font-family:Calibri;
+            font-family:Calibri, sans-serif;
         }
         @keyframes gradient {
             0% {
@@ -52,7 +52,7 @@
             border: blue solid 2px;
             height:23%; /*THIS BEING REMOVED RESULTS IN THE CARDS RESIZING TO THEIR DEFAULT SIZE!!!! */
             /*Otherwise the play box doesn't HAVE a height, so it auto-resizes to the size of the cards.
-            Then the card height have a % in it doesn't matter, cuz its a percent of nothing
+            Then the card height having a % in it doesn't matter, cuz its a percent of nothing
              */
             margin: .2%;
             border-radius:1em;
@@ -64,6 +64,11 @@
         .playerActive:hover, .playerActive:focus{
             cursor: pointer;
         }
+
+        .hideElement{
+            display:none;
+        }
+
 
         /*------------------------------Modal Box Styling -------------------------------------------------*/
 
@@ -81,6 +86,11 @@
             background-color: rgb(0,0,0); /* Fallback color */
             background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
             cursor: pointer; /* To indicate to the user that they can click outside the box to close it */
+        }
+
+        .modalBackgroundBlackedOut{
+            background-color: rgba(0,0,0,1); /* Black w/ opacity */
+
         }
 
         /* Modal Content */
@@ -138,12 +148,15 @@
     </div>
     <div class="column" style="flex: 39% !important;">
         <div style="border: yellow solid 3px; height:45%">
-            Game State.  Current User playing.  Shuffle Deck button.  Help Menu & Game Rules
+            Game State Box
             <div id="help">
                 <button id="helpButton" onclick="">Help & Game Rules</button>
+                <button id="shuffleButton" onclick="">Shuffle Deck</button>
+                <button id="resetButton" onclick="">Reset Game</button>
             </div>
-            <p>Currently playing player</p>
-            <p>Next up player (will change with a Reverse)</p>
+            <div id="activePlayerUI">Current player</div>
+            <div id="nextPlayerUI">Next player</div>
+            <div id="MiscMessage">Any misc messages needed</div>
             <p>Color selected for Wild</p>
             <p>Other info</p>
         </div>
@@ -160,7 +173,7 @@
 
 
 
-<div id="myModal" class="modalBackground">
+<div id="modalBackground" class="modalBackground">
     <div class="modal-content">
         <span class="close">&times;</span>
         <div id="modalContentDiv">

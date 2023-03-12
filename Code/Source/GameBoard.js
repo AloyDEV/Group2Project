@@ -9,7 +9,7 @@ var debug = true;
 var playersArray = [];
 var discardCard;
 var activePlayer = 0;
-var gameDirection = true; //true = top to bottom, false = bottom to top
+var gameDirection = Boolean(true); //true = top to bottom, false = bottom to top
 
 if(debug){console.log("Game Board JS is loading");}
 
@@ -132,7 +132,7 @@ class Card {
 }
 
 
-//Deck Class
+//Deck Class, holds all cards at the start and then all cards not in a player hand or the discard card
 class Deck{
 
     constructor(){
@@ -141,15 +141,13 @@ class Deck{
     }
 
     getSize(){
-        //return this.deckSize;
-        return this.deck.length;
+        return Number(this.deck.length);
     }
     getDeckContents(){
         return this.deck;
     }
     addCard(newCard){
         this.deck[this.deck.length] = newCard;
-        //this.deckSize++;
     }
 
     removeCardByGlobalID(cardGlobalID){
@@ -201,16 +199,8 @@ class Deck{
 
 
 }
-//108 cards
-//0: once per color
-//1-9, draw, reverse, skip: Twice per color
-//20 = draw
-//21 = reverse
-//22 = skip
-//Wild cards: 4 of each type
-//When a card is discarded, put it at the bottom of the deck.
-//Color: Red, Blue, Green, Yellow, Wild
-//Number: 0-9, Draw, Reverse, Skip
+
+
 
 // BEGIN DECK BUILDING ---------------------------------------------------------------------------------------------------------------------
 //Since there is no backend, the JS can't access files on the server directly.  To get all the card files, names of them are hardcoded below.
@@ -276,7 +266,6 @@ const cardFilenames = [
     "Wild_11.png",
     "Wild_14.png",
 ];
-
 
 var gameDeck = new Deck();
 function createDeck(){
@@ -401,19 +390,8 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 
 // BEGIN GAME PREP -------------------------------------------------------------------------------------------------------------------------
-//Game prep function:
-//Starting code: pull the userdata out of the cookie
-//let usersCookie = document.cookie;
-//document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-//After the DOM has loaded, adjust the player boxes based on the number of players
 
-
-
-//I don't think this is needed.  I can just grab the playerArray length if I need the number of players
-//var totalPlayerNumber = 0;
-
-
-//Once the original page structure has loaded, begin the backend game prep
+//Once the starting UI has loaded, begin the backend game prep (That modifies some of the UI)
 document.addEventListener('DOMContentLoaded', function gamePrep(){
 
     //First build the deck
@@ -445,7 +423,6 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     if(debug){console.log("Players created:")};
     if(debug){console.log(playersArray)};
 
-
     //Third deal each player their hand
     //Nested loops! Always a good idea!
     //At this point, there is no need to check that the deck has enough cards
@@ -471,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     let UIDiscardCard = document.getElementById("UIDiscardCard");
     UIDiscardCard.src = "/Code/Cards/" + discardCard.getFile();
 
-    //Hide players 2 & 3
+    //Adjust the player boxes to match # of players
     let playerBoxes;
     (debug ? console.log("Players: " + playersArray.length) : null);
     switch(playersArray.length) {
@@ -520,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     else{
         //Loop over all players
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
-            let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: white solid 1px;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
+            let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: white solid 1px; text-align: center;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
             //88% height to prevent the cards from slightly going over the player box
             playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:88%; border: purple solid 3px; overflow-y: auto">';
@@ -529,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
                 //Starting player
                 if(iUIPnames == 0){
-                    //TODO: Add a CLASS for the active player hand
+                    //TODO: Add a CSS CLASS for the active player hand
                     playerHTML = playerHTML + '<img class="playerActive" onclick="processCard(this.id)" id="'+playerHand[iUIPhand].getGlobalNumber()+
                         '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:45%; margin-left: 1%; margin-bottom: .5%;"/>';
                     activePlayer = iUIPnames;
@@ -546,7 +523,17 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         }
     }
 
-    //Put starting player name into the UI
+    //Put starting player & next player into the UI
+    document.getElementById("activePlayerUI").innerHTML = playersArray[activePlayer].getPlayerName();
+    document.getElementById("nextPlayerUI").innerHTML = getNextPlayer();
+
+
+
+    //Special handling for the starting discard card in dif situations
+        //If it's a wild card, the first player gets too choose its color
+            //Maybe it would be easier to just choose another card if its wild.  Bypass that step altogether?
+            //Or just allow the first player to play ANY card?
+
 
 });
 
@@ -565,18 +552,67 @@ function processCard(cardID){
     let playedCard = playersArray[activePlayer].peekPlayerCard(cardIDNum);
 
     //Compare it to the DISCARD CARD
+    //TODO: If the starting discard card is wild, it'll require special handling.
     //If its 0-9, check if numbers and color match
     if(Number(playedCard.getNumber()) >= 0 && Number(playedCard.getNumber()) <= 9){
-        if(playedCard.getColor() == discardCard.getColor() && playedCard.getNumber() == discardCard.getNumber()){
+        if(playedCard.getColor() == discardCard.getColor() && Number(playedCard.getNumber()) === Number(discardCard.getNumber())){
 
             //Remove the card from the player hand
+            activePlayer.removePlayerCard(cardIDNum);
+            //make sure it returns a Card and not False
 
             //Move the previous discard card into the deck & put the new discard card into the UI
             updateDiscardCard(playedCard)
         }
     }
-    else if(playedCard){
+    //Wild 1
+        /*
+        his card represents all four colors, and can be placed on any card.
+        The player has to state which color it will represent for the next player.
+        It can be played regardless of whether another card is available.
+        If turned up at the beginning of play, the first player chooses what color to continue play.
+         */
+    else if(Number(playedCard.getNumber()) === 11){
 
+    }
+    //Wild 4
+        /*
+        This acts just like the wild card except that the next player also has to draw four cards as well as forfeit his/her turn.
+        With this card, you must have no other alternative cards to play that matches the color of the card previously played.
+        If you play this card illegally, you may be challenged by the other player to show your hand to him/her. If guilty, you need to draw 4 cards.
+        If not, the challenger needs to draw 6 cards instead.
+        If turned up at the beginning of play, return this card to the Draw pile, shuffle, and turn up a new one.
+         */
+    else if(Number(playedCard.getNumber()) === 14){
+
+    }
+    //Draw Two
+        /*
+        When a person places this card, the next player will have to pick up two cards and forfeit his/her turn.
+        It can only be played on a card that matches by color, or on another Draw Two.
+        If turned up at the beginning of play, the first player draws two cards and gets skipped.
+         */
+    else if(Number(playedCard.getNumber()) === 20){
+
+    }
+    //Reverse
+        /*
+        If going clockwise, switch to counterclockwise or vice versa. It can only be played on a card that matches by color, or on another Reverse card.
+        If turned up at the beginning of play, the dealer goes first, and the player to the dealer’s right is next
+        (normally it would be the player to the dealer’s left).
+         */
+    else if(Number(playedCard.getNumber()) === 21){
+        gameDirection = !Boolean(gameDirection);
+        //Update the UI to display the new direction & next player
+    }
+    //Skip
+        /*
+        When a player places this card, the next player has to skip their turn. It can only be played on a card that matches by color, or on another Skip card.
+        If turned up at the beginning of play, the first player (to the dealer’s left) loses his/her turn.
+        The next player to that player’s right starts the game instead.
+         */
+    else if(Number(playedCard.getNumber()) === 22){
+        changeActivePlayer(1);
     }
 
     //11 and above, need special handling
@@ -585,17 +621,26 @@ function processCard(cardID){
     checkWinCondition();
 
     //If they didn't win, advance to the next player
-    changeActivePlayer();
+    changeActivePlayer(1);
+
+    //Display the Modal box to block out the game board, and for the next player to being their turn
+        //Change the class of the modal background to one that's completely blacked out?
+        //Or just change that style???
+    var modalBackground = document.getElementById("modalBackground");
 
 
 }
 
 function updateDiscardCard(newDiscardCard){
+//TODO: Implement this
+
 
     return true;
 }
 
-function changeActivePlayer(){
+function changeActivePlayer(numPlayersToAdvance){
+
+    let playersToAdvanceNum = Number(numPlayersToAdvance);
     //Direction is determined by gameDirection global
     //Need to change the CLASS used by the IMG tags.  Remove that class from the current player, add it to the next player
 
@@ -611,6 +656,32 @@ function changeActivePlayer(){
     }
 }
 
+function getNextPlayer(){
+    //TODO: Implement this
+
+    console.log("Next Player.  Array Length:");
+    console.log(playersArray.length);
+
+    let nextPlayer = -1;
+    playersArray[activePlayer]
+
+    if (gameDirection){
+        nextPlayer = activePlayer++
+
+
+    }
+    else{
+
+    }
+
+
+    //activePlayer;
+    //playersArray;
+
+    return playersArray[nextPlayer].getPlayerName();
+}
+
+
 function checkWinCondition(){
     //If the last play results in a player having 0 cards, they win and the game ends.
     //Check if the active player's hand is now empty
@@ -620,6 +691,13 @@ function checkWinCondition(){
 
 
 function drawCard(){
+
+}
+
+function continueToNextPlayer(){
+    //TODO: Does the Continue button need to be clicked?  Or can clicking outside the Modal also allow advancing??
+    //If clicking outside, I might need a second modal box to handle it.
+    //And LOTS OF OTHER THINGS TO CONSIDER
 
 }
 
@@ -669,7 +747,7 @@ function showModalBoxFunction(mouseEvent, modalHTML){
 
 //Modal Box pieces
 // Background behind the modal box, that overlays the rest of the page
-var modalBackground = document.getElementById("myModal");
+var modalBackground = document.getElementById("modalBackground");
 // Get the <span>/X element that closes the modal
 var modalCloseButton = document.getElementsByClassName("close")[0];
 //Closing the modal box
@@ -686,7 +764,7 @@ window.onclick = function(mouseEvent) {
 document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
     showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  Click the deck to draw a card, or pick the discard card to draw it</p>" +
-        "<p> To play a card, click on it. After you play, the game will automatically move to the next player (top to bottom).</p>" +
+        "<p> To play a card, click on it. After you play, the game board will be hidden as the next players cards are dispalyed.  Click Continue for the next player to begin their turn.</p>" +
         "<p>Click outside of this box, or the X on the right, to start the game</p>");
 
 });
@@ -710,6 +788,19 @@ helpButton.onclick = function(mouseEvent) {
         "\n" +
         "The game continues until a player has no cards left.  That player then wins the game” </p>");
 }
+
+//Shuffle Deck button
+var shuffleButton = document.getElementById("shuffleButton");
+shuffleButton.onclick = function(mouseEvent){
+    //TODO: This doesn't seem to work right now.
+    (debug ? console.log("Original Deck:") : null);
+    (debug ? console.log(gameDeck) : null);
+    gameDeck.shuffle();
+    (debug ? console.log("Shuffled Deck:") : null);
+    (debug ? console.log(gameDeck) : null);
+    showModalBoxFunction(mouseEvent, "<h3> Deck Shuffled </h3>");
+}
+
 
 
 
