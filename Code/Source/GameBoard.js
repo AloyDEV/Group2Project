@@ -514,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
                 //Other players, they get the back of the card
                 else{
                     playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
-                        '" src="/Code/Cards/Deck.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;"/>';
+                        '" class="backOfCardImages" style="height:45%; margin-left: 1%; margin-bottom: .5%;"/>';
                 }
 
             }
@@ -661,22 +661,23 @@ function getNextPlayer(){
 
     console.log("Next Player.  Array Length:");
     console.log(playersArray.length);
+    //Array Length is 4, for 3 players + Computer
 
     let nextPlayer = -1;
     playersArray[activePlayer]
 
     if (gameDirection){
-        nextPlayer = activePlayer++
-
-
+        if(activePlayer === playersArray.length-1){
+            nextPlayer = 0;
+        }
+        else{
+            nextPlayer = activePlayer++
+        }
     }
     else{
 
+
     }
-
-
-    //activePlayer;
-    //playersArray;
 
     return playersArray[nextPlayer].getPlayerName();
 }
