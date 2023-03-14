@@ -438,7 +438,15 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     if(debug){console.log(playersArray)};
 
     //Fourth pick the first card for the discard pile.
+    //To make life easier, if it's a WIld card, just draw another card (Until it's not Wild), then shuffle the deck again at the end.
     discardCard = gameDeck.removeTopCard();
+    while(discardCard.getColor() == "Wild"){
+        gameDeck.addCard(discardCard);
+        discardCard = gameDeck.removeTopCard();
+    }
+    gameDeck.shuffle();
+
+
     if(debug){console.log("Starting Discard Card:")};
     if(debug){console.log(discardCard)};
 
@@ -524,15 +532,18 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     }
 
     //Put starting player & next player into the UI
-    document.getElementById("activePlayerUI").innerHTML = playersArray[activePlayer].getPlayerName();
-    document.getElementById("nextPlayerUI").innerHTML = getNextPlayer();
+    console.log("Starting active player: " + activePlayer);
+    document.getElementById("activePlayerUIplayer").innerHTML = "<h1>" + playersArray[activePlayer].getPlayerName() + "</h1>";
+    document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
 
 
-
+    //TODO: DO I want there to be special handling of starting cards?  Or just ALWAYS skip cards like these, so a normal card always starts???
     //Special handling for the starting discard card in dif situations
-        //If it's a wild card, the first player gets too choose its color
-            //Maybe it would be easier to just choose another card if its wild.  Bypass that step altogether?
-            //Or just allow the first player to play ANY card?
+        //If it's a wild card, another card is drawn until its not wild
+        //If its a Draw 2 card, the first player draws 2 and then is skipped.
+
+        //Reverse???
+        //If its a Skip card, the first player is skipped
 
 
 });
@@ -544,15 +555,16 @@ function processCard(cardID){
     let cardIDNum = Number(cardID);
     (debug ? console.log("CARD CLICKED. Card ID:" + playersArray.length) : null);
     (debug ? console.log(cardIDNum) : null);
-    //gameDirection
-    console.log(playersArray[activePlayer].getPlayerHand());
-
 
     //Get the card info
     let playedCard = playersArray[activePlayer].peekPlayerCard(cardIDNum);
 
     //Compare it to the DISCARD CARD
-    //TODO: If the starting discard card is wild, it'll require special handling.
+    //TODO: If the discard card is wild, it'll require special handling, to pull the color out of the UI.
+
+    //Start with the discard card being a wild card.
+    discardCard
+
     //If its 0-9, check if numbers and color match
     if(Number(playedCard.getNumber()) >= 0 && Number(playedCard.getNumber()) <= 9){
         if(playedCard.getColor() == discardCard.getColor() && Number(playedCard.getNumber()) === Number(discardCard.getNumber())){
@@ -567,10 +579,11 @@ function processCard(cardID){
     }
     //Wild 1
         /*
-        his card represents all four colors, and can be placed on any card.
+        This card represents all four colors, and can be placed on any card.
         The player has to state which color it will represent for the next player.
         It can be played regardless of whether another card is available.
         If turned up at the beginning of play, the first player chooses what color to continue play.
+            The game cheats slightly here.  The starting card will never be a wild card.
          */
     else if(Number(playedCard.getNumber()) === 11){
 
@@ -581,7 +594,6 @@ function processCard(cardID){
         With this card, you must have no other alternative cards to play that matches the color of the card previously played.
         If you play this card illegally, you may be challenged by the other player to show your hand to him/her. If guilty, you need to draw 4 cards.
         If not, the challenger needs to draw 6 cards instead.
-        If turned up at the beginning of play, return this card to the Draw pile, shuffle, and turn up a new one.
          */
     else if(Number(playedCard.getNumber()) === 14){
 
@@ -644,42 +656,55 @@ function changeActivePlayer(numPlayersToAdvance){
     //Direction is determined by gameDirection global
     //Need to change the CLASS used by the IMG tags.  Remove that class from the current player, add it to the next player
 
+    let nextPlayer = -1;
+
     //TODO: Implement this.
     if (gameDirection){
-        activePlayer = activePlayer++; //INCORRECT CURRENTLY!!!!!!!!
-        return activePlayer
-    }
-    else{
-
-        return activePlayer
-
-    }
-}
-
-function getNextPlayer(){
-    //TODO: Implement this
-
-    console.log("Next Player.  Array Length:");
-    console.log(playersArray.length);
-    //Array Length is 4, for 3 players + Computer
-
-    let nextPlayer = -1;
-    playersArray[activePlayer]
-
-    if (gameDirection){
-        if(activePlayer === playersArray.length-1){
+        if(Number(activePlayer) === playersArray.length-1){
             nextPlayer = 0;
         }
         else{
-            nextPlayer = activePlayer++
+            nextPlayer = activePlayer + 1;
         }
     }
     else{
+        if(Number(activePlayer) === 0){
+            nextPlayer = playersArray.length-1;
+        }
+        else{
+            nextPlayer = activePlayer - 1;
+        }
+    }
+}
 
+//Returns the array position number of the next player
+function getNextPlayer(){
 
+    (debug ? console.log("Active Player: " + activePlayer) : null);
+
+    let nextPlayer = -1;
+
+    //Game direction determines which payer comes next.  True = top to bottom.  False = Bottom to top
+    if (gameDirection){
+        if(Number(activePlayer) === playersArray.length-1){
+            nextPlayer = 0;
+        }
+        else{
+            nextPlayer = activePlayer + 1;
+        }
+    }
+    else{
+        if(Number(activePlayer) === 0){
+            nextPlayer = playersArray.length-1;
+        }
+        else{
+            nextPlayer = activePlayer - 1;
+        }
     }
 
-    return playersArray[nextPlayer].getPlayerName();
+    (debug ? console.log("Next Player: " + nextPlayer) : null);
+
+    return Number(nextPlayer);
 }
 
 
@@ -709,7 +734,6 @@ function getCookie(cookieName) {
     console.log(usersCookie);
     console.log(document.cookie.indexOf("UNOusers"));
      */
-
 
     let name = cookieName + "=";
     let decodedCookie = decodeURIComponent(document.cookie);
@@ -761,6 +785,9 @@ window.onclick = function(mouseEvent) {
     hideModalBoxFunction(mouseEvent);
 }
 
+// END MODAL BOX FUNCTION ------------------------------------------------------------------------------------------------------------------
+
+
 //Start game box: Notify the users about how to play the game.
 document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
@@ -802,11 +829,6 @@ shuffleButton.onclick = function(mouseEvent){
     showModalBoxFunction(mouseEvent, "<h3> Deck Shuffled </h3>");
 }
 
-
-
-
-
-// END MODAL BOX FUNCTION ------------------------------------------------------------------------------------------------------------------
 
 
 

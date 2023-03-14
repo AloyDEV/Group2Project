@@ -153,17 +153,21 @@
     </div>
     <div class="column" style="flex: 39% !important;">
         <div style="border: yellow solid 3px; height:45%">
-            Game State Box
-            <div id="help">
+            <div id="buttonBar">
                 <button id="helpButton" onclick="">Help & Game Rules</button>
                 <button id="shuffleButton" onclick="">Shuffle Deck</button>
                 <button id="resetButton" onclick="">Reset Game</button>
             </div>
-            <div id="activePlayerUI">Current player</div>
-            <div id="nextPlayerUI">Next player</div>
-            <div id="MiscMessage">Any misc messages needed</div>
-            <p>Color selected for Wild</p>
-            <p>Other info</p>
+            <div id="activePlayerUI" style='text-align: center;'>
+                <div id="activePlayerUItitle">Current player:</div>
+                <div id="activePlayerUIplayer"></div>
+            </div>
+            <div id="nextPlayerUI" style='text-align: center;'>
+                <div id="nextPlayerUItitle">Next player:</div>
+                <div id="nextPlayerUIplayer"></div>
+            </div>
+            <div id="miscMessageUI">Any misc messages needed</div>
+            <div id="wildColorUI">Color selected for Wild</div>
         </div>
         <div style="border: yellow solid 3px; width: 98%; height:45%; position: fixed; bottom: 0; display:flex;">
             <div style="height:90%; border:orange solid 3px; margin-left:1%; margin-bottom:5%;">
