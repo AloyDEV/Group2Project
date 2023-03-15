@@ -438,17 +438,18 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     if(debug){console.log(playersArray)};
 
     //Fourth pick the first card for the discard pile.
-    //To make life easier, if it's a WIld card, just draw another card (Until it's not Wild), then shuffle the deck again at the end.
+    //To make life easier, if it's a WIlD/SKIP/DRAW/REVERSE card, just draw another card, then shuffle the deck again at the end.
     discardCard = gameDeck.removeTopCard();
-    while(discardCard.getColor() == "Wild"){
+    while(Number(discardCard.getNumber()) > 10){
+        (debug ? console.log(discardCard) : null);
+        (debug ? console.log("Discard card was wild/skip/draw/reverse, redrawing") : null);
         gameDeck.addCard(discardCard);
         discardCard = gameDeck.removeTopCard();
     }
+    (debug ? console.log("Final discard card:") : null);
+    (debug ? console.log(discardCard) : null);
     gameDeck.shuffle();
 
-
-    if(debug){console.log("Starting Discard Card:")};
-    if(debug){console.log(discardCard)};
 
     //Last, update the UI to hide un-needed players, match player names, display hands, show the new discard card, and the state of the game.
 
@@ -537,15 +538,6 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
 
 
-    //TODO: DO I want there to be special handling of starting cards?  Or just ALWAYS skip cards like these, so a normal card always starts???
-    //Special handling for the starting discard card in dif situations
-        //If it's a wild card, another card is drawn until its not wild
-        //If its a Draw 2 card, the first player draws 2 and then is skipped.
-
-        //Reverse???
-        //If its a Skip card, the first player is skipped
-
-
 });
 
 // END GAME PREP -------------------------------------------------------------------------------------------------------------------------
@@ -603,6 +595,7 @@ function processCard(cardID){
         When a person places this card, the next player will have to pick up two cards and forfeit his/her turn.
         It can only be played on a card that matches by color, or on another Draw Two.
         If turned up at the beginning of play, the first player draws two cards and gets skipped.
+            The game cheats slightly here.  The starting card will never be a draw twp card.
          */
     else if(Number(playedCard.getNumber()) === 20){
 
@@ -612,6 +605,7 @@ function processCard(cardID){
         If going clockwise, switch to counterclockwise or vice versa. It can only be played on a card that matches by color, or on another Reverse card.
         If turned up at the beginning of play, the dealer goes first, and the player to the dealer’s right is next
         (normally it would be the player to the dealer’s left).
+            The game cheats slightly here.  The starting card will never be a reverse card.
          */
     else if(Number(playedCard.getNumber()) === 21){
         gameDirection = !Boolean(gameDirection);
@@ -622,6 +616,7 @@ function processCard(cardID){
         When a player places this card, the next player has to skip their turn. It can only be played on a card that matches by color, or on another Skip card.
         If turned up at the beginning of play, the first player (to the dealer’s left) loses his/her turn.
         The next player to that player’s right starts the game instead.
+            The game cheats slightly here.  The starting card will never be a skip card.
          */
     else if(Number(playedCard.getNumber()) === 22){
         changeActivePlayer(1);
@@ -820,20 +815,13 @@ helpButton.onclick = function(mouseEvent) {
 //Shuffle Deck button
 var shuffleButton = document.getElementById("shuffleButton");
 shuffleButton.onclick = function(mouseEvent){
-    //TODO: This doesn't seem to work right now.
-    (debug ? console.log("Original Deck:") : null);
-    (debug ? console.log(gameDeck) : null);
     gameDeck.shuffle();
     (debug ? console.log("Shuffled Deck:") : null);
     (debug ? console.log(gameDeck) : null);
     showModalBoxFunction(mouseEvent, "<h3> Deck Shuffled </h3>");
 }
 
+if(debug){console.log("Game Board JS has completed loading")};
 
 
-
-
-
-
-if(debug){console.log("Game Board JS has completed loading");}
 
