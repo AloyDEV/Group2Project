@@ -551,22 +551,31 @@ function processCard(cardID){
     //Get the card info
     let playedCard = playersArray[activePlayer].peekPlayerCard(cardIDNum);
 
+    updateDiscardCard(playedCard)
+
     //Compare it to the DISCARD CARD
     //TODO: If the discard card is wild, it'll require special handling, to pull the color out of the UI.
 
     //Start with the discard card being a wild card.
-    discardCard
+
+    //If it wasn't a valid play, exit this function.  AND throw up a message to the user
+    return false;
 
     //If its 0-9, check if numbers and color match
     if(Number(playedCard.getNumber()) >= 0 && Number(playedCard.getNumber()) <= 9){
         if(playedCard.getColor() == discardCard.getColor() && Number(playedCard.getNumber()) === Number(discardCard.getNumber())){
 
+            //TODO: TEST THIS!!!!
             //Remove the card from the player hand
-            activePlayer.removePlayerCard(cardIDNum);
+            if(!activePlayer.removePlayerCard(cardIDNum)){
+                console.log("Card was not found in the player hand.  Need to handle this somehow???");
+            }
             //make sure it returns a Card and not False
 
             //Move the previous discard card into the deck & put the new discard card into the UI
             updateDiscardCard(playedCard)
+
+            //Update the player hand
         }
     }
     //Wild 1
@@ -621,8 +630,9 @@ function processCard(cardID){
     else if(Number(playedCard.getNumber()) === 22){
         changeActivePlayer(1);
     }
-
-    //11 and above, need special handling
+    else{
+        console.log("Card number was invalid.  What the heck happened???");
+    }
 
     //Check if the player won the game, after having verified that the played card was valid & if it is, its been removed from the players hand
     checkWinCondition();
@@ -633,16 +643,27 @@ function processCard(cardID){
     //Display the Modal box to block out the game board, and for the next player to being their turn
         //Change the class of the modal background to one that's completely blacked out?
         //Or just change that style???
+    //Maybe just add the new class to the modal background. Then remove it when the next turn starts????
+    //Maybe it would just be better to have a different modal box for this situation.  And clicking CONTINUE is required?  Clicking out of it does nothing?
     var modalBackground = document.getElementById("modalBackground");
 
 
 }
 
 function updateDiscardCard(newDiscardCard){
-//TODO: Implement this
+    //Put the previous discard card into the deck
+    gameDeck.addCard(discardCard);
 
+    //Set the new discard card
+    discardCard = newDiscardCard;
 
-    return true;
+    //Update the UI with the new discard card
+    //Set the top discard card
+    let UIDiscardCard = document.getElementById("UIDiscardCard");
+    UIDiscardCard.src = "/Code/Cards/" + discardCard.getFile();
+    (debug ? console.log("Discard card updated, new card:"):null);
+    (debug ? console.log(discardCard):null);
+
 }
 
 function changeActivePlayer(numPlayersToAdvance){
