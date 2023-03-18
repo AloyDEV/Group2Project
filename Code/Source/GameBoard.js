@@ -551,15 +551,21 @@ function processCard(cardID){
     //Get the card info
     let playedCard = playersArray[activePlayer].peekPlayerCard(cardIDNum);
 
-    updateDiscardCard(playedCard)
+    //Make sure that a valid card is being played
+    let validPlay = Boolean(false);
 
-    //Compare it to the DISCARD CARD
-    //TODO: If the discard card is wild, it'll require special handling, to pull the color out of the UI.
+    //Valid play: Any wild card
+        //Or match either by the number, color, or the symbol/Action
+    if(Number(playedCard.getNumber()) === 11 || Number(playedCard.getNumber()) === 14 || String(playedCard.getColor()) === String(discardCard.getColor()) || Number(playedCard.getNumber()) === Number(discardCard.getNumber())){
+        validPlay = true;
+    }
 
-    //Start with the discard card being a wild card.
+    //If it wasn't a valid play, exit this function.  And throw up a message to the user
+    if(!validPlay){
+        showModalBoxFunction(null, "<div><h2>Invaild card played.  Click HELP if you need assistance with valid plays</h2></div>");
+        return false;
+    }
 
-    //If it wasn't a valid play, exit this function.  AND throw up a message to the user
-    return false;
 
     //If its 0-9, check if numbers and color match
     if(Number(playedCard.getNumber()) >= 0 && Number(playedCard.getNumber()) <= 9){
@@ -727,12 +733,12 @@ function getNextPlayer(){
 function checkWinCondition(){
     //If the last play results in a player having 0 cards, they win and the game ends.
     //Check if the active player's hand is now empty
-    return activePlayer.getPlayerHandSize() === 0;
+    return activePlayer.getPlayerHand().length === 0;
 
 }
 
 
-function drawCard(){
+function drawCard(playerDrawingCard){
 
 }
 
@@ -844,5 +850,8 @@ shuffleButton.onclick = function(mouseEvent){
 
 if(debug){console.log("Game Board JS has completed loading")};
 
+//Reset game function
+    //Just refresh the page?  That resets everything but the player names.
 
+//Start over with new player names button?
 

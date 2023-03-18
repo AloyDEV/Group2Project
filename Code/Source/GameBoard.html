@@ -151,8 +151,8 @@
 
 
     </div>
-    <div class="column" style="flex: 39% !important;">
-        <div style="border: yellow solid 3px; height:45%">
+    <div class="column" style="flex: 39% !important; flex-flow: column">
+        <div style="border: yellow solid 3px; height:45%; width: 100%">
             <div id="buttonBar">
                 <button id="helpButton" onclick="">Help & Game Rules</button>
                 <button id="shuffleButton" onclick="">Shuffle Deck</button>
@@ -169,7 +169,7 @@
             <div id="miscMessageUI">Any misc messages needed</div>
             <div id="wildColorUI">Color selected for Wild</div>
         </div>
-        <div style="border: yellow solid 3px; width: 98%; height:45%; position: fixed; bottom: 0; display:flex;">
+        <div style="border: yellow solid 3px; height: 45%; display: flex; overflow-x: auto;">
             <div style="height:90%; border:orange solid 3px; margin-left:1%; margin-bottom:5%;">
                 <img id="UIDiscardCard" src="/Code/Cards/Deck.png" alt="Discard Card" style="height:100%;width:auto;"/>
             </div>
