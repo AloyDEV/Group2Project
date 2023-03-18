@@ -567,12 +567,9 @@ function processCard(cardID){
     }
 
 
-    //If its 0-9, check if numbers and color match
+    //We've already determine the card is a valid one.  So just need to make it the new discard card, and then process any wild or action cards.
     if(Number(playedCard.getNumber()) >= 0 && Number(playedCard.getNumber()) <= 9){
-        if(playedCard.getColor() == discardCard.getColor() && Number(playedCard.getNumber()) === Number(discardCard.getNumber())){
 
-            //TODO: TEST THIS!!!!
-            //Remove the card from the player hand
             if(!activePlayer.removePlayerCard(cardIDNum)){
                 console.log("Card was not found in the player hand.  Need to handle this somehow???");
             }
@@ -582,15 +579,11 @@ function processCard(cardID){
             updateDiscardCard(playedCard)
 
             //Update the player hand
-        }
     }
     //Wild 1
         /*
         This card represents all four colors, and can be placed on any card.
         The player has to state which color it will represent for the next player.
-        It can be played regardless of whether another card is available.
-        If turned up at the beginning of play, the first player chooses what color to continue play.
-            The game cheats slightly here.  The starting card will never be a wild card.
          */
     else if(Number(playedCard.getNumber()) === 11){
 
@@ -601,6 +594,7 @@ function processCard(cardID){
         With this card, you must have no other alternative cards to play that matches the color of the card previously played.
         If you play this card illegally, you may be challenged by the other player to show your hand to him/her. If guilty, you need to draw 4 cards.
         If not, the challenger needs to draw 6 cards instead.
+            //CHALLENGES ARE NOT PART OF THE GAME!!!!
          */
     else if(Number(playedCard.getNumber()) === 14){
 
@@ -609,8 +603,6 @@ function processCard(cardID){
         /*
         When a person places this card, the next player will have to pick up two cards and forfeit his/her turn.
         It can only be played on a card that matches by color, or on another Draw Two.
-        If turned up at the beginning of play, the first player draws two cards and gets skipped.
-            The game cheats slightly here.  The starting card will never be a draw twp card.
          */
     else if(Number(playedCard.getNumber()) === 20){
 
@@ -618,9 +610,6 @@ function processCard(cardID){
     //Reverse
         /*
         If going clockwise, switch to counterclockwise or vice versa. It can only be played on a card that matches by color, or on another Reverse card.
-        If turned up at the beginning of play, the dealer goes first, and the player to the dealer’s right is next
-        (normally it would be the player to the dealer’s left).
-            The game cheats slightly here.  The starting card will never be a reverse card.
          */
     else if(Number(playedCard.getNumber()) === 21){
         gameDirection = !Boolean(gameDirection);
@@ -629,9 +618,6 @@ function processCard(cardID){
     //Skip
         /*
         When a player places this card, the next player has to skip their turn. It can only be played on a card that matches by color, or on another Skip card.
-        If turned up at the beginning of play, the first player (to the dealer’s left) loses his/her turn.
-        The next player to that player’s right starts the game instead.
-            The game cheats slightly here.  The starting card will never be a skip card.
          */
     else if(Number(playedCard.getNumber()) === 22){
         changeActivePlayer(1);
@@ -645,6 +631,10 @@ function processCard(cardID){
 
     //If they didn't win, advance to the next player
     changeActivePlayer(1);
+    //If the next player is the computer player, need to have it make a move
+
+
+
 
     //Display the Modal box to block out the game board, and for the next player to being their turn
         //Change the class of the modal background to one that's completely blacked out?
