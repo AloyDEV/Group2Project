@@ -75,6 +75,21 @@
         }
 
 
+
+        @keyframes glow {
+            0% {
+                box-shadow: inset 0px 0px 200px 200px rgb(217, 6, 6);
+            }
+            100% {
+                box-shadow: inset 0px 0px 0px 0px rgb(217, 6, 6);
+            }
+        }
+
+        .borderFlash {
+            animation: glow .5s 1;
+        }
+
+
         /*------------------------------Modal Box Styling -------------------------------------------------*/
 
         /* The Modal (background) */
@@ -154,6 +169,16 @@
     <div class="column" style="flex: 39% !important; flex-flow: column">
         <div style="border: yellow solid 3px; height:45%; width: 100%">
             <div id="buttonBar">
+                <button onclick="(function(){
+                    let temp = document.getElementsByTagName('body');
+                    temp[0].className = 'borderFlash';
+
+//After the animation runs, the class needs to be changed back.
+    //best way to do that: https://stackoverflow.com/questions/50742142/run-js-script-after-css-animation-is-finished
+    //Other way to do that: https://stackoverflow.com/questions/14226803/wait-5-seconds-before-executing-next-line
+                    })();return false;
+
+">click to blink</button>
                 <button id="helpButton" onclick="">Help & Game Rules</button>
                 <button id="shuffleButton" onclick="">Shuffle Deck</button>
                 <button id="resetButton" onclick="">Reset Game</button>

@@ -562,7 +562,7 @@ function processCard(cardID){
 
     //If it wasn't a valid play, exit this function.  And throw up a message to the user
     if(!validPlay){
-        showModalBoxFunction(null, "<div><h2>Invaild card played.  Click HELP if you need assistance with valid plays</h2></div>");
+        showModalBoxFunction(null, "<div><h2>Invaild card played.  It must match the discard card's number, color, or action, or must be wild.  Click Help & Game Rules if you need assistance with valid plays</h2></div>");
         return false;
     }
 
