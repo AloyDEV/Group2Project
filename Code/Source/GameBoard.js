@@ -337,25 +337,9 @@ function createDeck(){
 
 
 
-//Table Class
-//Whenever the table is updated, write the game status to a cookie
-//Actually this might be too much data for a cookie.  Maybe local storage?
+//TODO: Table status SAVE.  Write everything to a cookie?
 const today = new Date();
 document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
-
-
-//Computer Player Class
-//Track their hand
-//Include the ability to cheat???
-
-
-//Computer Player Next Play Function
-//Logic, with some randomization & prioritization, when deciding what card to play and/or who to play it against
-
-
-//Player Move Function
-//When a card is discarded, immediately move the previous discard card  back into the deck
-
 
 
 //Regular rules:
@@ -372,19 +356,18 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 */
 
 
-//Check Win Status Function
 
 
 //Restart Game function
-//Cancel the existing cookie
-//document.cookie = "UNOGameState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-//document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    //Cancel the existing cookie
+    //document.cookie = "UNOGameState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    //document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-//Reset the deck & discard card
+    //Reset the deck & discard card
 
-//Reset all player hands
+    //Reset all player hands
 
-//Reset the UI
+    //Reset the UI
 
 
 
@@ -405,11 +388,11 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     if(playersCookie == ""){
         console.log("Something has gone wrong, the player info is not in the cookie");
         console.log("Defaulting to 3 players with default names");
-        var player1 = new Player(1,"Player1");
-        var player2 = new Player(2,"Player2");
-        var player3 = new Player(3,"Player3");
-        var player4 = new Player(4,"Computron");
-        playersArray.push(player1, player2, player3, player4);
+        var player0 = new Player(0,"Player1");
+        var player1 = new Player(1,"Player2");
+        var player2 = new Player(2,"Player3");
+        var player3 = new Player(3,"Computron");
+        playersArray.push(player0, player1, player2, player3);
     }
     else{
         let playersTempArray = playersCookie.split("|");
@@ -435,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         }
     }
     (debug ? console.log("Players dealt their hands:") : null);
-    if(debug){console.log(playersArray)};
+    (debug ? console.log(playersArray) : null);
 
     //Fourth pick the first card for the discard pile.
     //To make life easier, if it's a WIlD/SKIP/DRAW/REVERSE card, just draw another card, then shuffle the deck again at the end.
@@ -460,33 +443,33 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     //Adjust the player boxes to match # of players
     let playerBoxes;
     (debug ? console.log("Players: " + playersArray.length) : null);
-    switch(playersArray.length) {
+    switch(Number(playersArray.length)) {
         case 3:
             (debug ? console.log("Case 3") : null);
 
             //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
-            playerBoxes = document.getElementById("player3Box");
+            playerBoxes = document.getElementById("playerBox2");
             playerBoxes.className="playerBoxHide";
 
-            playerBoxes = document.getElementById("player2Box");
+            playerBoxes = document.getElementById("playerBox0");
             playerBoxes.style.height="26.66%" //26.66%
-            playerBoxes = document.getElementById("player1Box");
+            playerBoxes = document.getElementById("playerBox1");
             playerBoxes.style.height="26.66%"
-            playerBoxes = document.getElementById("player4Box");
+            playerBoxes = document.getElementById("playerBox3");
             playerBoxes.style.height="26.66%"
 
             break;
         case 2:
             (debug ? console.log("Case 2") : null);
 
-            playerBoxes = document.getElementById("player3Box");
+            playerBoxes = document.getElementById("playerBox2");
             playerBoxes.className="playerBoxHide";
-            playerBoxes = document.getElementById("player2Box");
+            playerBoxes = document.getElementById("playerBox1");
             playerBoxes.className="playerBoxHide";
 
-            playerBoxes = document.getElementById("player1Box");
+            playerBoxes = document.getElementById("playerBox0");
             playerBoxes.style.height="40%"; //40
-            playerBoxes = document.getElementById("player4Box");
+            playerBoxes = document.getElementById("playerBox3");
             playerBoxes.style.height="40%";
 
 
@@ -504,18 +487,18 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         //TODO: Reset the game, and default the players (3 players, default names)
     }
     else{
-        //Loop over all players
+
+        //Loop over all players, and build their hands
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
-            let playerHTML = '<div id="player'+(iUIPnames+1)+'Name" style="height:10%; border: white solid 1px; text-align: center;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
+            let playerHTML = '<div id="playerName'+(iUIPnames)+'" style="height:10%; border: white solid 1px; text-align: center;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
             //88% height to prevent the cards from slightly going over the player box
-            playerHTML = playerHTML + '<div id="player1Hand" className="playerHand" style="height:88%; border: purple solid 3px; overflow-y: auto">';
+            playerHTML = playerHTML + '<div id="playerHand'+(iUIPnames)+'" className="playerHand" style="height:88%; border: purple solid 3px; overflow-y: auto">';
 
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
                 //Starting player
                 if(iUIPnames == 0){
-                    //TODO: Add a CSS CLASS for the active player hand
                     playerHTML = playerHTML + '<img class="playerActive" onclick="processCard(this.id)" id="'+playerHand[iUIPhand].getGlobalNumber()+
                         '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:45%; margin-left: 1%; margin-bottom: .5%;"/>';
                     activePlayer = iUIPnames;
@@ -567,18 +550,32 @@ function processCard(cardID){
     }
 
 
-    //We've already determine the card is a valid one.  So just need to make it the new discard card, and then process any wild or action cards.
+    //We've already determined the card is a valid one.  So just need to make it the new discard card, and then process any wild or action cards.
+
+    //Number cards
     if(Number(playedCard.getNumber()) >= 0 && Number(playedCard.getNumber()) <= 9){
 
-            if(!activePlayer.removePlayerCard(cardIDNum)){
-                console.log("Card was not found in the player hand.  Need to handle this somehow???");
-            }
-            //make sure it returns a Card and not False
+        //Remove the card from the players hand
+        let tempCard = activePlayer.removePlayerCard(cardIDNum);
+        if (tempCard === false){
+            console.log("Card was not found in the player hand.  Need to handle this somehow???");
+        }
+        else{
+            //Put the current discard card into the deck
+            gameDeck.addCard(discardCard);
 
-            //Move the previous discard card into the deck & put the new discard card into the UI
+            //Put the played card as the discard card
+            discardCard = playedCard;
+
+            //Update the UI to match the discard card
             updateDiscardCard(playedCard)
 
-            //Update the player hand
+            //& Update the plays hand in the UI.
+            //Any element tied to a user has the player number at the end of the ID, so that can be used to identify any UI elements needed
+
+
+        }
+
     }
     //Wild 1
         /*
@@ -631,6 +628,13 @@ function processCard(cardID){
 
     //If they didn't win, advance to the next player
     changeActivePlayer(1);
+
+    //Update the UI to match the active player
+    document.getElementById("activePlayerUIplayer").innerHTML = "<h1>" + playersArray[activePlayer].getPlayerName() + "</h1>";
+    document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
+
+
+
     //If the next player is the computer player, need to have it make a move
 
 
