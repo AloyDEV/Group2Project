@@ -526,7 +526,14 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 // END GAME PREP -------------------------------------------------------------------------------------------------------------------------
 
 
+//TODO:
+//FUNCTION WHEN A CARD IS DRAWN INSTEAD OF ONE PLAYED
+
+//TODO:
+//FUNCTION when the Discard Card is clicked???
+
 function processCard(cardID){
+
     let cardIDNum = Number(cardID);
     (debug ? console.log("CARD CLICKED. Card ID:" + playersArray.length) : null);
     (debug ? console.log(cardIDNum) : null);
@@ -545,7 +552,7 @@ function processCard(cardID){
 
     //If it wasn't a valid play, exit this function.  And throw up a message to the user
     if(!validPlay){
-        showModalBoxFunction(null, "<div><h2>Invaild card played.  It must match the discard card's number, color, or action, or must be wild.  Click Help & Game Rules if you need assistance with valid plays</h2></div>");
+        showModalBoxFunction(null, "<div><h2>Invaild card played</h2></div>  <div>It must match the discard card's number, color, action, or must be wild.  Click Help & Game Rules if you need assistance with valid plays.</div>");
         return false;
     }
 
@@ -556,7 +563,7 @@ function processCard(cardID){
     if(Number(playedCard.getNumber()) >= 0 && Number(playedCard.getNumber()) <= 9){
 
         //Remove the card from the players hand
-        let tempCard = activePlayer.removePlayerCard(cardIDNum);
+        let tempCard = playersArray[activePlayer].removePlayerCard(cardIDNum);
         if (tempCard === false){
             console.log("Card was not found in the player hand.  Need to handle this somehow???");
         }
@@ -564,15 +571,13 @@ function processCard(cardID){
             //Put the current discard card into the deck
             gameDeck.addCard(discardCard);
 
-            //Put the played card as the discard card
-            discardCard = playedCard;
-
-            //Update the UI to match the discard card
+            //Update the Discard Card to the one that was played (UI & Backend)
             updateDiscardCard(playedCard)
 
-            //& Update the plays hand in the UI.
-            //Any element tied to a user has the player number at the end of the ID, so that can be used to identify any UI elements needed
+            //Update the plays hand in the UI to remove the card by its ID
+            document.getElementById(String(cardIDNum)).remove();
 
+            //Any element tied to a user has the player number at the end of the ID, so that can be used to identify any UI elements needed
 
         }
 
@@ -596,7 +601,7 @@ function processCard(cardID){
     else if(Number(playedCard.getNumber()) === 14){
 
     }
-    //Draw Two
+    //Draw Two (AND SKIP)
         /*
         When a person places this card, the next player will have to pick up two cards and forfeit his/her turn.
         It can only be played on a card that matches by color, or on another Draw Two.
@@ -620,18 +625,56 @@ function processCard(cardID){
         changeActivePlayer(1);
     }
     else{
-        console.log("Card number was invalid.  What the heck happened???");
+        console.log("Card number was invalid from the played card.  What the heck happened??? Card number:");
+        console.log(playedCard.getNumber());
+        alert('The cards type was invalid.  Game is probably unplayable');
+        return false;
     }
 
-    //Check if the player won the game, after having verified that the played card was valid & if it is, its been removed from the players hand
-    checkWinCondition();
 
+    //Check if the player won the game at the end of their turn
+    if(checkWinCondition()){
+        //Prod
+        let startPage = "/index.html";
+        //Test
+        if(debug){
+            startPage =  "/Group2Project/Code/Source/index.html";
+        }
+
+        showModalBoxFunction(null, "<div><h2>"+playersArray[activePlayer].getPlayerName()+" won the game!</h2></div>" +
+            "<br><div>Click here to start a new game with the same players: <br><button onclick='window.location.reload();'>NEW GAME</button></div>" +
+            "<br><div>Click here to select the number of players & enter player names before starting the game: <br><button onclick='window.location.href = \" "+startPage+" \";'>NEW PLAYERS & NEW GAME</button></div>");
+        return false;
+    }
+
+    //Update the player hands in the UI.  Active player cards updated to the class that only displays the back
+    let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
+    for(let i=0; i<activePlayerHandOld.length; i++){
+        activePlayerHandOld[i].className="backOfCardImages";
+        activePlayerHandOld[i].removeAttribute('onclick');
+
+        (debug ? console.log(activePlayerHandOld[i]) : null);
+    }
+
+    //TODO: Resume here, implement advancing to the next player
     //If they didn't win, advance to the next player
     changeActivePlayer(1);
 
-    //Update the UI to match the active player
+    //And set the new active player to display their cards in the UI
+    let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer+1)).children; //This is actually a pseudo-array, not a real array
+    for(let i=0; i<activePlayerHandNew.length; i++){
+        activePlayerHandNew[i].className="playerActive";
+        activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
+        activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer+1].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
+        (debug ? console.log(activePlayerHandNew[i]) : null);
+    }
+
+
+
+    //Update the UI to match the active player in the info panel
     document.getElementById("activePlayerUIplayer").innerHTML = "<h1>" + playersArray[activePlayer].getPlayerName() + "</h1>";
     document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
+
 
 
 
@@ -651,14 +694,10 @@ function processCard(cardID){
 }
 
 function updateDiscardCard(newDiscardCard){
-    //Put the previous discard card into the deck
-    gameDeck.addCard(discardCard);
-
     //Set the new discard card
     discardCard = newDiscardCard;
 
     //Update the UI with the new discard card
-    //Set the top discard card
     let UIDiscardCard = document.getElementById("UIDiscardCard");
     UIDiscardCard.src = "/Code/Cards/" + discardCard.getFile();
     (debug ? console.log("Discard card updated, new card:"):null);
@@ -725,9 +764,10 @@ function getNextPlayer(){
 
 
 function checkWinCondition(){
+
     //If the last play results in a player having 0 cards, they win and the game ends.
     //Check if the active player's hand is now empty
-    return activePlayer.getPlayerHand().length === 0;
+    return playersArray[activePlayer].getPlayerHand().length === 0;
 
 }
 
