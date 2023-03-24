@@ -71,7 +71,7 @@
 
         /* For all non-active players, this is used to have all IMG tags only display the back of the card */
         .backOfCardImages{
-            content:url("/Code/Cards/Deck.png");
+            content:url("/Code/Cards/Deck.png") !important;
         }
 
 
@@ -146,7 +146,7 @@
 
 
 <div class="row">
-    <div class="column" style="flex: 60% !important;">
+    <div class="column" style="flex: 60% !important; min-width: 50%">
         <div id="playerBox0" class="playerBoxShow">
             <div id="playerName0">Player 1</div>
             <div id="playerHand0" class="playerHand"> HAND!!!</div>
@@ -160,13 +160,13 @@
             <div id="playerHand2" class="playerHand"> HAND!!!</div>
         </div>
         <div id="playerBox3" class="playerBoxShow">
-            <div id="playerName3">Player 4/Computer</div>
+            <div id="playerName3">Player 4 AKA Computer</div>
             <div id="player4Hand3" class="playerHand"> HAND!!!</div>
         </div>
 
 
     </div>
-    <div class="column" style="flex: 39% !important; flex-flow: column">
+    <div class="column" style="flex: 39% !important; max-width: 50%; flex-flow: column">
         <div style="border: yellow solid 3px; height:45%; width: 100%">
             <div id="buttonBar">
                 <button onclick="(function(){
@@ -199,7 +199,7 @@
                 <img id="UIDiscardCard" src="/Code/Cards/Deck.png" alt="Discard Card" style="height:100%;width:auto;"/>
             </div>
             <div style="height:90%; border:orange solid 3px; margin-left:1%;margin-bottom:5%;">
-                <img id="UIDeck" src="/Code/Cards/Deck.png" alt="Deck" style="height:100%;width:auto;"/>
+                <img id="UIDeck" src="/Code/Cards/Deck.png" alt="Deck" style="height:100%;width:auto; cursor: pointer"/>
             </div>
         </div>
     </div>

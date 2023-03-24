@@ -26,7 +26,16 @@ Fix the Flexbox for the player boxes
 
 Change the GlobalID for a card to ALWAYS BE A NUMBER.  No implicit conversions to numbers/strings
     EX: let num = Number(cardID);
+    DONE!!!
 
+
+Note: Things removed that might be added back later:
+    Challenges to Wild+4
+                With this card, you must have no other alternative cards to play that matches the color of the card previously played.
+                If you play this card illegally, you may be challenged by the other player to show your hand to him/her. If guilty, you need to draw 4 cards.
+                If not, the challenger needs to draw 6 cards instead.
+    Calling UNO at the end of the game
+    The first discard card being a non-number card.
 
  */
 
@@ -159,8 +168,8 @@ class Deck{
         //Removed based on the cards Global Number
         if(this.deck.length < 1){
             console.log("No more cards, the game is unplayable!!!!!!")
-            //TODO: Throw up a modal box to notify the player and reset the game board
-
+            alert("NO MORE CARDS IN THE DECK!!! THE GAME IS UNPLAYABLE!!!!!  Click Reset Game to start over");
+            //TODO: Actually, should a new deck just be created here?  Or will that throw of GlobalIDs?
             return false;
         }
         else {
@@ -177,8 +186,11 @@ class Deck{
     removeTopCard(){
         //Make sure there is at least 1 card in the deck
         if(this.deck.length < 1){
-            console.log("No more cards!!!!!")
-            //TODO: Do something here
+            console.log("No more cards!!!!!, game is unplayable???")
+            alert("NO MORE CARDS IN THE DECK!!! THE GAME IS UNPLAYABLE!!!!!  Click Reset Game to start over");
+            //TODO: Actually, should a new deck just be created here?  Or will that throw of GlobalIDs?
+            //window.location.reload();
+            return false;
         }
         else {
             //TODO: Add in a check that this successfully pulls back a card.
@@ -358,20 +370,6 @@ document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() +
 
 
 
-//Restart Game function
-    //Cancel the existing cookie
-    //document.cookie = "UNOGameState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    //document.cookie = "UNOusers=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-    //Reset the deck & discard card
-
-    //Reset all player hands
-
-    //Reset the UI
-
-
-
-
 // BEGIN GAME PREP -------------------------------------------------------------------------------------------------------------------------
 
 //Once the starting UI has loaded, begin the backend game prep (That modifies some of the UI)
@@ -448,6 +446,8 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             (debug ? console.log("Case 3") : null);
 
             //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
+            //TODO: Actually this should REMOVE THE ELEMENT. Otherwise there will be issues when updating player hands
+                //AND reset the IDs of the elements to always increment up, and numbers aren't skipped
             playerBoxes = document.getElementById("playerBox2");
             playerBoxes.className="playerBoxHide";
 
@@ -528,6 +528,31 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
 //TODO:
 //FUNCTION WHEN A CARD IS DRAWN INSTEAD OF ONE PLAYED
+    //How to display the card to the user before advancing?  Maybe just pop it up for a few seconds, and then auto-advance to the next user?
+
+let cardDrawn = document.getElementById("UIDeck");
+cardDrawn.onclick = function(mouseEvent) {
+    console.log(playersArray[activePlayer].addPlayerCard(gameDeck.removeTopCard()));
+    console.log(playersArray[activePlayer]);
+    //Update the UI
+    let activePlayerHandDraw = document.getElementById("playerHand" + (activePlayer)); //This is actually a pseudo-array, not a real array
+    console.log("Player Hand length: " + activePlayerHandDraw.length); //WIll be 7 when there are 8 cards
+
+    const newCardElement = document.createElement("img");
+    //<img class="playerActive" onclick="processCard(this.id)" id="3" src="/Code/Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
+    newCardElement.setAttribute("class", "playerActive");
+    newCardElement.setAttribute("src", "/Code/Cards/Blue_1.png");
+    newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+
+    //TODO: Resume here, adding a new node to the hand
+    activePlayerHandDraw.appendChild(newCardElement);
+    //console.log(activePlayerHandDraw);
+
+
+    //Throw up a modal of the drawn card, and a Continue button to advance to the next player
+}
+
+
 
 //TODO:
 //FUNCTION when the Discard Card is clicked???
@@ -552,35 +577,38 @@ function processCard(cardID){
 
     //If it wasn't a valid play, exit this function.  And throw up a message to the user
     if(!validPlay){
-        showModalBoxFunction(null, "<div><h2>Invaild card played</h2></div>  <div>It must match the discard card's number, color, action, or must be wild.  Click Help & Game Rules if you need assistance with valid plays.</div>");
+        showModalBoxFunction(null, "<div><h2>Invalid card played</h2></div>  <div>It must match the discard card's number, color, action, or be wild.  Click Help & Game Rules for information on valid plays.</div>");
         return false;
     }
 
 
     //We've already determined the card is a valid one.  So just need to make it the new discard card, and then process any wild or action cards.
 
+    //Remove the card from the players hand
+    let tempCard = playersArray[activePlayer].removePlayerCard(cardIDNum);
+    if (tempCard === false){
+        console.log("Card was not found in the player hand.  Player Hand:");
+        console.log(playersArray[activePlayer].getPlayerHand());
+        console.log("The ID of the played card: " + cardIDNum);
+        alert("Card not found in the player hand.  Game might need to be reset");
+        return false;
+    }
+
+    //Put the current discard card into the deck
+    gameDeck.addCard(discardCard);
+
+    //Update the Discard Card to the one that was played (UI & Backend)
+    updateDiscardCard(playedCard)
+
+    //Update the plays hand in the UI to remove the card by its ID
+    document.getElementById(String(cardIDNum)).remove();
+
+    //Any element tied to a user has the player number at the end of the ID, so that can be used to identify any UI elements needed
+
+
     //Number cards
     if(Number(playedCard.getNumber()) >= 0 && Number(playedCard.getNumber()) <= 9){
-
-        //Remove the card from the players hand
-        let tempCard = playersArray[activePlayer].removePlayerCard(cardIDNum);
-        if (tempCard === false){
-            console.log("Card was not found in the player hand.  Need to handle this somehow???");
-        }
-        else{
-            //Put the current discard card into the deck
-            gameDeck.addCard(discardCard);
-
-            //Update the Discard Card to the one that was played (UI & Backend)
-            updateDiscardCard(playedCard)
-
-            //Update the plays hand in the UI to remove the card by its ID
-            document.getElementById(String(cardIDNum)).remove();
-
-            //Any element tied to a user has the player number at the end of the ID, so that can be used to identify any UI elements needed
-
-        }
-
+        //Shouldn't need any special handling???
     }
     //Wild 1
         /*
@@ -590,13 +618,11 @@ function processCard(cardID){
     else if(Number(playedCard.getNumber()) === 11){
 
     }
+
+
     //Wild 4
         /*
         This acts just like the wild card except that the next player also has to draw four cards as well as forfeit his/her turn.
-        With this card, you must have no other alternative cards to play that matches the color of the card previously played.
-        If you play this card illegally, you may be challenged by the other player to show your hand to him/her. If guilty, you need to draw 4 cards.
-        If not, the challenger needs to draw 6 cards instead.
-            //CHALLENGES ARE NOT PART OF THE GAME!!!!
          */
     else if(Number(playedCard.getNumber()) === 14){
 
@@ -625,9 +651,9 @@ function processCard(cardID){
         changeActivePlayer(1);
     }
     else{
-        console.log("Card number was invalid from the played card.  What the heck happened??? Card number:");
-        console.log(playedCard.getNumber());
-        alert('The cards type was invalid.  Game is probably unplayable');
+        console.log("Card number was invalid from the played card.  What the heck happened??? played card:");
+        console.log(playedCard);
+        alert('The cards type was invalid.  Game is probably unplayable.  Click Reset Game to start over');
         return false;
     }
 
@@ -652,23 +678,28 @@ function processCard(cardID){
     for(let i=0; i<activePlayerHandOld.length; i++){
         activePlayerHandOld[i].className="backOfCardImages";
         activePlayerHandOld[i].removeAttribute('onclick');
+        //ISSUE: Removing the src attribute causes all of the cards to go to their default height.  Not sure why, the CSS appears to be identical
+        //activePlayerHandOld[i].removeAttribute('src');
+
 
         (debug ? console.log(activePlayerHandOld[i]) : null);
     }
 
-    //TODO: Resume here, implement advancing to the next player
     //If they didn't win, advance to the next player
     changeActivePlayer(1);
+    (debug ? console.log("New Active Player: " + activePlayer) : null);
 
+
+    //ISSUE: This won't work when there are less then 3 players, that situation causes player IDs to be skipped
     //And set the new active player to display their cards in the UI
-    let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer+1)).children; //This is actually a pseudo-array, not a real array
+    let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer)).children; //This is actually a pseudo-array, not a real array
     for(let i=0; i<activePlayerHandNew.length; i++){
         activePlayerHandNew[i].className="playerActive";
         activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
-        activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer+1].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
+        //The CSS Class to change to the back of the card COULD be used with the SRC attribute.  So the SRC is present all of the time, and just the class changes.
+        activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
         (debug ? console.log(activePlayerHandNew[i]) : null);
     }
-
 
 
     //Update the UI to match the active player in the info panel
@@ -677,12 +708,12 @@ function processCard(cardID){
 
 
 
-
-    //If the next player is the computer player, need to have it make a move
-
-
+//TODO: Implement the computer player here
+    //If the next player is the computer player, need to have it make a move SLOWLY
 
 
+
+//TODO: Add in the player transition in the UI.  Black it out, etc.
     //Display the Modal box to block out the game board, and for the next player to being their turn
         //Change the class of the modal background to one that's completely blacked out?
         //Or just change that style???
@@ -706,6 +737,11 @@ function updateDiscardCard(newDiscardCard){
 }
 
 function changeActivePlayer(numPlayersToAdvance){
+    //ISSUE: This can't actually advance multiple players the way its implemented.  It can only advance one player.
+
+    activePlayer = Number(getNextPlayer());
+
+    return false;
 
     let playersToAdvanceNum = Number(numPlayersToAdvance);
     //Direction is determined by gameDirection global
@@ -730,6 +766,8 @@ function changeActivePlayer(numPlayersToAdvance){
             nextPlayer = activePlayer - 1;
         }
     }
+
+    //return nextPlayer;
 }
 
 //Returns the array position number of the next player
@@ -847,7 +885,7 @@ window.onclick = function(mouseEvent) {
 //Start game box: Notify the users about how to play the game.
 document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
-    showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  Click the deck to draw a card, or pick the discard card to draw it</p>" +
+    showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  Click the deck to draw a card.</p>" +
         "<p> To play a card, click on it. After you play, the game board will be hidden as the next players cards are dispalyed.  Click Continue for the next player to begin their turn.</p>" +
         "<p>Click outside of this box, or the X on the right, to start the game</p>");
 
@@ -886,6 +924,12 @@ if(debug){console.log("Game Board JS has completed loading")};
 
 //Reset game function
     //Just refresh the page?  That resets everything but the player names.
+//resetButton
+var resetButton = document.getElementById("resetButton");
+resetButton.onclick = function(mouseEvent){
+    (debug ? console.log("Game being reset") : null);
+    showModalBoxFunction(mouseEvent, "<h3> Click to confirm the game should be reset:<br> <button onclick='window.location.reload();'>RESET GAME</button></h3>");
+}
 
 //Start over with new player names button?
 
