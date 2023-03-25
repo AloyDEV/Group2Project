@@ -5,11 +5,12 @@ var debug = true;
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
 //Note: There's 1 more global, var gameDeck, after the Deck class (Otherwise it threw an error)
 //TODO: Might want to put them in a wrapper or namespace for better handling
-//EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
+//  EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
 var playersArray = [];
 var discardCard;
 var activePlayer = 0;
 var gameDirection = Boolean(true); //true = top to bottom, false = bottom to top
+var alreadyDrawnCard = false; //Makes the deck inactive after a player has drawn a card.
 
 if(debug){console.log("Game Board JS is loading");}
 
@@ -526,38 +527,66 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 // END GAME PREP -------------------------------------------------------------------------------------------------------------------------
 
 
-//TODO:
+
+// ********************************************************************************************************************************************
 //FUNCTION WHEN A CARD IS DRAWN INSTEAD OF ONE PLAYED
     //How to display the card to the user before advancing?  Maybe just pop it up for a few seconds, and then auto-advance to the next user?
 
 let cardDrawn = document.getElementById("UIDeck");
 cardDrawn.onclick = function(mouseEvent) {
-    console.log(playersArray[activePlayer].addPlayerCard(gameDeck.removeTopCard()));
-    console.log(playersArray[activePlayer]);
-    //Update the UI
-    let activePlayerHandDraw = document.getElementById("playerHand" + (activePlayer)); //This is actually a pseudo-array, not a real array
-    console.log("Player Hand length: " + activePlayerHandDraw.length); //WIll be 7 when there are 8 cards
 
-    const newCardElement = document.createElement("img");
-    //<img class="playerActive" onclick="processCard(this.id)" id="3" src="/Code/Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
-    newCardElement.setAttribute("class", "playerActive");
-    newCardElement.setAttribute("src", "/Code/Cards/Blue_1.png");
-    newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+    if(alreadyDrawnCard){
+        showModalBoxFunction(null, "<h2>You've already drawn a card this turn.  <br>Play a card in your hand, or click Continue to end your turn & advance to the next player</h2>");
+    }
+    else {
 
-    //TODO: Resume here, adding a new node to the hand
-    activePlayerHandDraw.appendChild(newCardElement);
-    //console.log(activePlayerHandDraw);
+        (debug ? console.log("Player hand before drawing a new card: ") : null);
+        (debug ? console.log(playersArray[activePlayer].getPlayerHand()) : null);
 
+        //Draw a card from the deck
+        let newCard = gameDeck.removeTopCard();
+        (debug ? console.log("Newly drawn card file & global ID:") : null);
+        (debug ? newCard.getFile() : null);
+        (debug ? newCard.getGlobalNumber() : null);
 
-    //Throw up a modal of the drawn card, and a Continue button to advance to the next player
+        //Add the card to the player hand
+        playersArray[activePlayer].addPlayerCard(newCard);
+        alreadyDrawnCard = true;
+
+        //Update the UI to add in the new card
+        let activePlayerHandDraw = document.getElementById("playerHand" + (activePlayer)); //This is actually a pseudo-array, not a real array
+        const newCardElement = document.createElement("img");
+        //<img class="playerActive" onclick="processCard(this.id)" id="3" src="/Code/Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
+        newCardElement.setAttribute("class", "playerActive");
+        newCardElement.setAttribute("onclick", "processCard(this.id)");
+        newCardElement.setAttribute("id", newCard.getGlobalNumber());
+        newCardElement.setAttribute("src", "/Code/Cards/" + newCard.getFile());
+        newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+
+        activePlayerHandDraw.appendChild(newCardElement);
+
+        (debug ? console.log("Player hand after drawing a new card: ") : null);
+        (debug ? console.log(playersArray[activePlayer].getPlayerHand()) : null);
+
+        //The player can play the card they just picked up, so display the CONTINUE button to allow them to end their turn without playing a card.
+        document.getElementById("continue").setAttribute("style", "")
+
+        //At this point, instead of the making the deck un-clickable, keep it clickable.
+        //So that if the player clicks the deck again out of confusion, it'll direction them what to do next.
+
+    }
+
 }
+// ********************************************************************************************************************************************
 
 
 
-//TODO:
-//FUNCTION when the Discard Card is clicked???
 
+//##################################################################################################################################################
+//FUNCTION when a player clicks one of their cards to play it
 function processCard(cardID){
+
+    //Issue: PLaying the Skip card results in the players hand (or player 2's hand) not flipping to the back of the card when their turn ends
 
     let cardIDNum = Number(cardID);
     (debug ? console.log("CARD CLICKED. Card ID:" + playersArray.length) : null);
@@ -571,9 +600,13 @@ function processCard(cardID){
 
     //Valid play: Any wild card
         //Or match either by the number, color, or the symbol/Action
+    //TODO: OR THE COLOR CHOSEN FROM THE PREVIOUS WILD CARD PLAY
     if(Number(playedCard.getNumber()) === 11 || Number(playedCard.getNumber()) === 14 || String(playedCard.getColor()) === String(discardCard.getColor()) || Number(playedCard.getNumber()) === Number(discardCard.getNumber())){
         validPlay = true;
     }
+
+    //ISSUE: TEMP FOR DEBUGGING
+    validPlay = true;
 
     //If it wasn't a valid play, exit this function.  And throw up a message to the user
     if(!validPlay){
@@ -621,39 +654,51 @@ function processCard(cardID){
 
 
     //Wild 4
-        /*
+        /* +4 and SKIP next player
         This acts just like the wild card except that the next player also has to draw four cards as well as forfeit his/her turn.
          */
     else if(Number(playedCard.getNumber()) === 14){
 
     }
-    //Draw Two (AND SKIP)
-        /*
+
+    /* Draw Two (AND SKIP)   +2 and SKIP next player
         When a person places this card, the next player will have to pick up two cards and forfeit his/her turn.
-        It can only be played on a card that matches by color, or on another Draw Two.
          */
     else if(Number(playedCard.getNumber()) === 20){
 
+        playersArray[Number(getNextPlayer())].addCard(gameDeck.removeTopCard());
+        playersArray[Number(getNextPlayer())].addCard(gameDeck.removeTopCard());
+        //Update the UI to make it clear how many cards were drawn
+
+
+        //Skip the next player
+        continueToNextPlayer();
     }
-    //Reverse
-        /*
+
+    /*Reverse
         If going clockwise, switch to counterclockwise or vice versa. It can only be played on a card that matches by color, or on another Reverse card.
          */
     else if(Number(playedCard.getNumber()) === 21){
         gameDirection = !Boolean(gameDirection);
-        //Update the UI to display the new direction & next player
+        //Update the UI to update next player
+        document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
     }
-    //Skip
-        /*
+
+    /* Skip
         When a player places this card, the next player has to skip their turn. It can only be played on a card that matches by color, or on another Skip card.
          */
     else if(Number(playedCard.getNumber()) === 22){
+
+        //ISSUE: This doesn't work correctly.  It causes the active player who played the card's hand to stay visible in the UI.
+
         changeActivePlayer(1);
+        //Just update the UI to the next player right now.  Don't change the name of the active player.
+        document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
     }
     else{
         console.log("Card number was invalid from the played card.  What the heck happened??? played card:");
         console.log(playedCard);
-        alert('The cards type was invalid.  Game is probably unplayable.  Click Reset Game to start over');
+        alert("The card's type was invalid.  Game is probably unplayable.  Click Reset Game to start over");
         return false;
     }
 
@@ -672,6 +717,23 @@ function processCard(cardID){
             "<br><div>Click here to select the number of players & enter player names before starting the game: <br><button onclick='window.location.href = \" "+startPage+" \";'>NEW PLAYERS & NEW GAME</button></div>");
         return false;
     }
+
+    continueToNextPlayer();
+
+    return true;
+
+}
+//##################################################################################################################################################
+
+
+function continueToNextPlayer(){
+    (debug ? console.log("Continuing.  Previously drawn card from deck: " + alreadyDrawnCard) : null);
+
+    //Reset the ability to draw a card for the next player.
+    alreadyDrawnCard = false;
+
+    //Hide the Continue button, it only displays if a card was drawn
+    document.getElementById("continue").setAttribute("style","display:none")
 
     //Update the player hands in the UI.  Active player cards updated to the class that only displays the back
     let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
@@ -708,21 +770,27 @@ function processCard(cardID){
 
 
 
-//TODO: Implement the computer player here
+    //TODO: Implement the computer player here
     //If the next player is the computer player, need to have it make a move SLOWLY
 
 
 
-//TODO: Add in the player transition in the UI.  Black it out, etc.
+    //TODO: Does the Continue button need to be clicked?  Or can clicking outside the Modal also allow advancing??
+    //If clicking outside, I might need a second modal box to handle it.
+    //And LOTS OF OTHER THINGS TO CONSIDER
+
+
+
+    //TODO: Add in the player transition in the UI.  Black it out, etc.
     //Display the Modal box to block out the game board, and for the next player to being their turn
-        //Change the class of the modal background to one that's completely blacked out?
-        //Or just change that style???
+    //Change the class of the modal background to one that's completely blacked out?
+    //Or just change that style???
     //Maybe just add the new class to the modal background. Then remove it when the next turn starts????
     //Maybe it would just be better to have a different modal box for this situation.  And clicking CONTINUE is required?  Clicking out of it does nothing?
     var modalBackground = document.getElementById("modalBackground");
-
-
 }
+
+
 
 function updateDiscardCard(newDiscardCard){
     //Set the new discard card
@@ -737,37 +805,12 @@ function updateDiscardCard(newDiscardCard){
 }
 
 function changeActivePlayer(numPlayersToAdvance){
-    //ISSUE: This can't actually advance multiple players the way its implemented.  It can only advance one player.
+    //TODO: This can't actually advance multiple players the way its implemented.  It can only advance one player.
 
     activePlayer = Number(getNextPlayer());
 
-    return false;
+    return true;
 
-    let playersToAdvanceNum = Number(numPlayersToAdvance);
-    //Direction is determined by gameDirection global
-    //Need to change the CLASS used by the IMG tags.  Remove that class from the current player, add it to the next player
-
-    let nextPlayer = -1;
-
-    //TODO: Implement this.
-    if (gameDirection){
-        if(Number(activePlayer) === playersArray.length-1){
-            nextPlayer = 0;
-        }
-        else{
-            nextPlayer = activePlayer + 1;
-        }
-    }
-    else{
-        if(Number(activePlayer) === 0){
-            nextPlayer = playersArray.length-1;
-        }
-        else{
-            nextPlayer = activePlayer - 1;
-        }
-    }
-
-    //return nextPlayer;
 }
 
 //Returns the array position number of the next player
@@ -806,18 +849,6 @@ function checkWinCondition(){
     //If the last play results in a player having 0 cards, they win and the game ends.
     //Check if the active player's hand is now empty
     return playersArray[activePlayer].getPlayerHand().length === 0;
-
-}
-
-
-function drawCard(playerDrawingCard){
-
-}
-
-function continueToNextPlayer(){
-    //TODO: Does the Continue button need to be clicked?  Or can clicking outside the Modal also allow advancing??
-    //If clicking outside, I might need a second modal box to handle it.
-    //And LOTS OF OTHER THINGS TO CONSIDER
 
 }
 
