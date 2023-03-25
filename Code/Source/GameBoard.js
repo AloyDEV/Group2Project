@@ -636,7 +636,7 @@ function processCard(cardID){
     //Update the plays hand in the UI to remove the card by its ID
     document.getElementById(String(cardIDNum)).remove();
 
-    //Any element tied to a user has the player number at the end of the ID, so that can be used to identify any UI elements needed
+    //Note: Any element tied to a user has the player number at the end of the ID, so that can be used to identify any UI elements needed
 
 
     //Number cards
