@@ -11,6 +11,7 @@ var discardCard;
 var activePlayer = 0;
 var gameDirection = Boolean(true); //true = top to bottom, false = bottom to top
 var alreadyDrawnCard = false; //Makes the deck inactive after a player has drawn a card.
+var wildPlayed = false;
 
 if(debug){console.log("Game Board JS is loading");}
 
@@ -20,7 +21,8 @@ if(debug){console.log("Game Board JS is loading");}
 /*
 
 How to track which card is which?  store its Global Number somewhere in the HTML?
-Tie each card to an OnClick function, that passes in the card identifier
+    Tie each card to an OnClick function, that passes in the card identifier
+    DONE!!!!
 
 Fix the Flexbox for the player boxes
 
@@ -28,6 +30,9 @@ Fix the Flexbox for the player boxes
 Change the GlobalID for a card to ALWAYS BE A NUMBER.  No implicit conversions to numbers/strings
     EX: let num = Number(cardID);
     DONE!!!
+
+
+In GameBoard.html, the last element in the Style tag throws an error when its closing bracket is added
 
 
 Note: Things removed that might be added back later:
@@ -569,10 +574,10 @@ cardDrawn.onclick = function(mouseEvent) {
         (debug ? console.log(playersArray[activePlayer].getPlayerHand()) : null);
 
         //The player can play the card they just picked up, so display the CONTINUE button to allow them to end their turn without playing a card.
-        document.getElementById("continue").setAttribute("style", "")
+        document.getElementById("continueButtonNextPlayer").setAttribute("style", "")
 
         //At this point, instead of the making the deck un-clickable, keep it clickable.
-        //So that if the player clicks the deck again out of confusion, it'll direction them what to do next.
+        //So that if the player clicks the deck again out of confusion, it'll direct them what to do next.
 
     }
 
@@ -586,24 +591,31 @@ cardDrawn.onclick = function(mouseEvent) {
 //FUNCTION when a player clicks one of their cards to play it
 function processCard(cardID){
 
-    //Issue: PLaying the Skip card results in the players hand (or player 2's hand) not flipping to the back of the card when their turn ends
 
     let cardIDNum = Number(cardID);
     (debug ? console.log("CARD CLICKED. Card ID:" + playersArray.length) : null);
     (debug ? console.log(cardIDNum) : null);
 
-    //Get the card info
+    //Get the info of the card that was played, before removing it from the player's hand
     let playedCard = playersArray[activePlayer].peekPlayerCard(cardIDNum);
 
     //Make sure that a valid card is being played
     let validPlay = Boolean(false);
 
-    //Valid play: Any wild card
-        //Or match either by the number, color, or the symbol/Action
-    //TODO: OR THE COLOR CHOSEN FROM THE PREVIOUS WILD CARD PLAY
+    //Valid play: Any wild card OR match either by the number, color, or the symbol/Action
     if(Number(playedCard.getNumber()) === 11 || Number(playedCard.getNumber()) === 14 || String(playedCard.getColor()) === String(discardCard.getColor()) || Number(playedCard.getNumber()) === Number(discardCard.getNumber())){
         validPlay = true;
     }
+    //A wild card was played previously, just need to match color
+    else{
+        //if a wild card was played, then allow different processing.  And update the UI that the wild card is no longer needed
+        if(wildPlayed){
+
+        }
+
+    }
+
+
 
     //ISSUE: TEMP FOR DEBUGGING
     validPlay = true;
@@ -650,8 +662,30 @@ function processCard(cardID){
          */
     else if(Number(playedCard.getNumber()) === 11){
 
+        //TODO: Check the win condition here.  If a player won, then no need to display the card selection popup
+        //  Maybe also put the Win modal into its own function
+
+        //ISSUE: The regular MODAL box won't work here.  If the player clicks outside of it without making a selection it'll advance to the next player without a color selection.
+
+        showModalBoxFunction(null, "Select the color of the Wild card (That the next player must match): <br>"+
+            "<div id='wildInput'>" +
+            "<input type=\"radio\" id=\"blue\" name=\"wildcolorsradio\" value=\"Blue\">" +
+            "<label for=\"blue\">Blue</label><br>" +
+            "<input type=\"radio\" id=\"green\" name=\"wildcolorsradio\" value=\"green\">" +
+            "<label for=\"green\">Green</label><br>" +
+            "<input type=\"radio\" id=\"red\" name=\"wildcolorsradio\" value=\"red\">" +
+            "<label for=\"red\">Red</label><br> " +
+            "<input type=\"radio\" id=\"yellow\" name=\"wildcolorsradio\" value=\"yellow\">" +
+            "<label for=\"yellow\">Yellow</label><br> " +
+            "<button id=\"wildContinue\" onclick=\"wildColorFunction()\"> Continue </button>" +
+            "</div> ");
+
+        //Exit out of this function.  Otherwise it'll automatically move to the next player (And show the next players hand to the current player)
+        //Instead, call checkWinCondition() & from here continueToNextPlayer();
+        return false;
     }
 
+    //"text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff, 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff";
 
     //Wild 4
         /* +4 and SKIP next player
@@ -732,8 +766,8 @@ function continueToNextPlayer(){
     //Reset the ability to draw a card for the next player.
     alreadyDrawnCard = false;
 
-    //Hide the Continue button, it only displays if a card was drawn
-    document.getElementById("continue").setAttribute("style","display:none")
+    //Hide the Continue button, it only displays if a card was drawn, but to be safe always un-display it
+    document.getElementById("continueButtonNextPlayer").setAttribute("style","display:none")
 
     //Update the player hands in the UI.  Active player cards updated to the class that only displays the back
     let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
@@ -788,6 +822,28 @@ function continueToNextPlayer(){
     //Maybe just add the new class to the modal background. Then remove it when the next turn starts????
     //Maybe it would just be better to have a different modal box for this situation.  And clicking CONTINUE is required?  Clicking out of it does nothing?
     var modalBackground = document.getElementById("modalBackground");
+}
+
+
+function wildColorFunction(){
+    console.log("UPDATE THE SELECT WILD COLOR IN THE UI")
+
+    //TODO: How to hide the wild color after its been used?
+    //  ANSWER: It's built into the card processing function, as part of the separate flow for validation after a wild play
+
+    var x = document.getElementById("wildInput");
+    //var text = "";
+    //var i;
+    for (let i = 0; i < x.length ;i++) {
+        console.log(x.elements[i].value);
+        //text +=  + "<br>";
+    }
+    //document.getElementById("demo").innerHTML = text;
+
+    wildPlayed = true;
+
+    //TODO: Hide the modal box
+    //Continue to the next player
 }
 
 
@@ -900,6 +956,9 @@ function showModalBoxFunction(mouseEvent, modalHTML){
 var modalBackground = document.getElementById("modalBackground");
 // Get the <span>/X element that closes the modal
 var modalCloseButton = document.getElementsByClassName("close")[0];
+//When CONTINUE is clicked in the wild card selection:
+//var wildContinueButton = document.getElementById("wildContinue");
+
 //Closing the modal box
 // When the user clicks on <span>/X, close the modal
 modalCloseButton.onclick = function(mouseEvent){
@@ -918,7 +977,7 @@ document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
     showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  Click the deck to draw a card.</p>" +
         "<p> To play a card, click on it. After you play, the game board will be hidden as the next players cards are dispalyed.  Click Continue for the next player to begin their turn.</p>" +
-        "<p>Click outside of this box, or the X on the right, to start the game</p>");
+        "<p>Click the X on the right, or outside of this box, to start the game</p>");
 
 });
 
@@ -931,7 +990,7 @@ helpButton.onclick = function(mouseEvent) {
         "<p>See here for offical rules: <a href='https://www.unorules.com/'>www.unorules.com</a></p>" +
         "<p>This game is based on a 108 card deck</p>" +
         "<p>Every player views his/her cards and tries to match the card in the Discard Pile." +
-        "<p>Variation from official rules: After wild card is played, the next player gets to choose the color????  No need to shout UNO.  Wild 4 does not require you to NOT have other playable cards</p>" +
+        "<p>Variation from official rules: No need to shout UNO.  Wild 4 does not require you to NOT have other playable cards</p>" +
         "\n" +
         "You have to match either by the number, color, or the symbol/Action. For instance, if the Discard Pile has a red card that is an 8 you have to place either a red card or a card with an 8 on it. You can also play a Wild card (which can alter current color in play).\n" +
         "\n" +
@@ -951,7 +1010,6 @@ shuffleButton.onclick = function(mouseEvent){
     showModalBoxFunction(mouseEvent, "<h3> Deck Shuffled </h3>");
 }
 
-if(debug){console.log("Game Board JS has completed loading")};
 
 //Reset game function
     //Just refresh the page?  That resets everything but the player names.
@@ -962,5 +1020,12 @@ resetButton.onclick = function(mouseEvent){
     showModalBoxFunction(mouseEvent, "<h3> Click to confirm the game should be reset:<br> <button onclick='window.location.reload();'>RESET GAME</button></h3>");
 }
 
-//Start over with new player names button?
+//TODO: Start over with new player names button?
+
+
+
+
+
+(debug ? console.log("Game Board JS has completed loading") : null);
+
 

@@ -34,5 +34,17 @@ Which just uses basic object storage.
 <p>
 Change over to a real VM instance in OCI running a proper HTTP server for when it goes live.
 </p>
+
+Flash button, stored here in case its needed
+< button onclick="(function(){
+let temp = document.getElementsByTagName('body');
+    temp[0].className = 'borderFlash';
+
+//After the animation runs, the class needs to be changed back.
+//best way to do that: https://stackoverflow.com/questions/50742142/run-js-script-after-css-animation-is-finished
+//Other way to do that: https://stackoverflow.com/questions/14226803/wait-5-seconds-before-executing-next-line
+})();return false;
+
+">click to blink</button >
 </body>
 </html>
