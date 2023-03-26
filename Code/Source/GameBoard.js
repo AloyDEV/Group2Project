@@ -49,13 +49,21 @@ if(debug){console.log("Game Board JS is loading");}
         The first discard card being a non-number card.
         Removing the ability to play a different card (Only the newly drawn card can be played) after drawing a new card.
 
+
+    Note: Functionality that would be good to add:
+        Table status SAVE, where all player data is written to a cookie
+            const today = new Date();
+            document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
+        Advanced Computer Player, where it makes intelligent moves not just whatever move next is valid.
+
+
      */
 
 
 
 /*
 
-// Two & Four Player Rules:
+// Two  Rules:
 //
 // For two or four players, there is a slight change of rules:
 //
@@ -376,12 +384,6 @@ function createDeck(){
 // END DECK BUILDING ---------------------------------------------------------------------------------------------------------------------
 
 
-
-//TODO: Table status SAVE.  Write everything to a cookie?
-const today = new Date();
-document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
-
-
 //GAME PREP -------------------------------------------------------------------------------------------------------------------------
 
 //Once the starting UI has loaded, begin the backend game prep (That modifies some of the UI)
@@ -541,8 +543,6 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
 // ********************************************************************************************************************************************
 //FUNCTION WHEN A CARD IS DRAWN INSTEAD OF ONE PLAYED
-    //How to display the card to the user before advancing?  Maybe just pop it up for a few seconds, and then auto-advance to the next user?
-
 let cardDrawn = document.getElementById("UIDeck");
 cardDrawn.onclick = function(mouseEvent) {
 
@@ -550,9 +550,6 @@ cardDrawn.onclick = function(mouseEvent) {
         showModalBoxFunction(null, "<h2>You've already drawn a card this turn.  <br>Play a card in your hand, or click Continue to end your turn & advance to the next player</h2>");
     }
     else {
-
-        (debug ? console.log("Player hand before drawing a new card: ") : null);
-        (debug ? console.log(playersArray[activePlayer].getPlayerHand()) : null);
 
         //Draw a card from the deck
         let newCard = gameDeck.removeTopCard();
@@ -586,7 +583,6 @@ cardDrawn.onclick = function(mouseEvent) {
         //So that if the player clicks the deck again out of confusion, it'll direct them what to do next.
 
     }
-
 }
 // ********************************************************************************************************************************************
 
@@ -632,16 +628,15 @@ function processCard(cardID){
         return false;
     }
 
-    //if a wild card was played previously, need to cancel it out for this new play.
+    //If a wild card was played previously, need to cancel it out for this new play.
     //  Needs to be after the valid checks & invalid popup, otherwise the previous wild is cancelled before its used
     if(wildPlayed){
         document.getElementById("wildColorUI").innerHTML = "";
         wildPlayed = false;
     }
 
-
-
     //We've already determined the card is a valid one.  So just need to make it the new discard card, and then process any wild or action cards.
+
 
     //Remove the card from the players hand
     let tempCard = playersArray[activePlayer].removePlayerCard(cardIDNum);
@@ -760,9 +755,7 @@ function processCard(cardID){
         When a player places this card, the next player has to skip their turn. It can only be played on a card that matches by color, or on another Skip card.
          */
     else if(Number(playedCard.getNumber()) === 22){
-
-        //TODO: Skip the next player
-
+        skipPlayerFunction();
     }
     else{
         console.log("Card number was invalid from the played card.  What the heck happened??? played card:");
