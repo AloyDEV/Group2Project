@@ -693,7 +693,8 @@ function processCard(cardID){
         //Use the Wild modal box.  The regular modal wouldn't work here, since it allows you to click outside of it to close it.
         showWildModal();
 
-        //Exit out of this function. Otherwise it'll automatically move to the next player (And show the next players hand to the current player)
+        //Exit out of this function. Otherwise, it'll automatically move to the next player (And show the next players hand to the current player)
+        //Instead, after the color is chosen, then it advances to the next player
         return false;
     }
 
@@ -705,9 +706,28 @@ function processCard(cardID){
         //Use the Wild modal box.  The regular modal wouldn't work here, since it allows you to click outside of it to close it.
         showWildModal();
 
-        //TODO: Skip the next player
+        //Draw 4 cards from the deck, and add them to the NEXT player (Not the active player)
+        for(let i = 0; i < 4; i++) {
+            let newCard = gameDeck.removeTopCard();
+            //Add the card to the player hand
+            playersArray[getNextPlayer()].addPlayerCard(newCard);
 
+            //Update the UI to add in the new card
+            let nextPlayerHand = document.getElementById("playerHand" + (getNextPlayer())); //This is actually a pseudo-array, not a real array
+            const newCardElementWild = document.createElement("img");
+            //<img class="playerActive" onclick="processCard(this.id)" id="3" src="/Code/Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
+            newCardElementWild.setAttribute("class", "backOfCardImages");
+            newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
+            newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
+            newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+
+            nextPlayerHand.appendChild(newCardElementWild);
+        }
+        //Skip the next player
         skipPlayerFunction();
+
+        //Exit out of this function. Otherwise, it'll automatically move to the next player (And show the next players hand to the current player)
+        //Instead, after the color is chosen, then it advances to the next player
 
         return false;
 
@@ -788,7 +808,6 @@ function beginPlayerTransition(){
     for(let i=0; i<activePlayerHandNew.length; i++){
         activePlayerHandNew[i].className="playerActive";
         activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
-        //The CSS Class to change to the back of the card COULD be used with the SRC attribute.  So the SRC is present all of the time, and just the class changes.
         activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
         (debug ? console.log(activePlayerHandNew[i]) : null);
     }
