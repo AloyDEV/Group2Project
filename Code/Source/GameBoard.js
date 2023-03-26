@@ -2,7 +2,7 @@
 
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-var debug = true;
+let debug = true;
 
 
 
@@ -40,6 +40,7 @@ if(debug){console.log("Game Board JS is loading");}
     The left hand column of the game board is too tall.  Even when the modal DIVs were removed, it was slightly taller than the viewport
 
 
+
     Note: Things removed that might be added back later:
         Challenges to Wild+4
                     With this card, you must have no other alternative cards to play that matches the color of the card previously played.
@@ -63,7 +64,7 @@ if(debug){console.log("Game Board JS is loading");}
 
 /*
 
-// Two  Rules:
+// Two Player Rules:
 //
 // For two or four players, there is a slight change of rules:
 //
@@ -679,10 +680,7 @@ function processCard(cardID){
         //Shouldn't need any special handling???
     }
 
-    /* Wild 1
-        This card represents all four colors, and can be placed on any card.
-        The player has to state which color it will represent for the next player.
-         */
+    //Wild 1
     else if(Number(playedCard.getNumber()) === 11){
 
         //Use the Wild modal box.  The regular modal wouldn't work here, since it allows you to click outside of it to close it.
@@ -693,10 +691,7 @@ function processCard(cardID){
         return false;
     }
 
-    //Wild 4
-        /* +4 and SKIP next player
-        This acts just like the wild card except that the next player also has to draw four cards as well as forfeit his/her turn.
-         */
+    //Wild 4 (+4 and Skip)
     else if(Number(playedCard.getNumber()) === 14){
         //Use the Wild modal box.  The regular modal wouldn't work here, since it allows you to click outside of it to close it.
         showWildModal();
@@ -728,17 +723,31 @@ function processCard(cardID){
 
     }
 
-    /* Draw Two (AND SKIP)   +2 and SKIP next player
-        When a person places this card, the next player will have to pick up two cards and forfeit his/her turn.
-         */
+    // Draw Two (+2 and Skip)
     else if(Number(playedCard.getNumber()) === 20){
-        //TODO: Skip the next player
 
+        //Draw 2 cards from the deck, and add them to the NEXT player (Not the active player)
+        for(let i = 0; i < 2; i++) {
+            let newCard = gameDeck.removeTopCard();
+            //Add the card to the player hand
+            playersArray[getNextPlayer()].addPlayerCard(newCard);
 
-        //playersArray[Number(getNextPlayer())].addPlayerCard(gameDeck.removeTopCard());
-        //playersArray[Number(getNextPlayer())].addPlayerCard(gameDeck.removeTopCard());
-        //Update the UI to make it clear how many cards were drawn
+            //Update the UI to add in the new card
+            let nextPlayerHand = document.getElementById("playerHand" + (getNextPlayer())); //This is actually a pseudo-array, not a real array
+            const newCardElementWild = document.createElement("img");
+            //<img class="playerActive" onclick="processCard(this.id)" id="3" src="/Code/Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
+            newCardElementWild.setAttribute("class", "backOfCardImages");
+            newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
+            newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
+            newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
 
+            nextPlayerHand.appendChild(newCardElementWild);
+        }
+        //Skip the next player
+        skipPlayerFunction();
+
+        //Exit out of this function. Otherwise, it'll automatically move to the next player (And show the next players hand to the current player)
+        //Instead, after the color is chosen, then it advances to the next player
 
     }
 
