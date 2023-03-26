@@ -32,7 +32,7 @@ Change the GlobalID for a card to ALWAYS BE A NUMBER.  No implicit conversions t
     DONE!!!
 
 
-In GameBoard.html, the last element in the Style tag throws an error when its closing bracket is added
+The left hand column of the game board is too tall.  Even when the modal DIVs were removed, it was slightly taller than the viewport
 
 
 Note: Things removed that might be added back later:
@@ -574,7 +574,7 @@ cardDrawn.onclick = function(mouseEvent) {
         (debug ? console.log(playersArray[activePlayer].getPlayerHand()) : null);
 
         //The player can play the card they just picked up, so display the CONTINUE button to allow them to end their turn without playing a card.
-        document.getElementById("continueButtonNextPlayer").setAttribute("style", "")
+        document.getElementById("continueButtonNextPlayer").setAttribute("style", "text-align: center;")
 
         //At this point, instead of the making the deck un-clickable, keep it clickable.
         //So that if the player clicks the deck again out of confusion, it'll direct them what to do next.
@@ -611,6 +611,10 @@ function processCard(cardID){
         //if a wild card was played, then allow different processing.  And update the UI that the wild card is no longer needed
         if(wildPlayed){
 
+
+
+            document.getElementById("wildColorUI").innerHTML = "";
+            wildPlayed = false;
         }
 
     }
@@ -669,13 +673,13 @@ function processCard(cardID){
 
         showModalBoxFunction(null, "Select the color of the Wild card (That the next player must match): <br>"+
             "<div id='wildInput'>" +
-            "<input type=\"radio\" id=\"blue\" name=\"wildcolorsradio\" value=\"Blue\">" +
+            "<input type=\"radio\" id=\"blue\" name=\"wildcolorsradio\" value=\"blue\" class=\"wildColorInput\" checked>" +
             "<label for=\"blue\">Blue</label><br>" +
-            "<input type=\"radio\" id=\"green\" name=\"wildcolorsradio\" value=\"green\">" +
+            "<input type=\"radio\" id=\"green\" name=\"wildcolorsradio\" value=\"green\" class=\"wildColorInput\">" +
             "<label for=\"green\">Green</label><br>" +
-            "<input type=\"radio\" id=\"red\" name=\"wildcolorsradio\" value=\"red\">" +
+            "<input type=\"radio\" id=\"red\" name=\"wildcolorsradio\" value=\"red\" class=\"wildColorInput\">" +
             "<label for=\"red\">Red</label><br> " +
-            "<input type=\"radio\" id=\"yellow\" name=\"wildcolorsradio\" value=\"yellow\">" +
+            "<input type=\"radio\" id=\"yellow\" name=\"wildcolorsradio\" value=\"yellow\" class=\"wildColorInput\">" +
             "<label for=\"yellow\">Yellow</label><br> " +
             "<button id=\"wildContinue\" onclick=\"wildColorFunction()\"> Continue </button>" +
             "</div> ");
@@ -767,7 +771,7 @@ function continueToNextPlayer(){
     alreadyDrawnCard = false;
 
     //Hide the Continue button, it only displays if a card was drawn, but to be safe always un-display it
-    document.getElementById("continueButtonNextPlayer").setAttribute("style","display:none")
+    document.getElementById("continueButtonNextPlayer").setAttribute("style","display:none; text-align: center;")
 
     //Update the player hands in the UI.  Active player cards updated to the class that only displays the back
     let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
@@ -821,7 +825,6 @@ function continueToNextPlayer(){
     //Or just change that style???
     //Maybe just add the new class to the modal background. Then remove it when the next turn starts????
     //Maybe it would just be better to have a different modal box for this situation.  And clicking CONTINUE is required?  Clicking out of it does nothing?
-    var modalBackground = document.getElementById("modalBackground");
 }
 
 
@@ -831,16 +834,26 @@ function wildColorFunction(){
     //TODO: How to hide the wild color after its been used?
     //  ANSWER: It's built into the card processing function, as part of the separate flow for validation after a wild play
 
-    var x = document.getElementById("wildInput");
-    //var text = "";
-    //var i;
-    for (let i = 0; i < x.length ;i++) {
-        console.log(x.elements[i].value);
-        //text +=  + "<br>";
-    }
-    //document.getElementById("demo").innerHTML = text;
+    //var x = document.getElementById("wildInput");
+    //var x2 = document.getElementById("blue");
+    let inputColors = document.getElementsByClassName("wildColorInput");
+    console.log(inputColors);
 
-    wildPlayed = true;
+    //.checked
+    //Pull in the color that was selected.
+        //By default, one color will ALWAYS start checked, so there's no need to make sure at least 1 is checked
+    for (let i = 0; i < inputColors.length ;i++) {
+        if(inputColors[i].checked){
+            console.log(inputColors[i].value);
+            console.log(inputColors[i].id);
+            let wildColorUI = document.getElementById("wildColorUI")
+            wildColorUI.innerHTML = "<div>Wild Card Color: </div><div>" + String(inputColors[i].value).toUpperCase() +"</div>";
+            //TODO: Probably would be easier to put the styling into a class.
+            wildColorUI.setAttribute("style", "background-color: white; width: 50%; border-radius: 1em; text-align: center; margin: auto; font-weight: bold; color:" + String(inputColors[i].value)+";");
+            wildPlayed = true;
+            inputColors[i].checked = false; //TODO: Is this needed, so that future in future plays the default is not checked?
+        }
+    }
 
     //TODO: Hide the modal box
     //Continue to the next player
@@ -971,7 +984,6 @@ window.onclick = function(mouseEvent) {
 
 // END MODAL BOX FUNCTION ------------------------------------------------------------------------------------------------------------------
 
-
 //Start game box: Notify the users about how to play the game.
 document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
@@ -1001,6 +1013,8 @@ helpButton.onclick = function(mouseEvent) {
         "The game continues until a player has no cards left.  That player then wins the game” </p>");
 }
 
+
+
 //Shuffle Deck button
 var shuffleButton = document.getElementById("shuffleButton");
 shuffleButton.onclick = function(mouseEvent){
@@ -1009,6 +1023,7 @@ shuffleButton.onclick = function(mouseEvent){
     (debug ? console.log(gameDeck) : null);
     showModalBoxFunction(mouseEvent, "<h3> Deck Shuffled </h3>");
 }
+
 
 
 //Reset game function
@@ -1026,6 +1041,5 @@ resetButton.onclick = function(mouseEvent){
 
 
 
-(debug ? console.log("Game Board JS has completed loading") : null);
 
 

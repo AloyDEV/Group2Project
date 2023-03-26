@@ -108,10 +108,36 @@
             cursor: pointer; /* To indicate to the user that they can click outside the box to close it */
         }
 
-        .modalBackgroundBlackedOut{
-            background-color: rgba(0,0,0,1) !important; /* Black w/ opacity */
-
+        /* The Modal background for WILD cards */
+        .modalBackgroundWild {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 2; /* Sit on top */
+            padding-top: 20em; /* Location of the box from the top of the page*/
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            /* cursor: pointer; To indicate to the user that they can click outside the box to close it */
         }
+
+        /* The Modal background for CONTINUE button*/
+        .modalBackgroundContinue {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 3; /* Sit on top */
+            padding-top: 20em; /* Location of the box from the top of the page*/
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Black out the page*/
+            /* cursor: pointer; To indicate to the user that they can click outside the box to close it */
+        }
+
 
         /* Modal Content */
         .modal-content {
@@ -169,14 +195,6 @@
     <div class="column" style="flex: 39% !important; max-width: 50%; flex-flow: column">
         <div style="border: yellow solid 3px; height:45%; width: 100%; overflow-x: auto;">
             <div id="buttonBar">
-                <button onclick="(function(){
-                    let temp = document.getElementsByTagName('body');
-                    temp[0].className = 'borderFlash';
-//After the animation runs, the class needs to be changed back.
-    //best way to do that: https://stackoverflow.com/questions/50742142/run-js-script-after-css-animation-is-finished
-    //Other way to do that: https://stackoverflow.com/questions/14226803/wait-5-seconds-before-executing-next-line
-                    })();return false;
-">click to blink</button>
                 <button id="helpButton" onclick="">Help & Game Rules</button>
                 <button id="shuffleButton" onclick="">Shuffle Deck</button>
                 <button id="resetButton" onclick="">Reset Game</button>
@@ -189,9 +207,9 @@
                 <div id="nextPlayerUItitle">Next player:</div>
                 <div id="nextPlayerUIplayer"></div>
             </div>
-            <div id="miscMessageUI">Any misc messages needed</div>
-            <div id="wildColorUI">Color selected for Wild</div>
-            <div id="continueButtonNextPlayer" style="display:none"><button onclick="continueToNextPlayer()">Continue: End your turn instead of playing a card & Continue to next player</button></div>
+            <div id="miscMessageUI" style='text-align: center;'>Any misc messages needed</div>
+            <div id="wildColorUI" style='text-align: center;'></div>
+            <div id="continueButtonNextPlayer" style='display:none; text-align: center;'><button onclick="continueToNextPlayer()">Continue: End your turn instead of playing a card & Continue to next player</button></div>
         </div>
         <div style="border: yellow solid 3px; height: 45%; display: flex; overflow-x: auto;">
             <div style="height:90%; border:orange solid 3px; margin-left:1%; margin-bottom:5%;">
@@ -214,18 +232,18 @@
     </div>
 </div>
 
-<div id="modalBackgroundWild" class="modalBackground">
+<div id="modalBackgroundWild" class="modalBackgroundWild" style="display: none">
     <div class="modal-contentWild">
-        <span class="close">&times;</span>
+        <span class="close2">&times;</span>
         <div id="modalContentWild">
 
         </div>
     </div>
 </div>
 
-<div id="modalBackgroundContinue" class="modalBackground">
+<div id="modalBackgroundContinue" class="modalBackgroundContinue" style="display: none">
     <div class="modal-contentContinue">
-        <span class="close">&times;</span>
+        <span class="close2">&times;</span>
         <div id="modalContentContinue">
 
         </div>
