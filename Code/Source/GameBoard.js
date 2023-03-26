@@ -857,8 +857,14 @@ function wildColorFunction(){
 function skipPlayerFunction(){
 
     //Update the UI to hide the current player's cards
+    let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
+    for(let i=0; i<activePlayerHandOld.length; i++){
+        activePlayerHandOld[i].className="backOfCardImages";
+        activePlayerHandOld[i].removeAttribute('onclick');
+    }
 
     //Advance a player
+    changeActivePlayer(1);
 }
 
 function computerPlayerMove(){
