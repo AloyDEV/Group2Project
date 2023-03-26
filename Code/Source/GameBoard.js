@@ -1,5 +1,10 @@
-//Handles all the code for the actual game
+//This file handles all the code for the actual game
+
+
+//For additional logging when debugging.  Flip to FALSE when ready to deploy.
 var debug = true;
+
+
 
 
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
@@ -18,35 +23,53 @@ if(debug){console.log("Game Board JS is loading");}
 
 
 //TODO for the overall game:
+    /*
+
+    How to track which card is which?  store its Global Number somewhere in the HTML?
+        Tie each card to an OnClick function, that passes in the card identifier
+        DONE!!!!
+
+    Fix the Flexbox for the player boxes
+
+
+    Change the GlobalID for a card to ALWAYS BE A NUMBER.  No implicit conversions to numbers/strings
+        EX: let num = Number(cardID);
+        DONE!!!
+
+
+    The left hand column of the game board is too tall.  Even when the modal DIVs were removed, it was slightly taller than the viewport
+
+
+    Note: Things removed that might be added back later:
+        Challenges to Wild+4
+                    With this card, you must have no other alternative cards to play that matches the color of the card previously played.
+                    If you play this card illegally, you may be challenged by the other player to show your hand to him/her. If guilty, you need to draw 4 cards.
+                    If not, the challenger needs to draw 6 cards instead.
+        Calling UNO at the end of the game
+        The first discard card being a non-number card.
+        Removing the ability to play a different card (Only the newly drawn card can be played) after drawing a new card.
+
+     */
+
+
+
 /*
 
-How to track which card is which?  store its Global Number somewhere in the HTML?
-    Tie each card to an OnClick function, that passes in the card identifier
-    DONE!!!!
+// Two & Four Player Rules:
+//
+// For two or four players, there is a slight change of rules:
+//
+//     Reverse works like Skip
+// Play Skip, and you may immediately play another card
+// If you play a Draw Two or Wild Draw Four card, your opponent has to draw the number of cards required, and then play immediately resumes back on your turn.
 
-Fix the Flexbox for the player boxes
-
-
-Change the GlobalID for a card to ALWAYS BE A NUMBER.  No implicit conversions to numbers/strings
-    EX: let num = Number(cardID);
-    DONE!!!
-
-
-The left hand column of the game board is too tall.  Even when the modal DIVs were removed, it was slightly taller than the viewport
+*/
 
 
-Note: Things removed that might be added back later:
-    Challenges to Wild+4
-                With this card, you must have no other alternative cards to play that matches the color of the card previously played.
-                If you play this card illegally, you may be challenged by the other player to show your hand to him/her. If guilty, you need to draw 4 cards.
-                If not, the challenger needs to draw 6 cards instead.
-    Calling UNO at the end of the game
-    The first discard card being a non-number card.
-
- */
 
 
-//Player Class
+
+//Player Class to hold the details on each player
 class Player {
     constructor(playerNumber, playerName) {
         this.playerNumber = playerNumber;
@@ -113,21 +136,22 @@ class Player {
 }
 
 
-//Card Class
+//Card Class to hold the details of each individual card
+//Colors: Red, Blue, Green, Yellow, Wild
+
+//0: once per color
+//1-9, draw, reverse, skip: Twice per color
+//20 = draw
+//21 = reverse
+//22 = skip
+//11 = 1 Wild, 14 = Wild Draw 4
 class Card {
     constructor(color, number, file, globalNumber) {
-        //Colors: Red, Blue, Green, Yellow, Wild
         this.color = color;
-        //0: once per color
-        //1-9, draw, reverse, skip: Twice per color
-        //20 = draw
-        //21 = reverse
-        //22 = skip
-        //11 = 1 Wild, 14 = Wild Draw 4
         this.number = Number(number);
         this.file = file;
 
-        //globalNumber is used to keep every single card unique
+        //globalNumber is used to keep every card unique
         this.globalNumber = Number(globalNumber);
 
     }
@@ -152,7 +176,6 @@ class Deck{
 
     constructor(){
         this.deck = []; //Javascript doesn't support hashmaps by default, so just using an array.
-        //this.deckSize = 0;  //For easy reference to the size.  Might need for a check in each player move that the deck hasn't run out of cards.
     }
 
     getSize(){
@@ -195,7 +218,6 @@ class Deck{
             console.log("No more cards!!!!!, game is unplayable???")
             alert("NO MORE CARDS IN THE DECK!!! Play a card in order to continue.  If there are no valid plays, reset the game to start over");
             //TODO: Actually, should a new deck just be created here?  Or will that throw of GlobalIDs?
-            //window.location.reload();
             return false;
         }
         else {
@@ -360,23 +382,7 @@ const today = new Date();
 document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
 
 
-//Regular rules:
-/*
-
-// Two & Four Player Rules:
-//
-// For two or four players, there is a slight change of rules:
-//
-//     Reverse works like Skip
-// Play Skip, and you may immediately play another card
-// If you play a Draw Two or Wild Draw Four card, your opponent has to draw the number of cards required, and then play immediately resumes back on your turn.
-
-*/
-
-
-
-
-// BEGIN GAME PREP -------------------------------------------------------------------------------------------------------------------------
+//GAME PREP -------------------------------------------------------------------------------------------------------------------------
 
 //Once the starting UI has loaded, begin the backend game prep (That modifies some of the UI)
 document.addEventListener('DOMContentLoaded', function gamePrep(){
@@ -529,7 +535,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
 });
 
-// END GAME PREP -------------------------------------------------------------------------------------------------------------------------
+//GAME PREP -------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -602,33 +608,37 @@ function processCard(cardID){
     //Make sure that a valid card is being played
     let validPlay = Boolean(false);
 
-    //Valid play: Any wild card OR match either by the number, color, or the symbol/Action
-    if(Number(playedCard.getNumber()) === 11 || Number(playedCard.getNumber()) === 14 || String(playedCard.getColor()) === String(discardCard.getColor()) || Number(playedCard.getNumber()) === Number(discardCard.getNumber())){
+    //Valid play: match either by the number, color, or the symbol/Action
+    if(!wildPlayed && (String(playedCard.getColor()) === String(discardCard.getColor()) || Number(playedCard.getNumber()) === Number(discardCard.getNumber()))){
         validPlay = true;
     }
-    //A wild card was played previously, just need to match color
-    else{
-        //if a wild card was played, then allow different processing.  And update the UI that the wild card is no longer needed
-        if(wildPlayed){
-
-
-
-            document.getElementById("wildColorUI").innerHTML = "";
-            wildPlayed = false;
-        }
-
+    //OR a wild is being played (Then it works regardless of if a previous wild was played)
+    else if(Number(playedCard.getNumber()) === 11 || Number(playedCard.getNumber()) === 14){
+        validPlay = true;
     }
-
-
-
-    //ISSUE: TEMP FOR DEBUGGING
-    validPlay = true;
+    //OR If a wild was played the last turn, make sure it matches the color selected
+    else if(wildPlayed){
+        let wildElement = document.getElementById("wildColorSelected").children; //Only 1 child element
+        console.log("WILD ELEMENT:");
+        console.log(wildElement);
+        if(String(playedCard.getColor()) === String(wildElement[0].id)){
+            validPlay = true;
+        }
+    }
 
     //If it wasn't a valid play, exit this function.  And throw up a message to the user
     if(!validPlay){
         showModalBoxFunction(null, "<div><h2>Invalid card played</h2></div>  <div>It must match the discard card's number, color, action, or be wild.  Click Help & Game Rules for information on valid plays.</div>");
         return false;
     }
+
+    //if a wild card was played previously, need to cancel it out for this new play.
+    //  Needs to be after the valid checks & invalid popup, otherwise the previous wild is cancelled before its used
+    if(wildPlayed){
+        document.getElementById("wildColorUI").innerHTML = "";
+        wildPlayed = false;
+    }
+
 
 
     //We've already determined the card is a valid one.  So just need to make it the new discard card, and then process any wild or action cards.
@@ -652,50 +662,54 @@ function processCard(cardID){
     //Update the plays hand in the UI to remove the card by its ID
     document.getElementById(String(cardIDNum)).remove();
 
-    //Note: Any element tied to a user has the player number at the end of the ID, so that can be used to identify any UI elements needed
+    //Check if the player won the game.
+        //Done before any card processing, since playing the card isn't actually needed as long as its valid (And the discard card will already be displayed).
+    if(checkWinCondition()){
+        //Prod
+        let startPage = "/index.html";
+        //Test
+        if(debug){
+            startPage =  "/Group2Project/Code/Source/index.html";
+        }
+
+        showModalBoxFunction(null, "<div><h2>"+playersArray[activePlayer].getPlayerName()+" won the game!</h2></div>" +
+            "<br><div>Click here to start a new game with the same players: <br><button onclick='window.location.reload();'>NEW GAME</button></div>" +
+            "<br><div>Click here to select the number of players & enter player names before starting the game: <br><button onclick='window.location.href = \" "+startPage+" \";'>NEW PLAYERS & NEW GAME</button></div>");
+        return false;
+    }
 
 
     //Number cards
     if(Number(playedCard.getNumber()) >= 0 && Number(playedCard.getNumber()) <= 9){
         //Shouldn't need any special handling???
     }
-    //Wild 1
-        /*
+
+    /* Wild 1
         This card represents all four colors, and can be placed on any card.
         The player has to state which color it will represent for the next player.
          */
     else if(Number(playedCard.getNumber()) === 11){
 
-        //TODO: Check the win condition here.  If a player won, then no need to display the card selection popup
-        //  Maybe also put the Win modal into its own function
-
-        //ISSUE: The regular MODAL box won't work here.  If the player clicks outside of it without making a selection it'll advance to the next player without a color selection.
+        //Use the Wild modal box.  The regular modal wouldn't work here, since it allows you to click outside of it to close it.
         showWildModal();
-        // showModalBoxFunction(null, "Select the color of the Wild card (That the next player must match): <br>"+
-        //     "<div id='wildInput'>" +
-        //     "<input type=\"radio\" id=\"blue\" name=\"wildcolorsradio\" value=\"blue\" class=\"wildColorInput\" checked>" +
-        //     "<label for=\"blue\">Blue</label><br>" +
-        //     "<input type=\"radio\" id=\"green\" name=\"wildcolorsradio\" value=\"green\" class=\"wildColorInput\">" +
-        //     "<label for=\"green\">Green</label><br>" +
-        //     "<input type=\"radio\" id=\"red\" name=\"wildcolorsradio\" value=\"red\" class=\"wildColorInput\">" +
-        //     "<label for=\"red\">Red</label><br> " +
-        //     "<input type=\"radio\" id=\"yellow\" name=\"wildcolorsradio\" value=\"yellow\" class=\"wildColorInput\">" +
-        //     "<label for=\"yellow\">Yellow</label><br> " +
-        //     "<button id=\"wildContinue\" onclick=\"wildColorFunction()\"> Continue </button>" +
-        //     "</div> ");
 
-        //Exit out of this function.  Otherwise it'll automatically move to the next player (And show the next players hand to the current player)
-        //Instead, call checkWinCondition() & from here continueToNextPlayer();
+        //Exit out of this function. Otherwise it'll automatically move to the next player (And show the next players hand to the current player)
         return false;
     }
-
-    //"text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff, 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff";
 
     //Wild 4
         /* +4 and SKIP next player
         This acts just like the wild card except that the next player also has to draw four cards as well as forfeit his/her turn.
          */
     else if(Number(playedCard.getNumber()) === 14){
+        //Use the Wild modal box.  The regular modal wouldn't work here, since it allows you to click outside of it to close it.
+        showWildModal();
+
+        //TODO: Skip the next player
+
+        skipPlayerFunction();
+
+        return false;
 
     }
 
@@ -703,14 +717,14 @@ function processCard(cardID){
         When a person places this card, the next player will have to pick up two cards and forfeit his/her turn.
          */
     else if(Number(playedCard.getNumber()) === 20){
+        //TODO: Skip the next player
 
-        playersArray[Number(getNextPlayer())].addCard(gameDeck.removeTopCard());
-        playersArray[Number(getNextPlayer())].addCard(gameDeck.removeTopCard());
+
+        //playersArray[Number(getNextPlayer())].addPlayerCard(gameDeck.removeTopCard());
+        //playersArray[Number(getNextPlayer())].addPlayerCard(gameDeck.removeTopCard());
         //Update the UI to make it clear how many cards were drawn
 
 
-        //Skip the next player
-        continueToNextPlayer();
     }
 
     /*Reverse
@@ -727,11 +741,8 @@ function processCard(cardID){
          */
     else if(Number(playedCard.getNumber()) === 22){
 
-        //ISSUE: This doesn't work correctly.  It causes the active player who played the card's hand to stay visible in the UI.
+        //TODO: Skip the next player
 
-        changeActivePlayer(1);
-        //Just update the UI to the next player right now.  Don't change the name of the active player.
-        document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
     }
     else{
         console.log("Card number was invalid from the played card.  What the heck happened??? played card:");
@@ -740,23 +751,7 @@ function processCard(cardID){
         return false;
     }
 
-
-    //Check if the player won the game at the end of their turn
-    if(checkWinCondition()){
-        //Prod
-        let startPage = "/index.html";
-        //Test
-        if(debug){
-            startPage =  "/Group2Project/Code/Source/index.html";
-        }
-
-        showModalBoxFunction(null, "<div><h2>"+playersArray[activePlayer].getPlayerName()+" won the game!</h2></div>" +
-            "<br><div>Click here to start a new game with the same players: <br><button onclick='window.location.reload();'>NEW GAME</button></div>" +
-            "<br><div>Click here to select the number of players & enter player names before starting the game: <br><button onclick='window.location.href = \" "+startPage+" \";'>NEW PLAYERS & NEW GAME</button></div>");
-        return false;
-    }
-
-    continueToNextPlayer();
+    beginPlayerTransition();
 
     return true;
 
@@ -764,7 +759,7 @@ function processCard(cardID){
 //##################################################################################################################################################
 
 
-function continueToNextPlayer(){
+function beginPlayerTransition(){
     (debug ? console.log("Continuing.  Previously drawn card from deck: " + alreadyDrawnCard) : null);
 
     //Reset the ability to draw a card for the next player.
@@ -780,15 +775,12 @@ function continueToNextPlayer(){
         activePlayerHandOld[i].removeAttribute('onclick');
         //ISSUE: Removing the src attribute causes all of the cards to go to their default height.  Not sure why, the CSS appears to be identical
         //activePlayerHandOld[i].removeAttribute('src');
-
-
         (debug ? console.log(activePlayerHandOld[i]) : null);
     }
 
-    //If they didn't win, advance to the next player
+    //Advance to the next player
     changeActivePlayer(1);
     (debug ? console.log("New Active Player: " + activePlayer) : null);
-
 
     //ISSUE: This won't work when there are less then 3 players, that situation causes player IDs to be skipped
     //And set the new active player to display their cards in the UI
@@ -812,24 +804,24 @@ function continueToNextPlayer(){
     //If the next player is the computer player, need to have it make a move SLOWLY
 
 
+    //Hide the screen when transitioning between players.  And the next player needs to click Continue to advance (No clicking outside the modal)
+    if(!debug){
+        showContinueModal();
+    }
 
-    //TODO: Does the Continue button need to be clicked?  Or can clicking outside the Modal also allow advancing??
-    //If clicking outside, I might need a second modal box to handle it.
-    //And LOTS OF OTHER THINGS TO CONSIDER
 
-
-
-    //TODO: Add in the player transition in the UI.  Black it out, etc.
-    //Display the Modal box to block out the game board, and for the next player to being their turn
-    //Change the class of the modal background to one that's completely blacked out?
-    //Or just change that style???
-    //Maybe just add the new class to the modal background. Then remove it when the next turn starts????
-    //Maybe it would just be better to have a different modal box for this situation.  And clicking CONTINUE is required?  Clicking out of it does nothing?
 }
 
+function endPlayerTransition(){
+    hideContinueModal();
+
+    //TODO: Should this include a double check that the correct cards & names are all displaying on the UI?  Might be good to have a fallback for that.
+
+}
 
 function wildColorFunction(){
-    //TODO: How to hide the wild color after its been used?
+    (debug ? console.log("Wildcard function begin") : null);
+    //How to hide the wild color after it's been used?
     //  ANSWER: It's built into the card processing function, as part of the separate flow for validation after a wild play
 
     let inputColors = document.getElementsByClassName("wildColorInput");
@@ -838,12 +830,15 @@ function wildColorFunction(){
         //By default, one color will ALWAYS start checked, so there's no need to make sure at least 1 is checked
     for (let i = 0; i < inputColors.length ;i++) {
         if(inputColors[i].checked){
-            console.log(inputColors[i].value);
-            console.log(inputColors[i].id);
+            (debug ? console.log(inputColors[i].value):null);
             let wildColorUI = document.getElementById("wildColorUI")
-            wildColorUI.innerHTML = "<div>Wild Card Color: </div><div>" + String(inputColors[i].value).toUpperCase() +"</div>";
+            //Store the color selected in the ID of the div, so that it can be retrieved later
+            wildColorUI.innerHTML = "<div>Wild Card Color: </div><div id='wildColorSelected'><div id='"+String(inputColors[i].value)+"'>" + String(inputColors[i].value) +"</div></div>";
             //TODO: Probably would be easier to put the styling into a class.
             //ISSUE: Yellow is basically un-viewable on the White background
+            // case (inputColors[i].value) {
+            //
+            // }
             wildColorUI.setAttribute("style", "background-color: white; width: 50%; border-radius: 1em; text-align: center; margin: auto; font-weight: bold; color:" + String(inputColors[i].value)+";");
             wildPlayed = true;
             inputColors[i].checked = false; //TODO: Is this needed, so that future in future plays the default is not checked?
@@ -854,6 +849,21 @@ function wildColorFunction(){
     hideWildModal();
 
     //Continue to the next player
+    beginPlayerTransition();
+
+}
+
+
+function skipPlayerFunction(){
+
+    //Update the UI to hide the current player's cards
+
+    //Advance a player
+}
+
+function computerPlayerMove(){
+
+
 }
 
 
@@ -983,14 +993,23 @@ window.onclick = function(mouseEvent) {
 //WILD CARD MODAL BOX
 function showWildModal(){
     modalBackgroundWild.style.display = "block";
-    //let modalContents = document.getElementById("modalContentDiv");
-    //modalContents.innerHTML = modalHTML;
 }
 function hideWildModal(){
     modalBackgroundWild.style.display = "none";
 
 }
 var modalBackgroundWild = document.getElementById("modalBackgroundWild");
+
+
+//CONTINUE BETWEEN PLAYERS MODAL BOX
+function showContinueModal(){
+    modalBackgroundContinue.style.display = "block";
+}
+function hideContinueModal(){
+    modalBackgroundContinue.style.display = "none";
+
+}
+var modalBackgroundContinue = document.getElementById("modalBackgroundContinue");
 
 
 // END MODAL BOX FUNCTION ------------------------------------------------------------------------------------------------------------------

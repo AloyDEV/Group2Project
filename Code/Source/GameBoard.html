@@ -109,7 +109,7 @@
         }
 
         /* The Modal background for WILD cards & when CONTINUING to the next player*/
-        .modalBackgroundWild, .modalBackgroundContinue {
+        .modalBackgroundWild {
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
             z-index: 2; /* Sit on top */
@@ -118,9 +118,18 @@
             top: 0;
             width: 100%; /* Full width */
             height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
             background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-            /* cursor: pointer; To indicate to the user that they can click outside the box to close it */
+        }
+        .modalBackgroundContinue{
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 2; /* Sit on top */
+            padding-top: 20em; /* Location of the box from the top of the page*/
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgb(0,0,0); /* Black */
         }
 
 
@@ -194,7 +203,7 @@
             </div>
             <div id="miscMessageUI" style='text-align: center;'>Any misc messages needed</div>
             <div id="wildColorUI" style='text-align: center;'></div>
-            <div id="continueButtonNextPlayer" style='display:none; text-align: center;'><button onclick="continueToNextPlayer()">Continue: End your turn instead of playing a card & Continue to next player</button></div>
+            <div id="continueButtonNextPlayer" style='display:none; text-align: center;'><button onclick="beginPlayerTransition()">Continue: End your turn instead of playing a card & Continue to next player</button></div>
         </div>
         <div style="border: yellow solid 3px; height: 45%; display: flex; overflow-x: auto;">
             <div style="height:90%; border:orange solid 3px; margin-left:1%; margin-bottom:5%;">
@@ -219,27 +228,28 @@
 
 <div id="modalBackgroundWild" class="modalBackgroundWild">
     <div class="modalContentWild">
-        <div id="modalContentWild">
+        <div id="modalContentWild" style="text-align: center">
             <h2>Select the color of the Wild card (That the next player must match):</h2>
             <br>
-            <div id='wildInput' style="text-align: center">
-                <input type="radio" id="blue" name="wildcolorsradio" value="blue" class="wildColorInput" checked>
-                <label for="blue">Blue</label><br>
-                <input type="radio" id="green" name="wildcolorsradio" value="green" class="wildColorInput">
-                <label for="green">Green</label><br>
-                <input type="radio" id="red" name="wildcolorsradio" value="red" class="wildColorInput">
-                <label for="red">Red</label><br>
-                <input type="radio" id="yellow" name="wildcolorsradio" value="yellow" class="wildColorInput">
-                <label for="yellow">Yellow</label><br>
+            <div id='wildInput'>
+                <input type="radio" id="BlueSelection" name="wildcolorsradio" value="Blue" class="wildColorInput" checked>
+                <label for="BlueSelection">Blue</label><br>
+                <input type="radio" id="GreenSelection" name="wildcolorsradio" value="Green" class="wildColorInput">
+                <label for="GreenSelection">Green</label><br>
+                <input type="radio" id="RedSelection" name="wildcolorsradio" value="Red" class="wildColorInput">
+                <label for="RedSelection">Red</label><br>
+                <input type="radio" id="YellowSelection" name="wildcolorsradio" value="Yellow" class="wildColorInput">
+                <label for="YellowSelection">Yellow</label><br>
                 <button id="wildContinue" onclick="wildColorFunction()"> Continue </button>
             </div>
         </div>
     </div>
 </div>
 
-<div id="modalBackgroundContinue" class="modalBackgroundContinue" style="display: none">
-    <div class="modalContentContinue">
+<div id="modalBackgroundContinue" class="modalBackgroundContinue">
+    <div class="modalContentContinue" style="text-align: center">
         <div id="modalContentContinue">
+            <button id="playerContinue" onclick="endPlayerTransition()"> Continue to next player</button>
         </div>
     </div>
 </div>
