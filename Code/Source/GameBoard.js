@@ -193,7 +193,7 @@ class Deck{
         //Make sure there is at least 1 card in the deck
         if(this.deck.length < 1){
             console.log("No more cards!!!!!, game is unplayable???")
-            alert("NO MORE CARDS IN THE DECK!!! THE GAME IS UNPLAYABLE!!!!!  Click Reset Game to start over");
+            alert("NO MORE CARDS IN THE DECK!!! Play a card in order to continue.  If there are no valid plays, reset the game to start over");
             //TODO: Actually, should a new deck just be created here?  Or will that throw of GlobalIDs?
             //window.location.reload();
             return false;
@@ -670,19 +670,19 @@ function processCard(cardID){
         //  Maybe also put the Win modal into its own function
 
         //ISSUE: The regular MODAL box won't work here.  If the player clicks outside of it without making a selection it'll advance to the next player without a color selection.
-
-        showModalBoxFunction(null, "Select the color of the Wild card (That the next player must match): <br>"+
-            "<div id='wildInput'>" +
-            "<input type=\"radio\" id=\"blue\" name=\"wildcolorsradio\" value=\"blue\" class=\"wildColorInput\" checked>" +
-            "<label for=\"blue\">Blue</label><br>" +
-            "<input type=\"radio\" id=\"green\" name=\"wildcolorsradio\" value=\"green\" class=\"wildColorInput\">" +
-            "<label for=\"green\">Green</label><br>" +
-            "<input type=\"radio\" id=\"red\" name=\"wildcolorsradio\" value=\"red\" class=\"wildColorInput\">" +
-            "<label for=\"red\">Red</label><br> " +
-            "<input type=\"radio\" id=\"yellow\" name=\"wildcolorsradio\" value=\"yellow\" class=\"wildColorInput\">" +
-            "<label for=\"yellow\">Yellow</label><br> " +
-            "<button id=\"wildContinue\" onclick=\"wildColorFunction()\"> Continue </button>" +
-            "</div> ");
+        showWildModal();
+        // showModalBoxFunction(null, "Select the color of the Wild card (That the next player must match): <br>"+
+        //     "<div id='wildInput'>" +
+        //     "<input type=\"radio\" id=\"blue\" name=\"wildcolorsradio\" value=\"blue\" class=\"wildColorInput\" checked>" +
+        //     "<label for=\"blue\">Blue</label><br>" +
+        //     "<input type=\"radio\" id=\"green\" name=\"wildcolorsradio\" value=\"green\" class=\"wildColorInput\">" +
+        //     "<label for=\"green\">Green</label><br>" +
+        //     "<input type=\"radio\" id=\"red\" name=\"wildcolorsradio\" value=\"red\" class=\"wildColorInput\">" +
+        //     "<label for=\"red\">Red</label><br> " +
+        //     "<input type=\"radio\" id=\"yellow\" name=\"wildcolorsradio\" value=\"yellow\" class=\"wildColorInput\">" +
+        //     "<label for=\"yellow\">Yellow</label><br> " +
+        //     "<button id=\"wildContinue\" onclick=\"wildColorFunction()\"> Continue </button>" +
+        //     "</div> ");
 
         //Exit out of this function.  Otherwise it'll automatically move to the next player (And show the next players hand to the current player)
         //Instead, call checkWinCondition() & from here continueToNextPlayer();
@@ -829,17 +829,11 @@ function continueToNextPlayer(){
 
 
 function wildColorFunction(){
-    console.log("UPDATE THE SELECT WILD COLOR IN THE UI")
-
     //TODO: How to hide the wild color after its been used?
     //  ANSWER: It's built into the card processing function, as part of the separate flow for validation after a wild play
 
-    //var x = document.getElementById("wildInput");
-    //var x2 = document.getElementById("blue");
     let inputColors = document.getElementsByClassName("wildColorInput");
-    console.log(inputColors);
 
-    //.checked
     //Pull in the color that was selected.
         //By default, one color will ALWAYS start checked, so there's no need to make sure at least 1 is checked
     for (let i = 0; i < inputColors.length ;i++) {
@@ -849,13 +843,16 @@ function wildColorFunction(){
             let wildColorUI = document.getElementById("wildColorUI")
             wildColorUI.innerHTML = "<div>Wild Card Color: </div><div>" + String(inputColors[i].value).toUpperCase() +"</div>";
             //TODO: Probably would be easier to put the styling into a class.
+            //ISSUE: Yellow is basically un-viewable on the White background
             wildColorUI.setAttribute("style", "background-color: white; width: 50%; border-radius: 1em; text-align: center; margin: auto; font-weight: bold; color:" + String(inputColors[i].value)+";");
             wildPlayed = true;
             inputColors[i].checked = false; //TODO: Is this needed, so that future in future plays the default is not checked?
         }
     }
 
-    //TODO: Hide the modal box
+    //Hide the color selection box
+    hideWildModal();
+
     //Continue to the next player
 }
 
@@ -961,7 +958,6 @@ function showModalBoxFunction(mouseEvent, modalHTML){
     modalBackground.style.display = "block";
     let modalContents = document.getElementById("modalContentDiv");
     modalContents.innerHTML = modalHTML;
-
 }
 
 //Modal Box pieces
@@ -981,6 +977,21 @@ modalCloseButton.onclick = function(mouseEvent){
 window.onclick = function(mouseEvent) {
     hideModalBoxFunction(mouseEvent);
 }
+
+
+
+//WILD CARD MODAL BOX
+function showWildModal(){
+    modalBackgroundWild.style.display = "block";
+    //let modalContents = document.getElementById("modalContentDiv");
+    //modalContents.innerHTML = modalHTML;
+}
+function hideWildModal(){
+    modalBackgroundWild.style.display = "none";
+
+}
+var modalBackgroundWild = document.getElementById("modalBackgroundWild");
+
 
 // END MODAL BOX FUNCTION ------------------------------------------------------------------------------------------------------------------
 
