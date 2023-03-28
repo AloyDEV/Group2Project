@@ -1,8 +1,9 @@
 //This file handles all the code for the actual game
+    //If performance of it is a problem, it can be minimized.
 
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = true;
+let debug = false;
 
 
 
@@ -40,6 +41,20 @@ if(debug){console.log("Game Board JS is loading");}
     The left hand column of the game board is too tall.  Even when the modal DIVs were removed, it was slightly taller than the viewport
 
 
+    The Discard & Deck cards have too much left spacing on the Prod site.
+
+
+    The GameBoard is like 95% responsive right now.  What doesn't work is the buttons across the top (They can slide out of view, with no scrollbar)
+        And the Discard/Deck section, the Deck card can slide out of view.
+
+
+    Move up the Modal box, so its closer to the top of the page
+        Also I don't think any modals are that responsive right now.
+
+
+    Put the name of the next player into the Transition box
+
+
 
     Note: Things removed that might be added back later:
         Challenges to Wild+4
@@ -48,7 +63,8 @@ if(debug){console.log("Game Board JS is loading");}
                     If not, the challenger needs to draw 6 cards instead.
         Calling UNO at the end of the game
         The first discard card being a non-number card.
-        Removing the ability to play a different card (Only the newly drawn card can be played) after drawing a new card.
+        Removing the ability to play a different card after drawing a new card (Only the newly drawn card can be played) .
+
 
 
     Note: Functionality that would be good to add:
@@ -705,7 +721,6 @@ function processCard(cardID){
             //Update the UI to add in the new card
             let nextPlayerHand = document.getElementById("playerHand" + (getNextPlayer())); //This is actually a pseudo-array, not a real array
             const newCardElementWild = document.createElement("img");
-            //<img class="playerActive" onclick="processCard(this.id)" id="3" src="/Code/Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
             newCardElementWild.setAttribute("class", "backOfCardImages");
             newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
             newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
@@ -735,7 +750,6 @@ function processCard(cardID){
             //Update the UI to add in the new card
             let nextPlayerHand = document.getElementById("playerHand" + (getNextPlayer())); //This is actually a pseudo-array, not a real array
             const newCardElementWild = document.createElement("img");
-            //<img class="playerActive" onclick="processCard(this.id)" id="3" src="/Code/Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
             newCardElementWild.setAttribute("class", "backOfCardImages");
             newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
             newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
@@ -745,27 +759,20 @@ function processCard(cardID){
         }
         //Skip the next player
         skipPlayerFunction();
-
-        //Exit out of this function. Otherwise, it'll automatically move to the next player (And show the next players hand to the current player)
-        //Instead, after the color is chosen, then it advances to the next player
-
     }
 
-    /*Reverse
-        If going clockwise, switch to counterclockwise or vice versa. It can only be played on a card that matches by color, or on another Reverse card.
-         */
+    //Reverse
     else if(Number(playedCard.getNumber()) === 21){
         gameDirection = !Boolean(gameDirection);
         //Update the UI to update next player
         document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
     }
 
-    /* Skip
-        When a player places this card, the next player has to skip their turn. It can only be played on a card that matches by color, or on another Skip card.
-         */
+    //Skip
     else if(Number(playedCard.getNumber()) === 22){
         skipPlayerFunction();
     }
+    //Something has gone VERY wrong
     else{
         console.log("Card number was invalid from the played card.  What the heck happened??? played card:");
         console.log(playedCard);
@@ -776,7 +783,6 @@ function processCard(cardID){
     beginPlayerTransition();
 
     return true;
-
 }
 //##################################################################################################################################################
 

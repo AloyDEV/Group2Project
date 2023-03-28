@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Group 2 Capstone Project - UNO!!!</title>
+    <title>UNO In The Browser</title>
+    <link rel="icon" href="http://www.unointhebrowser.com/Code/Cards/Deck_Small2.png">
     <style>
         body{
             background: linear-gradient(45deg, #cb1a1a, #d9bd66, #23a6d5, #2b883b); /*e74646 1cb08d*/
@@ -111,32 +112,29 @@
 
 
     //used to handle if a computer player is included or not
-        //TODO: This should change the minimum number of players to 2 when its unchecked
-    var comPlayerChoice = document.getElementById("includeCompPlayer").checked
-    //TODO: Change the logic & minimums depending on if a computer player is included
-        //TODO: The below code DOESN'T WORK RIGHT NOW.  Need to overhaul the logic.
+    //var comPlayerChoice = document.getElementById("includeCompPlayer").checked
     document.getElementById("includeCompPlayer").onchange = function(){
         var playerNumber = document.getElementById("playerNumberStart").value;
-        if (!comPlayerChoice) {
-            if (playerNumber < 2) {
-                displayPlayerNameInput(2);
-                playerNumber.value = 2;
-                playerNumber.innerHTML = 2;
-            }
-        }
-        comPlayerChoice = document.getElementById("includeCompPlayer").checked
-        console.log("Comp player included: ");
-        console.log(comPlayerChoice);
+        // if (!comPl ayerChoice) {
+        //     if (playerNumber < 2) {
+        //         displayPlayerNameInput(2);
+        //         playerNumber.value = 2;
+        //         playerNumber.innerHTML = 2;
+        //     }
+        // }
+        // comPlayerChoice = document.getElementById("includeCompPlayer").checked
+        // console.log("Comp player included: ");
+        // console.log(comPlayerChoice);
     }
 
 
-
-    //If this is not at the end of the file, it throws an error: Uncaught TypeError: Cannot set properties of null (setting 'onclick')
-        //Better solution, wrap the function below in window.onload = function(){}
-        //OR: https://stackoverflow.com/questions/17080502/uncaught-typeerror-cannot-set-property-onclick-of-null
     document.getElementById("startGame").onclick = function () {
 
         let playerNumberStartVar = document.getElementById("playerNumberStart").value;
+
+        //If there is no computer player, then there need to be at least 2 human players
+        var comPlayerChoice = document.getElementById("includeCompPlayer").checked
+        if()
 
         if (playerNumberStartVar > 0 && playerNumberStartVar < 4){  //This should effectively handle NULL as well
              //Collect all inputs from the page
@@ -167,6 +165,8 @@
                             //Use Regex so all pipe characters are removed
                             playerInput = playerInput.replace(/[|]+/g, ''); //+g is the global modifier
                             playerInputs += playerInput + "|";
+
+                            //TODO: Include the computer player in the cookie
                         }
                     }
                     const today = new Date();
