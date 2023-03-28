@@ -64,7 +64,7 @@
     <div id="startInput" style=" align-items: center; justify-content: center; border: 0.05em solid blue;">
         <!--  display: flex; resulted in the DIVs below being next to each other, instead of stacked -->
         <div>
-            <h3>UNO Card Game!  Group 2's software engineering capstone project.</h3>
+            <h3>UNO In The Browser!  Group 2's software engineering capstone project.</h3>
         </div>
         <!--  Using RGB values for the background before the opacity prevents the opacity being used for the child elements inside the form -->
         <div style="background: rgba(255,255,255,0.5); box-shadow: 0px 0px 5px 15px white /* offset, offset, blur, spread radius*/" >
@@ -110,36 +110,21 @@
 <script defer type="text/javascript">
     //defer is used to hold off loading this script until the rest of the HTML is loaded
 
-
-    //used to handle if a computer player is included or not
-    //var comPlayerChoice = document.getElementById("includeCompPlayer").checked
-    document.getElementById("includeCompPlayer").onchange = function(){
-        var playerNumber = document.getElementById("playerNumberStart").value;
-        // if (!comPl ayerChoice) {
-        //     if (playerNumber < 2) {
-        //         displayPlayerNameInput(2);
-        //         playerNumber.value = 2;
-        //         playerNumber.innerHTML = 2;
-        //     }
-        // }
-        // comPlayerChoice = document.getElementById("includeCompPlayer").checked
-        // console.log("Comp player included: ");
-        // console.log(comPlayerChoice);
-    }
-
-
     document.getElementById("startGame").onclick = function () {
 
-        let playerNumberStartVar = document.getElementById("playerNumberStart").value;
+        let playerNumberStartVar = Number(document.getElementById("playerNumberStart").value);
 
         //If there is no computer player, then there need to be at least 2 human players
         var comPlayerChoice = document.getElementById("includeCompPlayer").checked
-        if()
+        if(!comPlayerChoice && playerNumberStartVar < 2){
+            alert("If there is no computer player, there needs to be at least 2 players.");
+            return false;
+        }
 
         if (playerNumberStartVar > 0 && playerNumberStartVar < 4){  //This should effectively handle NULL as well
              //Collect all inputs from the page
             let playerNamesArraySubmitted = document.getElementsByClassName("playerNameEntryShow"); //Player Names
-            if(playerNumberStartVar == playerNamesArraySubmitted.length){
+            if(playerNumberStartVar === playerNamesArraySubmitted.length){
                 //Make sure cookies are enabled, then set a cookie with the user data, and move on to the game board
                 let cookiesEnabledBoolean = navigator.cookieEnabled;
 
@@ -165,10 +150,12 @@
                             //Use Regex so all pipe characters are removed
                             playerInput = playerInput.replace(/[|]+/g, ''); //+g is the global modifier
                             playerInputs += playerInput + "|";
-
-                            //TODO: Include the computer player in the cookie
                         }
                     }
+
+                    //Append the computer player status to the player info
+                    playerInputs += comPlayerChoice;
+
                     const today = new Date();
 
                     //using "path=/": the cookie will be available to all directories on the domain it is set from

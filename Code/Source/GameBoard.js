@@ -71,6 +71,7 @@ if(debug){console.log("Game Board JS is loading");}
         Table status SAVE, where all player data is written to a cookie
             const today = new Date();
             document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
+            Just dump everything into JSON, then convert that to base64 to store in the cookie
         Advanced Computer Player, where it makes intelligent moves not just whatever move next is valid.
 
 
