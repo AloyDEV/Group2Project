@@ -54,10 +54,15 @@ if(debug){console.log("Game Board JS is loading");}
 
 
     Put the name of the next player into the Transition box
+        DONE
+
+
+    When playing Wild 4, it looks like it hide the current players cards before the color selection popup.
+        Whereas during WIld 1, player cards are still visible.
 
 
 
-    Note: Things removed that might be added back later:
+    TODO: Things removed that might be added back later:
         Challenges to Wild+4
                     With this card, you must have no other alternative cards to play that matches the color of the card previously played.
                     If you play this card illegally, you may be challenged by the other player to show your hand to him/her. If guilty, you need to draw 4 cards.
@@ -423,15 +428,21 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         var player1 = new Player(1,"Player2");
         var player2 = new Player(2,"Player3");
         var player3 = new Player(3,"Computron");
-        playersArray.push(player0, player1, player2, player3);
+        playersArray.push(player0, player1, player2, player3);  //If there's no cookie, default to their being a computer player (For simplicity)
+
     }
     else{
         let playersTempArray = playersCookie.split("|");
-        for(let iPlayerSetup = 0; iPlayerSetup < playersTempArray.length-1; iPlayerSetup++){ //Minus one off the array length, the players in the cookie always end with a "|" which puts an empty string as the last array item after its split
+        //TODO: Future improvement: to make this more robust, add in checks that the split actually returns an array & there are values in it (Otherwise default player names)
+        let iPlayerSetup = 0;
+        for(iPlayerSetup = 0; iPlayerSetup < playersTempArray.length-1; iPlayerSetup++){ //Minus one off the array length, the players in the cookie always end with a "|" which puts an empty string as the last array item after its split
             playersArray.push(new Player(iPlayerSetup, playersTempArray[iPlayerSetup]));
         }
         //Add the computer player
-        playersArray.push(new Player(playersArray.length, "Mike the All Knowing"));
+        computerPlayer = Boolean(playersTempArray[iPlayerSetup]);
+        if(computerPlayer) {
+            playersArray.push(new Player(playersArray.length, "Mike the All Knowing (Computer Player)"));
+        }
     }
 
     if(debug){console.log("Players created:")};
@@ -477,6 +488,8 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     switch(Number(playersArray.length)) {
         case 3:
             (debug ? console.log("Case 3") : null);
+
+            //ISSUE: Incorporate computer player logic
 
             //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
             //TODO: Actually this should REMOVE THE ELEMENT. Otherwise there will be issues when updating player hands
@@ -526,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             let playerHTML = '<div id="playerName'+(iUIPnames)+'" style="height:10%; border: white solid 1px; text-align: center;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
             //88% height to prevent the cards from slightly going over the player box
-            playerHTML = playerHTML + '<div id="playerHand'+(iUIPnames)+'" className="playerHand" style="height:88%; border: purple solid 3px; overflow-y: auto">';
+            playerHTML = playerHTML + '<div id="playerHand'+(iUIPnames)+'" class="playerHand" style="height:88%; border: purple solid 3px; overflow-y: auto">';
 
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
@@ -829,8 +842,12 @@ function beginPlayerTransition(){
 
 
 
-    //TODO: Implement the computer player here
-    //If the next player is the computer player, need to have it make a move SLOWLY
+    //ISSUE: Implement the computer player here
+    //If the next player is the computer player, need to have it make a move (Maybe always displaying the back of the cards)
+    if(computerPlayer){ //TODO: && Its the computer players turn
+        //Computer player move
+
+    }
 
 
     //Hide the screen when transitioning between players.  And the next player needs to click Continue to advance (No clicking outside the modal)
@@ -869,7 +886,7 @@ function wildColorFunction(){
             // case (inputColors[i].value) {
             //
             // }
-            wildColorUI.setAttribute("style", "background-color: white; width: 50%; border-radius: 1em; text-align: center; margin: auto; font-weight: bold; color:" + String(inputColors[i].value)+";");
+            wildColorUI.setAttribute("style", "background-color: white; width: 50%; border-radius: 1em; text-align: center; margin: auto; font-weight: bold; font-size: xx-large; color:" + String(inputColors[i].value)+";");
             wildPlayed = true;
             inputColors[i].checked = false; //TODO: Is this needed, so that future in future plays the default is not checked?
         }
