@@ -3,7 +3,7 @@
 
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = false;
+let debug = true;
 
 
 
@@ -485,24 +485,29 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     //Adjust the player boxes to match # of players
     let playerBoxes;
     (debug ? console.log("Players: " + playersArray.length) : null);
+    let dynamicHeight = (100/playersArray.length)-5;
+    (debug ? console.log("Dynamic Height of player boxes: " + dynamicHeight):null);
+
     switch(Number(playersArray.length)) {
         case 3:
+
             (debug ? console.log("Case 3") : null);
 
             //ISSUE: Incorporate computer player logic
+            //TODO: Make the heights dynamic depending on the number of players
+            //  Probably could use Flex to fill available space instead of defining a height
 
-            //TODO: Make this variable, could give all player boxes a starting class, loop over those elements, and start the loop backwards to hide the higher numbers
             //TODO: Actually this should REMOVE THE ELEMENT. Otherwise there will be issues when updating player hands
-                //AND reset the IDs of the elements to always increment up, and numbers aren't skipped
+            //  AND reset the IDs of the elements to always increment up, and numbers aren't skipped
             playerBoxes = document.getElementById("playerBox2");
             playerBoxes.className="playerBoxHide";
 
             playerBoxes = document.getElementById("playerBox0");
-            playerBoxes.style.height="26.66%" //26.66%
+            playerBoxes.style.height= dynamicHeight + "%"
             playerBoxes = document.getElementById("playerBox1");
-            playerBoxes.style.height="26.66%"
+            playerBoxes.style.height= dynamicHeight + "%"
             playerBoxes = document.getElementById("playerBox3");
-            playerBoxes.style.height="26.66%"
+            playerBoxes.style.height= dynamicHeight + "%"
 
             break;
         case 2:
@@ -514,9 +519,9 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             playerBoxes.className="playerBoxHide";
 
             playerBoxes = document.getElementById("playerBox0");
-            playerBoxes.style.height="40%"; //40
+            playerBoxes.style.height= dynamicHeight + "%"
             playerBoxes = document.getElementById("playerBox3");
-            playerBoxes.style.height="40%";
+            playerBoxes.style.height= dynamicHeight + "%"
 
 
             break;
@@ -562,7 +567,6 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     }
 
     //Put starting player & next player into the UI
-    console.log("Starting active player: " + activePlayer);
     document.getElementById("activePlayerUIplayer").innerHTML = "<h1>" + playersArray[activePlayer].getPlayerName() + "</h1>";
     document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
 
