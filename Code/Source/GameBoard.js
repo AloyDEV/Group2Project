@@ -18,6 +18,7 @@ var activePlayer = 0;
 var gameDirection = Boolean(true); //true = top to bottom, false = bottom to top
 var alreadyDrawnCard = false; //Makes the deck inactive after a player has drawn a card.
 var wildPlayed = false;
+var computerPlayer = false;
 
 if(debug){console.log("Game Board JS is loading");}
 
@@ -833,6 +834,7 @@ function beginPlayerTransition(){
 
 
     //Hide the screen when transitioning between players.  And the next player needs to click Continue to advance (No clicking outside the modal)
+    document.getElementById("nextPlayerName").innerText=playersArray[activePlayer].getPlayerName();
     if(!debug){
         showContinueModal();
     }
