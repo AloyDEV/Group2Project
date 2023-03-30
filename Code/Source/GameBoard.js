@@ -490,23 +490,20 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
     switch(Number(playersArray.length)) {
         case 3:
-
             (debug ? console.log("Case 3") : null);
 
-            //ISSUE: Incorporate computer player logic
-            //TODO: Make the heights dynamic depending on the number of players
-            //  Probably could use Flex to fill available space instead of defining a height
+            //TODO:  Probably could use Flex to fill available space instead of defining a height
 
-            //TODO: Actually this should REMOVE THE ELEMENT. Otherwise there will be issues when updating player hands
-            //  AND reset the IDs of the elements to always increment up, and numbers aren't skipped
-            playerBoxes = document.getElementById("playerBox2");
-            playerBoxes.className="playerBoxHide";
+            //Elements need to be removed in order for the game loop to process correctly.
+            //The active player/next player logic is tied to the player ID, and the player ID is used to identify UI components
+            playerBoxes = document.getElementById("playerBox3");
+            playerBoxes.remove();
 
             playerBoxes = document.getElementById("playerBox0");
             playerBoxes.style.height= dynamicHeight + "%"
             playerBoxes = document.getElementById("playerBox1");
             playerBoxes.style.height= dynamicHeight + "%"
-            playerBoxes = document.getElementById("playerBox3");
+            playerBoxes = document.getElementById("playerBox2");
             playerBoxes.style.height= dynamicHeight + "%"
 
             break;
@@ -514,13 +511,13 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             (debug ? console.log("Case 2") : null);
 
             playerBoxes = document.getElementById("playerBox2");
-            playerBoxes.className="playerBoxHide";
-            playerBoxes = document.getElementById("playerBox1");
-            playerBoxes.className="playerBoxHide";
+            playerBoxes.remove();
+            playerBoxes = document.getElementById("playerBox3");
+            playerBoxes.remove();
 
             playerBoxes = document.getElementById("playerBox0");
             playerBoxes.style.height= dynamicHeight + "%"
-            playerBoxes = document.getElementById("playerBox3");
+            playerBoxes = document.getElementById("playerBox1");
             playerBoxes.style.height= dynamicHeight + "%"
 
 
@@ -667,7 +664,9 @@ function processCard(cardID){
     //If a wild card was played previously, need to cancel it out for this new play.
     //  Needs to be after the valid checks & invalid popup, otherwise the previous wild is cancelled before its used
     if(wildPlayed){
-        document.getElementById("wildColorUI").innerHTML = "";
+        let wildUI = document.getElementById("wildColorUI");
+        wildUI.innerHTML = "";
+        wildUI.setAttribute("style", "display:none");
         wildPlayed = false;
     }
 
@@ -884,13 +883,9 @@ function wildColorFunction(){
             (debug ? console.log(inputColors[i].value):null);
             let wildColorUI = document.getElementById("wildColorUI")
             //Store the color selected in the ID of the div, so that it can be retrieved later
-            wildColorUI.innerHTML = "<div>Wild Card Color: </div><div id='wildColorSelected'><div id='"+String(inputColors[i].value)+"'>" + String(inputColors[i].value) +"</div></div>";
-            //TODO: Probably would be easier to put the styling into a class.
-            //ISSUE: Yellow is basically un-viewable on the White background
-            // case (inputColors[i].value) {
-            //
-            // }
-            wildColorUI.setAttribute("style", "background-color: white; width: 50%; border-radius: 1em; text-align: center; margin: auto; font-weight: bold; font-size: xx-large; color:" + String(inputColors[i].value)+";");
+            //Black background so that Yellow is visible.  White border to make it kinda look like a card.
+            wildColorUI.innerHTML = "<div style='background: black; padding: 10px; border: 10px solid white; border-radius: .5em;'><div>Wild Card Color: </div><div id='wildColorSelected'><div id='"+String(inputColors[i].value)+"'>" + String(inputColors[i].value) +"</div></div></div>";
+            wildColorUI.setAttribute("style", "width: 50%; text-align: center; margin: auto; font-weight: bold; font-size: xx-large; color:" + String(inputColors[i].value)+";");
             wildPlayed = true;
             inputColors[i].checked = false; //TODO: Is this needed, so that future in future plays the default is not checked?
         }
