@@ -546,10 +546,10 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
         //Loop over all players, and build their hands
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
-            let playerHTML = '<div id="playerName'+(iUIPnames)+'" style="height:10%; border: white solid 1px; text-align: center;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
+            let playerHTML = '<div id="playerName'+(iUIPnames)+'" style="height:10%; text-align: center;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
             //88% height to prevent the cards from slightly going over the player box
-            playerHTML = playerHTML + '<div id="playerHand'+(iUIPnames)+'" class="playerHand" style="height:88%; border: purple solid 3px; overflow-y: auto">';
+            playerHTML = playerHTML + '<div id="playerHand'+(iUIPnames)+'" class="playerHand" style="height:88%;overflow-y: auto">';
 
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){

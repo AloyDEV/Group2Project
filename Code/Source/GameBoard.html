@@ -45,10 +45,6 @@
             right:0;
         }
 
-        .column {
-            border: red solid 1px;
-
-        }
         .playerBoxShow{
             border: blue solid 2px;
             height:23%; /*THIS BEING REMOVED RESULTS IN THE CARDS RESIZING TO THEIR DEFAULT SIZE!!!! */
@@ -211,7 +207,7 @@
 
 
 <div class="row">
-    <div class="column" style="flex: 60% !important; min-width: 50%">
+    <div style="flex: 60% !important; min-width: 50%">
         <div id="playerBox0" class="playerBoxShow">
             <div id="playerName0">Player 1</div>
             <div id="playerHand0" class="playerHand"> HAND!!!</div>
@@ -231,8 +227,8 @@
 
 
     </div>
-    <div class="column" style="flex: 39% !important; max-width: 50%; flex-flow: column">
-        <div style="border: yellow solid 3px; height:45%; width: 100%; overflow-x: auto;">
+    <div style="flex: 39% !important; max-width: 50%; flex-flow: column">
+        <div style="height:45%; width: 100%; overflow-x: auto;">
             <div id="buttonBar" style='text-align: center; margin-bottom: 3%;'>
                 <button id="helpButton" class="buttonHelp" onclick="">Help & Game Rules</button>
                 <button id="shuffleButton" class="buttonShuffle" onclick="">Shuffle Deck</button>
@@ -252,11 +248,11 @@
             <div id="wildColorUI" ></div>
             <div id="continueButtonNextPlayer" style='display:none; text-align: center;'><button onclick="beginPlayerTransition()">Continue: End your turn instead of playing a card & Continue to next player</button></div>
         </div>
-        <div style="border: yellow solid 3px; height: 45%; display: flex; overflow-x: auto;">
-            <div style="height:90%; border:orange solid 3px; margin-left:1%; margin-bottom:5%;">
+        <div style="height: 45%; display: flex; overflow-x: auto;">
+            <div style="height:90%; margin-left:1%; margin-bottom:5%;">
                 <img id="UIDiscardCard" src="/Code/Cards/Deck.png" alt="Discard Card" style="height:100%;width:auto;"/>
             </div>
-            <div style="height:90%; border:orange solid 3px; margin-left:1%;margin-bottom:5%;">
+            <div style="height:90%; margin-left:1%;margin-bottom:5%;">
                 <img id="UIDeck" src="/Code/Cards/Deck.png" alt="Deck" style="height:100%;width:auto; cursor: pointer"/>
             </div>
         </div>
