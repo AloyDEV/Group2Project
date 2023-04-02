@@ -58,17 +58,60 @@
             margin: .2%;
             border-radius:1em;
         }
-        .playerBoxHide {
-            display:none;
+
+        .buttonHelp{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition-duration: 0.4s;
         }
+        .buttonShuffle{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #213dd2;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition-duration: 0.4s;
+        }
+        .buttonReset{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #d53232;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition-duration: 0.4s;
+        }
+        .buttonHelp:hover {
+            background-color: #363434; /* Green */
+        }
+        .buttonShuffle:hover {
+            background-color: #363434; /* Green */
+        }
+        .buttonReset:hover {
+            background-color: #363434; /* Green */
+        }
+
 
         .playerActive:hover, .playerActive:focus{
             cursor: pointer;
         }
 
+        /*
         .hideElement{
             display:none;
         }
+        .playerBoxHide {
+            display:none;
+        }
+         */
 
         /* For all non-active players, this is used to have all IMG tags only display the back of the card */
         .backOfCardImages{
@@ -89,6 +132,7 @@
         .borderFlash {
             animation: flash .5s 1;
         }
+
 
 
         /*------------------------------Modal Box Styling -------------------------------------------------*/
@@ -189,21 +233,23 @@
     </div>
     <div class="column" style="flex: 39% !important; max-width: 50%; flex-flow: column">
         <div style="border: yellow solid 3px; height:45%; width: 100%; overflow-x: auto;">
-            <div id="buttonBar">
-                <button id="helpButton" onclick="">Help & Game Rules</button>
-                <button id="shuffleButton" onclick="">Shuffle Deck</button>
-                <button id="resetButton" onclick="">Reset Game</button>
+            <div id="buttonBar" style='text-align: center; margin-bottom: 3%;'>
+                <button id="helpButton" class="buttonHelp" onclick="">Help & Game Rules</button>
+                <button id="shuffleButton" class="buttonShuffle" onclick="">Shuffle Deck</button>
+                <button id="resetButton" class="buttonReset" onclick="">Reset Game</button>
             </div>
-            <div id="activePlayerUI" style='text-align: center;'>
-                <div id="activePlayerUItitle">Current player:</div>
-                <div id="activePlayerUIplayer"></div>
-            </div>
-            <div id="nextPlayerUI" style='text-align: center;'>
-                <div id="nextPlayerUItitle">Next player:</div>
-                <div id="nextPlayerUIplayer"></div>
+            <div style="border: 2px solid white; border-radius: 10px; width: 50%; display: flex; flex-direction: column; margin: auto;">
+                <div id="activePlayerUI" style='text-align: center;'>
+                    <div id="activePlayerUItitle">Current player:</div>
+                    <div id="activePlayerUIplayer"></div>
+                </div>
+                <div id="nextPlayerUI" style='text-align: center;'>
+                    <div id="nextPlayerUItitle">Next player:</div>
+                    <div id="nextPlayerUIplayer"></div>
+                </div>
             </div>
             <div id="miscMessageUI" style='text-align: center;'></div>
-            <div id="wildColorUI"></div>
+            <div id="wildColorUI" ></div>
             <div id="continueButtonNextPlayer" style='display:none; text-align: center;'><button onclick="beginPlayerTransition()">Continue: End your turn instead of playing a card & Continue to next player</button></div>
         </div>
         <div style="border: yellow solid 3px; height: 45%; display: flex; overflow-x: auto;">
@@ -249,7 +295,7 @@
 
 <div id="modalBackgroundContinue" class="modalBackgroundContinue">
     <div class="modalContentContinue" style="text-align: center">
-        <div id="modalContentContinue" style="margin:`0px;">
+        <div id="modalContentContinue" style="margin:0px;">
             <div style="margin:20px;">Next Player:</div>
             <h2><div id="nextPlayerName">Player ?</div></h2>
             <button id="playerContinue" onclick="endPlayerTransition()" style="margin:20px;"> Continue to next player</button>

@@ -3,7 +3,7 @@
 
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = true;
+let debug = false;
 
 
 
@@ -42,7 +42,7 @@ if(debug){console.log("Game Board JS is loading");}
     The left hand column of the game board is too tall.  Even when the modal DIVs were removed, it was slightly taller than the viewport
 
 
-    The Discard & Deck cards have too much left spacing on the Prod site.
+    The Discard & Deck cards have too much right spacing on the Prod site.
 
 
     The GameBoard is like 95% responsive right now.  What doesn't work is the buttons across the top (They can slide out of view, with no scrollbar)
@@ -59,6 +59,10 @@ if(debug){console.log("Game Board JS is loading");}
 
     When playing Wild 4, it looks like it hide the current players cards before the color selection popup.
         Whereas during WIld 1, player cards are still visible.
+
+
+    When there are 2 players, the cards are too big.  They fill up the box too quickly so that it goes into multiple rows too fast.
+        Might want to make the boxes smaller or the cards smaller.
 
 
 
@@ -420,6 +424,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     if(debug){console.log(gameDeck)};
 
     //Second create the players by pulling their info out of the cookie
+        //The computer player boolean is always stored at the very end
     let playersCookie = getCookie("UNOusers");
     if(playersCookie == ""){
         console.log("Something has gone wrong, the player info is not in the cookie");
@@ -431,6 +436,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         playersArray.push(player0, player1, player2, player3);  //If there's no cookie, default to their being a computer player (For simplicity)
 
     }
+    //ISSUE: Double check the computer player logic is correct, when there is NO computer player
     else{
         let playersTempArray = playersCookie.split("|");
         //TODO: Future improvement: to make this more robust, add in checks that the split actually returns an array & there are values in it (Otherwise default player names)
@@ -491,6 +497,8 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     switch(Number(playersArray.length)) {
         case 3:
             (debug ? console.log("Case 3") : null);
+
+            //ISSUE: Incorporate the computer player logic here.
 
             //TODO:  Probably could use Flex to fill available space instead of defining a height
 
@@ -885,7 +893,7 @@ function wildColorFunction(){
             //Store the color selected in the ID of the div, so that it can be retrieved later
             //Black background so that Yellow is visible.  White border to make it kinda look like a card.
             wildColorUI.innerHTML = "<div style='background: black; padding: 10px; border: 10px solid white; border-radius: .5em;'><div>Wild Card Color: </div><div id='wildColorSelected'><div id='"+String(inputColors[i].value)+"'>" + String(inputColors[i].value) +"</div></div></div>";
-            wildColorUI.setAttribute("style", "width: 50%; text-align: center; margin: auto; font-weight: bold; font-size: xx-large; color:" + String(inputColors[i].value)+";");
+            wildColorUI.setAttribute("style", "width: 50%; text-align: center; margin: auto; font-weight: bold; font-size: xx-large; margin-top: 2%; color:" + String(inputColors[i].value)+";");
             wildPlayed = true;
             inputColors[i].checked = false; //TODO: Is this needed, so that future in future plays the default is not checked?
         }
