@@ -3,7 +3,7 @@
 
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = false;
+let debug = true;
 
 
 
@@ -40,6 +40,9 @@ if(debug){console.log("Game Board JS is loading");}
 
 
     The left hand column of the game board is too tall.  Even when the modal DIVs were removed, it was slightly taller than the viewport
+        Its actually both columns that are too tall
+        Fixed by adding overflow-y: hidden; to the BODY CSS
+        DONE!!!
 
 
     The Discard & Deck cards have too much right spacing on the Prod site.
@@ -54,11 +57,11 @@ if(debug){console.log("Game Board JS is loading");}
 
 
     Put the name of the next player into the Transition box
-        DONE
+        DONE!!!
 
 
     When playing Wild 4, it looks like it hide the current players cards before the color selection popup.
-        Whereas during WIld 1, player cards are still visible.
+        Whereas during Wild 1, player cards are still visible.
 
 
     When there are 2 players, the cards are too big.  They fill up the box too quickly so that it goes into multiple rows too fast.
@@ -572,8 +575,8 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     }
 
     //Put starting player & next player into the UI
-    document.getElementById("activePlayerUIplayer").innerHTML = "<h1>" + playersArray[activePlayer].getPlayerName() + "</h1>";
-    document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
+    document.getElementById("activePlayerUIplayer").innerHTML = "<div style='font-size: xx-large; font-weight: bold; padding: 4px'>" + playersArray[Number(activePlayer)].getPlayerName() + "</div>";
+    document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
 
 
 });
@@ -848,8 +851,9 @@ function beginPlayerTransition(){
 
 
     //Update the UI to match the active player in the info panel
-    document.getElementById("activePlayerUIplayer").innerHTML = "<h1>" + playersArray[activePlayer].getPlayerName() + "</h1>";
-    document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
+    document.getElementById("activePlayerUIplayer").innerHTML = "<div style='font-size: xx-large; font-weight: bold; padding: 4px'>" + playersArray[Number(activePlayer)].getPlayerName() + "</div>";
+    document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
+
 
 
 
