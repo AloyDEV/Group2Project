@@ -60,13 +60,16 @@ if(debug){console.log("Game Board JS is loading");}
         DONE!!!
 
 
-    When playing Wild 4, it looks like it hide the current players cards before the color selection popup.
+    When playing Wild 4, it looks like it hides the current players cards before the color selection popup.
         Whereas during Wild 1, player cards are still visible.
 
 
     When there are 2 players, the cards are too big.  They fill up the box too quickly so that it goes into multiple rows too fast.
         Might want to make the boxes smaller or the cards smaller.
 
+    ISSUE: When looping over players, player 1 and the computer player have the columns resized to be 50% incorrectly.
+        Possibly fixed by adjusting the columns min & max widths.  BUT need to test more
+        And not sure why it resized in the first place.  Should probably check that.
 
 
     TODO: Things removed that might be added back later:
@@ -229,7 +232,6 @@ class Deck{
 
     removeCardByGlobalID(cardGlobalID){
         //Anytime this function is called, make sure a number is passed into it
-        //TODO: Throw in an error handler to make sure its a number
         let cardGlobalIDNum = Number(cardGlobalID);
 
         //TODO: Refactor this logic, could be a single IF
@@ -400,10 +402,10 @@ function createDeck(){
 
         //This should technically end up 1 over 108, since it is always incremented up even in the final loop
         if(cardGlobalNumber>109){
-            if(debug){console.log("ISSUE: Somehow there are more than 108 cards:")};
-            if(debug){console.log("Card Global Number: " + cardGlobalNumber)};
-            if(debug){console.log("Deck:")};
-            if(debug){console.log(gameDeck)};
+            console.log("ISSUE: Somehow there are more than 108 cards:");
+            console.log("Card Global Number: " + cardGlobalNumber);
+            console.log("Deck:");
+            console.log(gameDeck);
         }
     }
 
@@ -423,8 +425,8 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     //First build the deck
     createDeck();
     gameDeck.shuffle();
-    if(debug){console.log("Starting deck has been built & shuffled:")};
-    if(debug){console.log(gameDeck)};
+    (debug ? console.log("Starting deck has been built & shuffled:") : null);
+    (debug ? console.log(gameDeck) : null);
 
     //Second create the players by pulling their info out of the cookie
         //The computer player boolean is always stored at the very end
@@ -549,7 +551,8 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
         //Loop over all players, and build their hands
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
-            let playerHTML = '<div id="playerName'+(iUIPnames)+'" style="height:10%; text-align: center;">'+playersArray[iUIPnames].getPlayerName() + '</div>';
+            //If the player name would be too long for the box, just clip it instead of trying to wrap or truncate
+            let playerHTML = '<div id="playerName'+(iUIPnames)+'" style="height:10%; text-align: center; overflow: clip; padding: .5%">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
             //88% height to prevent the cards from slightly going over the player box
             playerHTML = playerHTML + '<div id="playerHand'+(iUIPnames)+'" class="playerHand" style="height:88%;overflow-y: auto">';
@@ -794,7 +797,8 @@ function processCard(cardID){
     else if(Number(playedCard.getNumber()) === 21){
         gameDirection = !Boolean(gameDirection);
         //Update the UI to update next player
-        document.getElementById("nextPlayerUIplayer").innerHTML = "<h2>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</h2>";
+        document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
+
     }
 
     //Skip
