@@ -94,23 +94,6 @@ if(debug){console.log("Game Board JS is loading");}
      */
 
 
-
-/*
-
-// Two Player Rules:
-//
-// For two or four players, there is a slight change of rules:
-//
-//     Reverse works like Skip
-// Play Skip, and you may immediately play another card
-// If you play a Draw Two or Wild Draw Four card, your opponent has to draw the number of cards required, and then play immediately resumes back on your turn.
-
-*/
-
-
-
-
-
 //Player Class to hold the details on each player
 class Player {
     constructor(playerNumber, playerName) {
@@ -119,9 +102,11 @@ class Player {
         this.playerHand = [];
     }
 
+    /*
     getPlayerNumber() {
         return this.playerNumber;
     }
+     */
 
     getPlayerName() {
         return this.playerName;
@@ -131,9 +116,11 @@ class Player {
         return this.playerHand;
     }
 
+    /*
     getPlayerHandSize() {
         return Number(this.playerHand.length);
     }
+     */
 
     addPlayerCard(addedCard){
         let handLengthStart = this.playerHand.length;
@@ -220,16 +207,20 @@ class Deck{
         this.deck = []; //Javascript doesn't support hashmaps by default, so just using an array.
     }
 
+    /*
     getSize(){
         return Number(this.deck.length);
     }
+
     getDeckContents(){
         return this.deck;
     }
+     */
     addCard(newCard){
         this.deck[this.deck.length] = newCard;
     }
 
+    /*
     removeCardByGlobalID(cardGlobalID){
         //Anytime this function is called, make sure a number is passed into it
         let cardGlobalIDNum = Number(cardGlobalID);
@@ -251,8 +242,9 @@ class Deck{
             }
             return false;
         }
-
     }
+    */
+
     removeTopCard(){
         //Make sure there is at least 1 card in the deck
         if(this.deck.length < 1){
@@ -354,11 +346,11 @@ function createDeck(){
     //Used to globally identify different cards, since there are duplicates of almost every card.
     let cardGlobalNumber = 1; //Start global number at 1, up to 108, for slightly easier tracking
 
-    for(let iCardFilenames = 0; iCardFilenames<cardFilenames.length; iCardFilenames++){
+    for(let i = 0; i<cardFilenames.length; i++){
         //Card filenames are hard coded to always be consistent.  So there are no checks needed for the processing in this loop
 
         //Split the card color from the card number
-        let cardFileInfo = cardFilenames[iCardFilenames].split("_");
+        let cardFileInfo = cardFilenames[i].split("_");
 
         //Split the card number from the PNG extension
         let cardFileNumber = cardFileInfo[1].split(".");
@@ -369,38 +361,38 @@ function createDeck(){
 //TODO: put into a loop.  Or a function where the # of cards to be added (and the card) is passed in)
 //One zero card per color
         if(cardFileNumber[0] == 0){
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[i], Number(cardGlobalNumber)));
             cardGlobalNumber++;
         }
 //Two of the 1-9 cards per color
         if(cardFileNumber[0] > 0 && cardFileNumber[0] < 10){
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[i], Number(cardGlobalNumber)));
             cardGlobalNumber++;
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[i], Number(cardGlobalNumber)));
             cardGlobalNumber++;
 
         }
 //Two of the draw/reverse/skip cards
         if(cardFileNumber[0] >= 20){
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[i], Number(cardGlobalNumber)));
             cardGlobalNumber++;
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[i], Number(cardGlobalNumber)));
             cardGlobalNumber++;
 
         }
 //Four of the 2 different wild cards
         if(cardFileNumber[0] >= 11 && cardFileNumber[0] <= 14){
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[i], Number(cardGlobalNumber)));
             cardGlobalNumber++;
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[i], Number(cardGlobalNumber)));
             cardGlobalNumber++;
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[i], Number(cardGlobalNumber)));
             cardGlobalNumber++;
-            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[iCardFilenames], Number(cardGlobalNumber)));
+            gameDeck.addCard(new Card(cardFileInfo[0], cardFileNumber[0], cardFilenames[i], Number(cardGlobalNumber)));
             cardGlobalNumber++;
         }
 
-        //This should technically end up 1 over 108, since it is always incremented up even in the final loop
+        //This should end up 1 over 108, since it is always incremented up even in the final loop
         if(cardGlobalNumber>109){
             console.log("ISSUE: Somehow there are more than 108 cards:");
             console.log("Card Global Number: " + cardGlobalNumber);
@@ -409,7 +401,7 @@ function createDeck(){
         }
     }
 
-    if(debug){console.log(gameDeck)}
+    (debug ? console.log(gameDeck) : null);
 
 }
 
@@ -419,7 +411,8 @@ function createDeck(){
 
 //GAME PREP -------------------------------------------------------------------------------------------------------------------------
 
-//Once the starting UI has loaded, begin the backend game prep (That modifies some of the UI)
+//Once the starting UI has loaded, begin the backend game prep
+//  It modifies some of the UI, so to avoid errors when finding UI elements it waits to initial DOM is loaded
 document.addEventListener('DOMContentLoaded', function gamePrep(){
 
     //First build the deck
@@ -437,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         var player0 = new Player(0,"Player1");
         var player1 = new Player(1,"Player2");
         var player2 = new Player(2,"Player3");
-        var player3 = new Player(3,"Computron");
+        var player3 = new Player(3,"Computron (Computer Player)");
         playersArray.push(player0, player1, player2, player3);  //If there's no cookie, default to their being a computer player (For simplicity)
 
     }
@@ -452,21 +445,21 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         //Add the computer player
         computerPlayer = Boolean(playersTempArray[iPlayerSetup]);
         if(computerPlayer) {
-            playersArray.push(new Player(playersArray.length, "Mike the All Knowing (Computer Player)"));
+            playersArray.push(new Player(playersArray.length, "Computron (Computer Player)"));
         }
     }
 
-    if(debug){console.log("Players created:")};
-    if(debug){console.log(playersArray)};
+    (debug ? console.log("Players created:") : null);
+    (debug ? console.log(playersArray) : null);
 
     //Third deal each player their hand
     //Nested loops! Always a good idea!
     //At this point, there is no need to check that the deck has enough cards
-    for(let iPlayerHandSetup = 0; iPlayerHandSetup < playersArray.length; iPlayerHandSetup++){
+    for(let i = 0; i < playersArray.length; i++){
         let dealingNumber = 0;
         while(dealingNumber < 7){
             //TODO: Make sure it returns TRUE after each push
-            playersArray[iPlayerHandSetup].addPlayerCard(gameDeck.removeTopCard());
+            playersArray[i].addPlayerCard(gameDeck.removeTopCard());
             dealingNumber++;
         }
     }
@@ -542,14 +535,15 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     //Put player names into the UI
     let UIPlayerNames = document.getElementsByClassName("playerBoxShow");
 
-    if(playersArray.length != UIPlayerNames.length){
-        console.log("Somethings gone wrong. The # of players in the cookie is not matching the # players in the UI.")
-        console.log("ABORT!!!!!")
-        //TODO: Reset the game, and default the players (3 players, default names)
+    if(Number(playersArray.length) !== Number(UIPlayerNames.length)){
+        console.log("Somethings gone wrong. The # of players in the cookie is not matching the # players in the UI.");
+        alert("The # of players is not matching.  Resetting to defaults");
+        window.location.reload();
     }
     else{
 
-        //Loop over all players, and build their hands
+        //Loop over all players to build their hands
+        //  This is the only time "i" is not used as the iterator (Just kidding, two other places don't use i), since it uses nested loops
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
             //If the player name would be too long for the box, just clip it instead of trying to wrap or truncate
             let playerHTML = '<div id="playerName'+(iUIPnames)+'" style="height:10%; text-align: center; overflow: clip; padding: .5%">'+playersArray[iUIPnames].getPlayerName() + '</div>';
@@ -560,12 +554,12 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             //Loop over the players hand
             for(let iUIPhand = 0; iUIPhand < playerHand.length; iUIPhand++){
                 //Starting player
-                if(iUIPnames == 0){
+                if(iUIPnames === 0){
                     playerHTML = playerHTML + '<img class="playerActive" onclick="processCard(this.id)" id="'+playerHand[iUIPhand].getGlobalNumber()+
                         '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:45%; margin-left: 1%; margin-bottom: .5%;"/>';
                     activePlayer = iUIPnames;
                 }
-                //Other players, they get the back of the card
+                //Other/non-active players get the back of the card
                 else{
                     playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
                         '" class="backOfCardImages" style="height:45%; margin-left: 1%; margin-bottom: .5%;"/>';
@@ -600,9 +594,6 @@ cardDrawn.onclick = function(mouseEvent) {
 
         //Draw a card from the deck
         let newCard = gameDeck.removeTopCard();
-        (debug ? console.log("Newly drawn card file & global ID:") : null);
-        (debug ? newCard.getFile() : null);
-        (debug ? newCard.getGlobalNumber() : null);
 
         //Add the card to the player hand
         playersArray[activePlayer].addPlayerCard(newCard);
@@ -611,7 +602,7 @@ cardDrawn.onclick = function(mouseEvent) {
         //Update the UI to add in the new card
         let activePlayerHandDraw = document.getElementById("playerHand" + (activePlayer)); //This is actually a pseudo-array, not a real array
         const newCardElement = document.createElement("img");
-        //<img class="playerActive" onclick="processCard(this.id)" id="3" src="/Code/Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
+        //Example: <img class="playerActive" onclick="processCard(this.id)" id="3" src="/Code/Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
         newCardElement.setAttribute("class", "playerActive");
         newCardElement.setAttribute("onclick", "processCard(this.id)");
         newCardElement.setAttribute("id", newCard.getGlobalNumber());
@@ -761,7 +752,7 @@ function processCard(cardID){
             nextPlayerHand.appendChild(newCardElementWild);
         }
         //Skip the next player
-        skipPlayerFunction();
+        skipPlayer();
 
         //Exit out of this function. Otherwise, it'll automatically move to the next player (And show the next players hand to the current player)
         //Instead, after the color is chosen, then it advances to the next player
@@ -790,7 +781,7 @@ function processCard(cardID){
             nextPlayerHand.appendChild(newCardElementWild);
         }
         //Skip the next player
-        skipPlayerFunction();
+        skipPlayer();
     }
 
     //Reverse
@@ -803,7 +794,7 @@ function processCard(cardID){
 
     //Skip
     else if(Number(playedCard.getNumber()) === 22){
-        skipPlayerFunction();
+        skipPlayer();
     }
     //Something has gone VERY wrong
     else{
@@ -834,7 +825,8 @@ function beginPlayerTransition(){
     for(let i=0; i<activePlayerHandOld.length; i++){
         activePlayerHandOld[i].className="backOfCardImages";
         activePlayerHandOld[i].removeAttribute('onclick');
-        //ISSUE: Removing the src attribute causes all of the cards to go to their default height.  Not sure why, the CSS appears to be identical
+        //Removing the src attribute causes all the cards to go to their default height.  Not sure why, the CSS appears to be identical
+        //  Instead, just leave the src attribute in place.  The updated class will override it by using !important
         //activePlayerHandOld[i].removeAttribute('src');
         (debug ? console.log(activePlayerHandOld[i]) : null);
     }
@@ -843,7 +835,6 @@ function beginPlayerTransition(){
     changeActivePlayer(1);
     (debug ? console.log("New Active Player: " + activePlayer) : null);
 
-    //ISSUE: This won't work when there are less then 3 players, that situation causes player IDs to be skipped
     //And set the new active player to display their cards in the UI
     let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer)).children; //This is actually a pseudo-array, not a real array
     for(let i=0; i<activePlayerHandNew.length; i++){
@@ -860,11 +851,18 @@ function beginPlayerTransition(){
 
 
 
-
     //ISSUE: Implement the computer player here
     //If the next player is the computer player, need to have it make a move (Maybe always displaying the back of the cards)
-    if(computerPlayer){ //TODO: && Its the computer players turn
+    if(computerPlayer && Number(activePlayer)===(playersArray.length-1)){
+        (debug ? console.log("COMP PLAYER MOVE") : null);
         //Computer player move
+
+        //Hide their cards, throw up a custom modal, and then either play a card or draw a card.
+        let compDiv = document.getElementById("computerPlayerOverlay");
+        compDiv.className = "";
+        compDiv.style.display = "block";
+
+
 
     }
 
@@ -885,7 +883,7 @@ function endPlayerTransition(){
 
 }
 
-function wildColorFunction(){
+function wildColor(){
     (debug ? console.log("Wildcard function begin") : null);
     //How to hide the wild color after it's been used?
     //  ANSWER: It's built into the card processing function, as part of the separate flow for validation after a wild play
@@ -915,8 +913,7 @@ function wildColorFunction(){
 
 }
 
-
-function skipPlayerFunction(){
+function skipPlayer(){
 
     //Update the UI to hide the current player's cards
     let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
@@ -930,11 +927,26 @@ function skipPlayerFunction(){
 }
 
 function computerPlayerMove(){
+    //Hide the computer players hand
+
+    //Loop over the computer players hand, and see if any cards are playable.  If they are, play the card.
+    let compHand = playersArray[activePlayer].getPlayerHand();
+
+    for(let i = 0; i< compHand.length; i++){
+        console.log(compHand[i]);
+        //If its Wild, play it
+        //Build a pseudo-wild card function here, instead of modifying the regular wild card function.
+
+
+        //OR if it matches the discard card, play it.
+
+
+    }
+
+    //How to handle the transition?
 
 
 }
-
-
 
 function updateDiscardCard(newDiscardCard){
     //Set the new discard card
@@ -1026,6 +1038,7 @@ function getCookie(cookieName) {
 
 // BEGIN MODAL BOX FUNCTIONS ------------------------------------------------------------------------------------------------------------------
 function hideModalBoxFunction(mouseEvent){
+    document.getElementById("modalBackground").style.background = "rgba(0,0,0,0.4)"
     if (mouseEvent.target == modalBackground || mouseEvent.target ==modalCloseButton) {
         if(debug){console.log("Modal box element clicked: " + mouseEvent.target)};
         modalBackground.style.display = "none";
@@ -1085,10 +1098,12 @@ var modalBackgroundContinue = document.getElementById("modalBackgroundContinue")
 //Start game box: Notify the users about how to play the game.
 document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
-    showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  Click the deck to draw a card.</p>" +
-        "<p> To play a card, click on it. After you play, the game board will be hidden as the next players cards are dispalyed.  Click Continue for the next player to begin their turn.</p>" +
-        "<p>Click the X on the right, or outside of this box, to start the game</p>");
+    showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  They can either play a card by clicking it, or draw a card by clicking the deck.</p>" +
+        "<p> After you play, the game board will be hidden as the next players cards are dispalyed.  Click Continue for the next player to begin their turn.</p>" +
+        "<p>To start the game & P;ayer 1's turn, click the X on the right or outside of this box.</p>");
 
+    //When starting the game, black out the background so no-one is able to see the starting players cards
+    document.getElementById("modalBackground").style.background = "rgba(0,0,0)"
 });
 
 

@@ -17,10 +17,9 @@
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradient 30s ease infinite;  /* transition effect for the background, loops infinitely */
-            height: 100vh;
+            height: 98vh; /* 98% to avoid the columns being too tall, and also to avoid needing overflow-y: hidden; */
             font-family:Calibri, sans-serif;
             padding: 0;
-            overflow-y: hidden;
         }
         @keyframes gradient {
             0% {
@@ -76,12 +75,12 @@
             margin: 5px;
             padding: 10px;
             border: none;
-            background-color: #4CAF50;
+            background-color: #1976f1;
             color: black;
             cursor: pointer;
             font-weight: bold;
             border-radius: 5px;
-            transition-duration: 0.4s;
+            transition-duration: 0.2s;
         }
         .buttonShuffle{
             margin: 5px;
@@ -92,7 +91,7 @@
             cursor: pointer;
             font-weight: bold;
             border-radius: 5px;
-            transition-duration: 0.4s;
+            transition-duration: 0.2s;
         }
         .buttonReset{
             margin: 5px;
@@ -103,7 +102,7 @@
             cursor: pointer;
             font-weight: bold;
             border-radius: 5px;
-            transition-duration: 0.4s;
+            transition-duration: 0.2s;
 
         }
         .buttonHelp:hover {
@@ -156,7 +155,7 @@
 
 
 
-        /*------------------------------Modal Box Styling -------------------------------------------------*/
+        /*------------------------------Modal Boxes Styling -------------------------------------------------*/
 
         /* The Modal (background) */
         .modalBackground {
@@ -189,7 +188,7 @@
         .modalBackgroundContinue{
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
-            z-index: 2; /* Sit on top */
+            z-index: 3; /* Sit on top */
             padding-top: 15%; /* Location of the box from the top of the page*/
             left: 0;
             top: 0;
@@ -197,6 +196,19 @@
             height: 100%; /* Full height */
             background-color: rgb(0,0,0); /* Black */
         }
+        /* The Modal (background) */
+        .modalBackground {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 4; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+
 
 
         /* Modal Content */
@@ -298,7 +310,7 @@
 <div id="modalBackgroundWild" class="modalBackgroundWild">
     <div class="modalContentWild">
         <div id="modalContentWild" style="text-align: center">
-            <h2>Select the color of the Wild card (That the next player must match):</h2>
+            <h2>Select the color of the Wild card:</h2>
             <br>
             <div id='wildInput'>
                 <input type="radio" id="BlueSelection" name="wildcolorsradio" value="Blue" class="wildColorInput" checked>
@@ -309,7 +321,7 @@
                 <label for="RedSelection">Red</label><br>
                 <input type="radio" id="YellowSelection" name="wildcolorsradio" value="Yellow" class="wildColorInput">
                 <label for="YellowSelection">Yellow</label><br>
-                <button id="wildContinue" onclick="wildColorFunction()"> Continue </button>
+                <button id="wildContinue" onclick="wildColor()"> Continue </button>
             </div>
         </div>
     </div>
@@ -323,6 +335,12 @@
             <button id="playerContinue" onclick="endPlayerTransition()" style="margin:20px;"> Continue to next player</button>
         </div>
     </div>
+</div>
+
+<div id="computerPlayerOverlay" class="computerPlayerOverlay">
+    <h2>
+OVERLAY DIV!!!!!!!!!
+    </h2>
 </div>
 
 </body>

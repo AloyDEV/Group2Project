@@ -24,7 +24,7 @@
             }
         }
         .spaceBoxes{
-            padding-top: 1em;
+            padding-top: .5em;
         }
 
         .playerNameEntryHide{
@@ -32,6 +32,20 @@
         }
         .playerNameEntryShow{
             display: contents;
+        }
+        #startGame{
+            padding: 1em;
+            background-color: #4CAF50;
+            color: black;
+            cursor: pointer;
+            font-size: x-large;
+            border: none;
+            border-radius: 10px;
+        }
+        #startGame:hover{
+            background-color: black;
+            color: white;
+            transition: .2s;
         }
 
     </style>
@@ -65,7 +79,6 @@
 
     </script>
     <div id="startInput" style="display: flex; flex-direction: column; align-items: center; text-align: center; ">
-        <!--  display: flex; resulted in the DIVs below being next to each other, instead of stacked -->
         <div>
             <h3 style="border: 5px solid; border-radius: 2em; padding: 2em; margin: 1em; border-image:linear-gradient(to right, yellow 25%, red 25%, red 50%, blue 50%, blue 75%, green 75%) 5;">UNO In The Browser!  Group 2's software engineering capstone project.</h3>
         </div>
@@ -100,18 +113,18 @@
                     <br/>
                 </div>
             </div>
-            <div class="spaceBoxes">
+            <div class="spaceBoxes" style="margin-top: 1.5em">
                 <label for="includeCompPlayer"> Include a computer player?</label>
                 <input id="includeCompPlayer" type="checkbox" checked="true"/>
             </div>
 
-            <div class="spaceBoxes">
+            <div style="padding-top: 3em;">
                 <button id="startGame">Start Game</button>
             </div>
         </div>
         <br>
         <br>
-        *Note: Cookies & Javascript must be enabled in your browser in order for this game to work.
+        *Cookies & Javascript must be enabled in your browser in order for this game to work.
     </div>
 </body>
 
