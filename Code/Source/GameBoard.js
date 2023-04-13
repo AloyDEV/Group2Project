@@ -3,7 +3,7 @@
 
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = true;
+let debug = false;
 
 
 
@@ -615,7 +615,7 @@ cardDrawn.onclick = function(mouseEvent) {
         (debug ? console.log(playersArray[activePlayer].getPlayerHand()) : null);
 
         //The player can play the card they just picked up, so display the CONTINUE button to allow them to end their turn without playing a card.
-        document.getElementById("continueButtonNextPlayer").setAttribute("style", "text-align: center;")
+        document.getElementById("continueButtonNextPlayer").setAttribute("style", "text-align: center; padding: 10px;")
 
         //At this point, instead of the making the deck un-clickable, keep it clickable.
         //So that if the player clicks the deck again out of confusion, it'll direct them what to do next.
@@ -818,7 +818,7 @@ function beginPlayerTransition(){
     alreadyDrawnCard = false;
 
     //Hide the Continue button, it only displays if a card was drawn, but to be safe always un-display it
-    document.getElementById("continueButtonNextPlayer").setAttribute("style","display:none; text-align: center;")
+    document.getElementById("continueButtonNextPlayer").setAttribute("style","display:none; text-align: center; padding: 10px;")
 
     //Update the player hands in the UI.  Active player cards updated to the class that only displays the back
     let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
@@ -1038,9 +1038,9 @@ function getCookie(cookieName) {
 
 // BEGIN MODAL BOX FUNCTIONS ------------------------------------------------------------------------------------------------------------------
 function hideModalBoxFunction(mouseEvent){
-    document.getElementById("modalBackground").style.background = "rgba(0,0,0,0.4)"
     if (mouseEvent.target == modalBackground || mouseEvent.target ==modalCloseButton) {
-        if(debug){console.log("Modal box element clicked: " + mouseEvent.target)};
+        document.getElementById("modalBackground").style.background = "rgba(0,0,0,0.4)";
+        (debug ? console.log("Modal box element clicked: " + mouseEvent.target) : null);
         modalBackground.style.display = "none";
     }
 }
