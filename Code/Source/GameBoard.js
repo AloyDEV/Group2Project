@@ -3,7 +3,7 @@
 
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = false;
+let debug = true;
 
 
 
@@ -20,7 +20,7 @@ var alreadyDrawnCard = false; //Makes the deck inactive after a player has drawn
 var wildPlayed = false;
 var computerPlayer = false;
 
-if(debug){console.log("Game Board JS is loading");}
+(debug ? console.log("Game Board JS is loading") : null);
 
 
 
@@ -644,17 +644,18 @@ function processCard(cardID){
 
     //Valid play: match either by the number, color, or the symbol/Action
     if(!wildPlayed && (String(playedCard.getColor()) === String(discardCard.getColor()) || Number(playedCard.getNumber()) === Number(discardCard.getNumber()))){
+        (debug ? console.log("Played card matched on number/color/action"): null);
         validPlay = true;
     }
     //OR a wild is being played (Then it works regardless of if a previous wild was played)
     else if(Number(playedCard.getNumber()) === 11 || Number(playedCard.getNumber()) === 14){
+        (debug ? console.log("Played card is wild"): null);
         validPlay = true;
     }
     //OR If a wild was played the last turn, make sure it matches the color selected
     else if(wildPlayed){
+        (debug ? console.log("Played card matches previously played wild card color"): null);
         let wildElement = document.getElementById("wildColorSelected").children; //Only 1 child element
-        console.log("WILD ELEMENT:");
-        console.log(wildElement);
         if(String(playedCard.getColor()) === String(wildElement[0].id)){
             validPlay = true;
         }
@@ -827,6 +828,7 @@ function beginPlayerTransition(){
         activePlayerHandOld[i].removeAttribute('onclick');
         //Removing the src attribute causes all the cards to go to their default height.  Not sure why, the CSS appears to be identical
         //  Instead, just leave the src attribute in place.  The updated class will override it by using !important
+        //  Creates a tiny chance of someone cheating by inspecting the source.  But that risk is acceptable, this is a casual game.
         //activePlayerHandOld[i].removeAttribute('src');
         (debug ? console.log(activePlayerHandOld[i]) : null);
     }
@@ -862,6 +864,9 @@ function beginPlayerTransition(){
         compDiv.className = "";
         compDiv.style.display = "block";
 
+        computerPlayerMove();
+
+        //Hide the modal, and advance to the next player.
 
 
     }
@@ -901,7 +906,6 @@ function wildColor(){
             wildColorUI.innerHTML = "<div style='background: black; padding: 10px; border: 10px solid white; border-radius: .5em;'><div>Wild Card Color: </div><div id='wildColorSelected'><div id='"+String(inputColors[i].value)+"'>" + String(inputColors[i].value) +"</div></div></div>";
             wildColorUI.setAttribute("style", "width: 50%; text-align: center; margin: auto; font-weight: bold; font-size: xx-large; margin-top: 2%; color:" + String(inputColors[i].value)+";");
             wildPlayed = true;
-            inputColors[i].checked = false; //TODO: Is this needed, so that future in future plays the default is not checked?
         }
     }
 
@@ -928,22 +932,50 @@ function skipPlayer(){
 
 function computerPlayerMove(){
     //Hide the computer players hand
+    document.getElementById("WTF IS THE ID!!!?!?!?!?!?!"); //PERFECT, no notes
 
     //Loop over the computer players hand, and see if any cards are playable.  If they are, play the card.
+    //  This will end up duplicating a lot of the Process Card function.  But there are a number of tweaks needed in this case
     let compHand = playersArray[activePlayer].getPlayerHand();
+    let compPlayedCard = false;
+    let cardToPlay = "";
 
     for(let i = 0; i< compHand.length; i++){
+
         console.log(compHand[i]);
-        //If its Wild, play it
-        //Build a pseudo-wild card function here, instead of modifying the regular wild card function.
 
-
-        //OR if it matches the discard card, play it.
+        //Go through the various valid plays, to see if any of them apply to the card
+        //  Doesn't matter if another card is playable later in the hand and this overwrites the previously playable card.  Any card can be played
+        //Valid play: match either by the number, color, or the symbol/Action
+        if(!wildPlayed && (String(compHand[i].getColor()) === String(discardCard.getColor()) || Number(compHand[i].getNumber()) === Number(discardCard.getNumber()))){
+            console.log("COMP PLAYER: Matched on number/color/symbol")
+            compPlayedCard = true;
+            cardToPlay = compHand[i];
+        }
+        //OR a wild is being played (Then it works regardless of if a previous wild was played)
+        else if(Number(compHand[i].getNumber()) === 11 || Number(compHand[i].getNumber()) === 14){
+            compPlayedCard = true;
+            cardToPlay = compHand[i];
+        }
+        //OR If a wild was played the last turn, make sure it matches the color selected
+        else if(wildPlayed){
+            let wildElement = document.getElementById("wildColorSelected").children; //Only 1 child element
+            if(String(compHand[i].getColor()) === String(wildElement[0].id)){
+                compPlayedCard = true;
+                cardToPlay = compHand[i];
+            }
+        }
 
 
     }
 
+    //If no card was played, draw a card
+    if(!compPlayedCard){
+
+    }
+
     //How to handle the transition?
+
 
 
 }
