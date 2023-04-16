@@ -18,6 +18,7 @@
             background-size: 400% 400%;
             animation: gradient 30s ease infinite;  /* transition effect for the background, loops infinitely */
             height: 98vh; /* 98% to avoid the columns being too tall, and also to avoid needing overflow-y: hidden; */
+            overflow-y: hidden; /* Actually comment above is incorrect, overflow-y is still needed */
             font-family:Calibri, sans-serif;
             padding: 0;
         }
@@ -337,7 +338,7 @@
         <div id="modalContentWild" style="text-align: center">
             <h2>Select the color of the Wild card:</h2>
             <br>
-            <div id='wildInput'>
+            <div id='wildInput' style="display: inline-block; text-align: left;">
                 <input type="radio" id="BlueSelection" name="wildcolorsradio" value="Blue" class="wildColorInput" checked>
                 <label for="BlueSelection">Blue</label><br>
                 <input type="radio" id="GreenSelection" name="wildcolorsradio" value="Green" class="wildColorInput">
@@ -346,6 +347,8 @@
                 <label for="RedSelection">Red</label><br>
                 <input type="radio" id="YellowSelection" name="wildcolorsradio" value="Yellow" class="wildColorInput">
                 <label for="YellowSelection">Yellow</label><br>
+                <br>
+                <br>
                 <button id="wildContinue" onclick="wildColor()"> Continue </button>
             </div>
         </div>

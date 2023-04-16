@@ -654,9 +654,9 @@ function processCard(cardID){
     }
     //OR If a wild was played the last turn, make sure it matches the color selected
     else if(wildPlayed){
-        (debug ? console.log("Played card matches previously played wild card color"): null);
         let wildElement = document.getElementById("wildColorSelected").children; //Only 1 child element
         if(String(playedCard.getColor()) === String(wildElement[0].id)){
+            (debug ? console.log("Played card matches previously played wild card color"): null);
             validPlay = true;
         }
     }
@@ -702,14 +702,14 @@ function processCard(cardID){
         //Done before any card processing, since playing the card isn't actually needed as long as its valid (And the discard card will already be displayed).
     if(checkWinCondition()){
         //Prod
-        let startPage = "/index.html";
+        let startPage = "http://www.unointhebrowser.com/index.html";
         //Test
         if(debug){
             startPage =  "/Group2Project/Code/Source/index.html";
         }
 
         showModalBoxFunction(null, "<div><h2>"+playersArray[activePlayer].getPlayerName()+" won the game!</h2></div>" +
-            "<br><div>Click here to start a new game with the same players: <br><button onclick='window.location.reload();'>NEW GAME</button></div>" +
+            "<br><div>Click here to start a new game with the same players: <br><button onclick='window.location.reload();'>NEW GAME</button></div><br>" +
             "<br><div>Click here to select the number of players & enter player names before starting the game: <br><button onclick='window.location.href = \" "+startPage+" \";'>NEW PLAYERS & NEW GAME</button></div>");
         return false;
     }
@@ -856,7 +856,7 @@ function beginPlayerTransition(){
     //ISSUE: Implement the computer player here
     //If the next player is the computer player, need to have it make a move (Maybe always displaying the back of the cards)
     if(computerPlayer && Number(activePlayer)===(playersArray.length-1)){
-        (debug ? console.log("COMP PLAYER MOVE") : null);
+        (debug ? console.log("COMP PLAYER MOVE STARTS") : null);
         //Computer player move
 
         //Hide their cards, throw up a custom modal, and then either play a card or draw a card.
@@ -942,18 +942,20 @@ function computerPlayerMove(){
 
     for(let i = 0; i< compHand.length; i++){
 
-        console.log(compHand[i]);
 
         //Go through the various valid plays, to see if any of them apply to the card
         //  Doesn't matter if another card is playable later in the hand and this overwrites the previously playable card.  Any card can be played
         //Valid play: match either by the number, color, or the symbol/Action
         if(!wildPlayed && (String(compHand[i].getColor()) === String(discardCard.getColor()) || Number(compHand[i].getNumber()) === Number(discardCard.getNumber()))){
             console.log("COMP PLAYER: Matched on number/color/symbol")
+            console.log(compHand[i]);
             compPlayedCard = true;
             cardToPlay = compHand[i];
         }
         //OR a wild is being played (Then it works regardless of if a previous wild was played)
         else if(Number(compHand[i].getNumber()) === 11 || Number(compHand[i].getNumber()) === 14){
+            console.log("COMP PLAYER: Wild is able to be played")
+            console.log(compHand[i]);
             compPlayedCard = true;
             cardToPlay = compHand[i];
         }
@@ -961,17 +963,25 @@ function computerPlayerMove(){
         else if(wildPlayed){
             let wildElement = document.getElementById("wildColorSelected").children; //Only 1 child element
             if(String(compHand[i].getColor()) === String(wildElement[0].id)){
+                console.log("COMP PLAYER: Matched on previous wild card color")
+                console.log(compHand[i]);
                 compPlayedCard = true;
                 cardToPlay = compHand[i];
             }
         }
-
-
     }
 
-    //If no card was played, draw a card
-    if(!compPlayedCard){
+    //A card is able to be played
+    if(compPlayedCard){
 
+        cardToPlay
+
+    }
+    //No card to be played, draw a card
+    else{
+
+        //How about for simplicity, we just never play the drawn card?  Puts the computer player at a disadvantage, but fuck that guy.
+        //  Ahem, I mean the game favors the human players slightly.  The house does NOT always win.
     }
 
     //How to handle the transition?
