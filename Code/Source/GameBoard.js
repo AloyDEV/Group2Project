@@ -3,7 +3,7 @@
 
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = false;
+let debug = true;
 
 
 
@@ -46,6 +46,8 @@ var computerPlayer = false;
 
 
     The Discard & Deck cards have too much right spacing on the Prod site.
+        DONE!!!!
+           Fixed the discard & draw cards having too much padding in Prod by adding max-width:45% to both
 
 
     The GameBoard is like 95% responsive right now.  What doesn't work is the buttons across the top (They can slide out of view, with no scrollbar)
@@ -610,11 +612,11 @@ cardDrawn.onclick = function(mouseEvent) {
         let activePlayerHandDraw = document.getElementById("playerHand" + (activePlayer)); //This is actually a pseudo-array, not a real array
         const newCardElement = document.createElement("img");
         //Example: <img class="playerActive" onclick="processCard(this.id)" id="3" src="/Code/Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
-        newCardElement.setAttribute("class", "playerActive");
-        newCardElement.setAttribute("onclick", "processCard(this.id)");
         newCardElement.setAttribute("id", newCard.getGlobalNumber());
-        newCardElement.setAttribute("src", "/Code/Cards/" + newCard.getFile());
+        newCardElement.setAttribute("class", "playerActive");
         newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+        newCardElement.setAttribute("src", "/Code/Cards/" + newCard.getFile());
+        newCardElement.setAttribute("onclick", "processCard(this.id)");
 
         activePlayerHandDraw.appendChild(newCardElement);
 
@@ -847,7 +849,7 @@ function beginPlayerTransition(){
 
     //ISSUE: The computer player move might actually go here.  Then once its done, advance another player and the UI will update
     //ISSUE: Implement the computer player here
-    //If the next player is the computer player, need to have it make a move (Maybe always displaying the back of the cards)
+    //If the next player is the computer player, need to have it make a move
     if(computerPlayer && Number(activePlayer)===(playersArray.length-1)){
         (debug ? console.log("COMP PLAYER MOVE STARTS") : null);
         //Throw up an overlay, so that the UI can't be interacted with while the computer is playing.
@@ -863,7 +865,8 @@ function beginPlayerTransition(){
 
 
         //Advance to the next player.
-        changeActivePlayer(1);
+        //TODO: Removed while testing
+        //changeActivePlayer(1);
 
 
     }
