@@ -3,7 +3,7 @@
 
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = true;
+let debug = false;
 
 
 
@@ -50,10 +50,12 @@ var computerPlayer = false;
 
     The GameBoard is like 95% responsive right now.  What doesn't work is the buttons across the top (They can slide out of view, with no scrollbar)
         And the Discard/Deck section, the Deck card can slide out of view.
+        Pretty much done.  When I tested on my phone, it was responsive enough to be playable.
 
 
     Move up the Modal box, so its closer to the top of the page
         Also I don't think any modals are that responsive right now.
+        DONE!!! Moved up.  And when tested on a phone, modals were fine.
 
 
     Put the name of the next player into the Transition box
@@ -67,9 +69,14 @@ var computerPlayer = false;
     When there are 2 players, the cards are too big.  They fill up the box too quickly so that it goes into multiple rows too fast.
         Might want to make the boxes smaller or the cards smaller.
 
+
+
     ISSUE: When looping over players, player 1 and the computer player have the columns resized to be 50% incorrectly.
         Possibly fixed by adjusting the columns min & max widths.  BUT need to test more
         And not sure why it resized in the first place.  Should probably check that.
+
+    Issue: If you reach the point where there are no more cards available in the deck, and then play a Draw 2 card, it allows the active player to play the draw 2 then to play another card
+        Also the continue button doesn't appear.  But i'm not sure if thats okay or not yet
 
 
     TODO: Things removed that might be added back later:
@@ -837,6 +844,31 @@ function beginPlayerTransition(){
     changeActivePlayer(1);
     (debug ? console.log("New Active Player: " + activePlayer) : null);
 
+
+    //ISSUE: The computer player move might actually go here.  Then once its done, advance another player and the UI will update
+    //ISSUE: Implement the computer player here
+    //If the next player is the computer player, need to have it make a move (Maybe always displaying the back of the cards)
+    if(computerPlayer && Number(activePlayer)===(playersArray.length-1)){
+        (debug ? console.log("COMP PLAYER MOVE STARTS") : null);
+        //Throw up an overlay, so that the UI can't be interacted with while the computer is playing.
+        //let compDiv = document.getElementById("computerPlayerOverlay");
+        //compDiv.className = "";
+        //compDiv.style.display = "block";
+
+        //Computer player move
+        computerPlayerMove();
+
+
+        //Hide the overlay
+
+
+        //Advance to the next player.
+        changeActivePlayer(1);
+
+
+    }
+
+
     //And set the new active player to display their cards in the UI
     let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer)).children; //This is actually a pseudo-array, not a real array
     for(let i=0; i<activePlayerHandNew.length; i++){
@@ -850,26 +882,6 @@ function beginPlayerTransition(){
     //Update the UI to match the active player in the info panel
     document.getElementById("activePlayerUIplayer").innerHTML = "<div style='font-size: xx-large; font-weight: bold; padding: 4px'>" + playersArray[Number(activePlayer)].getPlayerName() + "</div>";
     document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
-
-
-
-    //ISSUE: Implement the computer player here
-    //If the next player is the computer player, need to have it make a move (Maybe always displaying the back of the cards)
-    if(computerPlayer && Number(activePlayer)===(playersArray.length-1)){
-        (debug ? console.log("COMP PLAYER MOVE STARTS") : null);
-        //Computer player move
-
-        //Hide their cards, throw up a custom modal, and then either play a card or draw a card.
-        let compDiv = document.getElementById("computerPlayerOverlay");
-        compDiv.className = "";
-        compDiv.style.display = "block";
-
-        computerPlayerMove();
-
-        //Hide the modal, and advance to the next player.
-
-
-    }
 
 
     //Hide the screen when transitioning between players.  And the next player needs to click Continue to advance (No clicking outside the modal)
@@ -932,13 +944,22 @@ function skipPlayer(){
 
 function computerPlayerMove(){
     //Hide the computer players hand
-    document.getElementById("WTF IS THE ID!!!?!?!?!?!?!"); //PERFECT, no notes
+        //Computer player is always the last one in the players array
+    //document.getElementById("WTF IS THE ID!!!?!?!?!?!?!"); //PERFECT CODE, no notes
+    let computerPlayerHand = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
+    for(let i=0; i<computerPlayerHand.length; i++){
+        computerPlayerHand[i].className="backOfCardImages";
+        computerPlayerHand[i].removeAttribute('onclick');
+        (debug ? console.log(computerPlayerHand[i]) : null);
+    }
+
 
     //Loop over the computer players hand, and see if any cards are playable.  If they are, play the card.
     //  This will end up duplicating a lot of the Process Card function.  But there are a number of tweaks needed in this case
     let compHand = playersArray[activePlayer].getPlayerHand();
     let compPlayedCard = false;
-    let cardToPlay = "";
+    let compPlayedWild = false;
+    let cardToPlayNum = null;
 
     for(let i = 0; i< compHand.length; i++){
 
@@ -950,14 +971,18 @@ function computerPlayerMove(){
             console.log("COMP PLAYER: Matched on number/color/symbol")
             console.log(compHand[i]);
             compPlayedCard = true;
-            cardToPlay = compHand[i];
+            cardToPlayNum = compHand[i].getGlobalNumber();
+            console.log(compHand[i].getGlobalNumber());
         }
         //OR a wild is being played (Then it works regardless of if a previous wild was played)
         else if(Number(compHand[i].getNumber()) === 11 || Number(compHand[i].getNumber()) === 14){
             console.log("COMP PLAYER: Wild is able to be played")
             console.log(compHand[i]);
             compPlayedCard = true;
-            cardToPlay = compHand[i];
+            compPlayedWild = true;
+            cardToPlayNum = compHand[i].getGlobalNumber();
+            console.log(compHand[i].getGlobalNumber());
+
         }
         //OR If a wild was played the last turn, make sure it matches the color selected
         else if(wildPlayed){
@@ -966,7 +991,9 @@ function computerPlayerMove(){
                 console.log("COMP PLAYER: Matched on previous wild card color")
                 console.log(compHand[i]);
                 compPlayedCard = true;
-                cardToPlay = compHand[i];
+                cardToPlayNum = compHand[i].getGlobalNumber();
+                console.log(compHand[i].getGlobalNumber());
+
             }
         }
     }
@@ -974,17 +1001,27 @@ function computerPlayerMove(){
     //A card is able to be played
     if(compPlayedCard){
 
-        cardToPlay
+        //Remove the card from the players hand
+        let tempCard = playersArray[activePlayer].removePlayerCard(cardToPlayNum);
+
+        //todo: Special handling for WILD
+        if(compPlayedWild){
+
+        }
+
+        //Put the old discard card into the deck
+
+        //Set it as the new discard card
 
     }
     //No card to be played, draw a card
     else{
-
         //How about for simplicity, we just never play the drawn card?  Puts the computer player at a disadvantage, but fuck that guy.
         //  Ahem, I mean the game favors the human players slightly.  The house does NOT always win.
     }
 
     //How to handle the transition?
+        //Just return to the previous function, and complete the player transition?
 
 
 
@@ -1052,7 +1089,7 @@ function checkWinCondition(){
 
 function getCookie(cookieName) {
     /*
-    Different way to get the players from the cookie:
+    ALternate way to get the players from the cookie:
     let usersCookie = document.cookie;
     console.log(usersCookie);
     console.log(document.cookie.indexOf("UNOusers"));
@@ -1142,7 +1179,7 @@ document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
     showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  They can either play a card by clicking it, or draw a card by clicking the deck.</p>" +
         "<p> After you play, the game board will be hidden as the next players cards are dispalyed.  Click Continue for the next player to begin their turn.</p>" +
-        "<p>To start the game & P;ayer 1's turn, click the X on the right or outside of this box.</p>");
+        "<p>To start the game & Player 1's turn, click the X on the right or outside of this box.</p>");
 
     //When starting the game, black out the background so no-one is able to see the starting players cards
     document.getElementById("modalBackground").style.background = "rgba(0,0,0)"
