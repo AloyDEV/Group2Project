@@ -847,7 +847,6 @@ function beginPlayerTransition(){
     (debug ? console.log("New Active Player: " + activePlayer) : null);
 
 
-    //ISSUE: The computer player move might actually go here.  Then once its done, advance another player and the UI will update
     //ISSUE: Implement the computer player here
     //If the next player is the computer player, need to have it make a move
     if(computerPlayer && Number(activePlayer)===(playersArray.length-1)){
@@ -860,8 +859,12 @@ function beginPlayerTransition(){
         //Computer player move
         computerPlayerMove();
 
+        throw new Error("EXITING");
+
 
         //Hide the overlay
+
+
 
 
         //Advance to the next player.
@@ -947,20 +950,23 @@ function skipPlayer(){
 
 function computerPlayerMove(){
     //Hide the computer players hand
+        //Actually, this isn't needed. The UI hasn't been updated yet to show the next players hand.
         //Computer player is always the last one in the players array
     //document.getElementById("WTF IS THE ID!!!?!?!?!?!?!"); //PERFECT CODE, no notes
+    /*
     let computerPlayerHand = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
     for(let i=0; i<computerPlayerHand.length; i++){
         computerPlayerHand[i].className="backOfCardImages";
         computerPlayerHand[i].removeAttribute('onclick');
         (debug ? console.log(computerPlayerHand[i]) : null);
     }
+     */
 
 
     //Loop over the computer players hand, and see if any cards are playable.  If they are, play the card.
     //  This will end up duplicating a lot of the Process Card function.  But there are a number of tweaks needed in this case
     let compHand = playersArray[activePlayer].getPlayerHand();
-    let compPlayedCard = false;
+    ///let compPlayedCard = false;  //TODO: Could this be eliminated by just checking if cardToPlayNum != null?
     let compPlayedWild = false;
     let cardToPlayNum = null;
 
@@ -973,7 +979,7 @@ function computerPlayerMove(){
         if(!wildPlayed && (String(compHand[i].getColor()) === String(discardCard.getColor()) || Number(compHand[i].getNumber()) === Number(discardCard.getNumber()))){
             console.log("COMP PLAYER: Matched on number/color/symbol")
             console.log(compHand[i]);
-            compPlayedCard = true;
+            //compPlayedCard = true;
             cardToPlayNum = compHand[i].getGlobalNumber();
             console.log(compHand[i].getGlobalNumber());
         }
@@ -981,7 +987,7 @@ function computerPlayerMove(){
         else if(Number(compHand[i].getNumber()) === 11 || Number(compHand[i].getNumber()) === 14){
             console.log("COMP PLAYER: Wild is able to be played")
             console.log(compHand[i]);
-            compPlayedCard = true;
+            //compPlayedCard = true;
             compPlayedWild = true;
             cardToPlayNum = compHand[i].getGlobalNumber();
             console.log(compHand[i].getGlobalNumber());
@@ -993,7 +999,7 @@ function computerPlayerMove(){
             if(String(compHand[i].getColor()) === String(wildElement[0].id)){
                 console.log("COMP PLAYER: Matched on previous wild card color")
                 console.log(compHand[i]);
-                compPlayedCard = true;
+                //compPlayedCard = true;
                 cardToPlayNum = compHand[i].getGlobalNumber();
                 console.log(compHand[i].getGlobalNumber());
 
@@ -1002,36 +1008,147 @@ function computerPlayerMove(){
     }
 
     //A card is able to be played
-    if(compPlayedCard){
+    if(cardToPlayNum != null){
+        console.log("Computer player, PLAYABLE CARD FOUND");
 
         //Remove the card from the players hand
         let tempCard = playersArray[activePlayer].removePlayerCard(cardToPlayNum);
+
+        //Update the UI that the card has been removed.
+        //TODO: use a transition here, to make it slightly more interactive.
+        document.getElementById(String(cardToPlayNum)).remove();
+
+
+        //Put the old discard card into the deck
+        gameDeck.addCard(discardCard);
+
+        //Set the played card as the new discard card
+        updateDiscardCard(tempCard);
+
+        //Check if the computer player won by playing their card
+        if (checkWinCondition()){
+            //Prod
+            let startPage = "http://www.unointhebrowser.com/index.html";
+            //Test
+            if(debug){
+                startPage =  "/Group2Project/Code/Source/index.html";
+            }
+
+            showModalBoxFunction(null, "<div><h2>"+playersArray[activePlayer].getPlayerName()+" won the game!</h2></div>" +
+                "<br><div>Click here to start a new game with the same players: <br><button onclick='window.location.reload();'>NEW GAME</button></div><br>" +
+                "<br><div>Click here to select the number of players & enter player names before starting the game: <br><button onclick='window.location.href = \" "+startPage+" \";'>NEW PLAYERS & NEW GAME</button></div>");
+            return false;
+        }
+
+        //Check the cards #/type to determine what type of move is needed.
+        //Number cards need no special handling
+
+        //Wild 1
+        if(Number(tempCard.getNumber()) === 11){
+
+        }
+
+        //Wild 4 (+4 and Skip)
+        else if(Number(tempCard.getNumber()) === 14) {
+
+            //Draw 4 cards from the deck, and add them to the NEXT player (Not the active player)
+            for(let i = 0; i < 4; i++) {
+                let newCard = gameDeck.removeTopCard();
+                //Add the card to the player hand
+                playersArray[getNextPlayer()].addPlayerCard(newCard);
+
+                //Update the UI to add in the new card
+                let nextPlayerHand = document.getElementById("playerHand" + (getNextPlayer())); //This is actually a pseudo-array, not a real array
+                const newCardElementWild = document.createElement("img");
+                newCardElementWild.setAttribute("class", "backOfCardImages");
+                newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
+                newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
+                newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+
+                nextPlayerHand.appendChild(newCardElementWild);
+            }
+            //Skip the next player
+            skipPlayer();
+        }
+
+        // Draw Two (+2 and Skip)
+        else if(Number(tempCard.getNumber()) === 20) {
+            //Draw 2 cards from the deck, and add them to the NEXT player (Not the active player)
+            for(let i = 0; i < 2; i++) {
+                let newCard = gameDeck.removeTopCard();
+                //Add the card to the player hand
+                playersArray[getNextPlayer()].addPlayerCard(newCard);
+
+                //Update the UI to add in the new card
+                let nextPlayerHand = document.getElementById("playerHand" + (getNextPlayer()));
+                const newCardElementWild = document.createElement("img");
+                newCardElementWild.setAttribute("class", "backOfCardImages");
+                newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
+                newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
+                newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+
+                nextPlayerHand.appendChild(newCardElementWild);
+            }
+            //Skip the next player
+            skipPlayer();
+        }
+        //Reverse
+        else if(Number(tempCard.getNumber()) === 21){
+            gameDirection = !Boolean(gameDirection);
+            //Update the UI to update next player
+            document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
+        }
+
+        //Skip
+        else if(Number(tempCard.getNumber()) === 22){
+            skipPlayer();
+        }
+        //Something has gone VERY wrong
+        else {
+            console.log("COMPUTER PLAYER CARD WAS NOT A VALID NUMBER:");
+            console.log(tempCard.getNumber());
+        }
 
         //todo: Special handling for WILD
         if(compPlayedWild){
 
         }
-
-        //Put the old discard card into the deck
-
-        //Set it as the new discard card
-
     }
     //No card to be played, draw a card
     else{
+        //ISSUE: This needs to be tailored to the computer player.  All code in this block is from the regular player
         //How about for simplicity, we just never play the drawn card?  Puts the computer player at a disadvantage, but fuck that guy.
         //  Ahem, I mean the game favors the human players slightly.  The house does NOT always win.
+
+        //Draw a card from the deck
+        let newCard = gameDeck.removeTopCard();
+
+        //Add the card to the player hand
+        playersArray[activePlayer].addPlayerCard(newCard);
+
+        //Update the UI to add in the new card
+        let activePlayerHandDraw = document.getElementById("playerHand" + (activePlayer)); //This is actually a pseudo-array, not a real array
+        const newCardElement = document.createElement("img");
+
+        //back of card:
+            //<img id="95" class="backOfCardImages" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
+        newCardElement.setAttribute("id", newCard.getGlobalNumber());
+        newCardElement.setAttribute("class", "backOfCardImages");
+        newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+
+        activePlayerHandDraw.appendChild(newCardElement);
+
     }
 
-    //How to handle the transition?
-        //Just return to the previous function, and complete the player transition?
 
-
+    //Return to the original function so that it can move onto the next player
+    return true;
 
 }
 
 function updateDiscardCard(newDiscardCard){
-    //Set the new discard card
+    //TODO: Make sure that a Card type object is passed in.
+
     discardCard = newDiscardCard;
 
     //Update the UI with the new discard card

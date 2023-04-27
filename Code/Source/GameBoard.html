@@ -164,6 +164,16 @@
             content:url("/Code/Cards/Deck.png") !important;
         }
 
+        /* TODO: This didn't work super well to popout the card slightly when hovering over it.
+            2 issues:
+               1. If using Scale only, the top of the top row overlaps the player name box slightly
+               2. If using Transform, if the mouse if hovered at the very top of the card, it'll flicker infinitely.
+            Fixes for both would require refactoring the code, so they're not viable right now
+        .playerActive:hover{
+            scale: 1.05;
+            transform: translateY(10%);
+        }
+         */
 
 
         @keyframes flash {
