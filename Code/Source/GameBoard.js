@@ -546,8 +546,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
     if(Number(playersArray.length) !== Number(UIPlayerNames.length)){
         console.log("Somethings gone wrong. The # of players in the cookie is not matching the # players in the UI.");
-        alert("The # of players is not matching.  Resetting to defaults");
-        window.location.reload();
+        alert("The # of players is not matching.  Game might be unplayable. Try refreshing the page.");
     }
     else{
 
@@ -555,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         //  This is the only time "i" is not used as the iterator (Just kidding, two other places don't use i), since it uses nested loops
         for(let iUIPnames = 0; iUIPnames < playersArray.length; iUIPnames++) {
             //If the player name would be too long for the box, just clip it instead of trying to wrap or truncate
-            let playerHTML = '<div id="playerName'+(iUIPnames)+'" style="height:10%; text-align: center; overflow: clip; padding: .5%">'+playersArray[iUIPnames].getPlayerName() + '</div>';
+            let playerHTML = '<div id="playerName'+(iUIPnames) + '" class="playerNamesClass">'+playersArray[iUIPnames].getPlayerName() + '</div>';
             let playerHand = playersArray[iUIPnames].getPlayerHand();
             //88% height to prevent the cards from slightly going over the player box
             playerHTML = playerHTML + '<div id="playerHand'+(iUIPnames)+'" class="playerHand" style="height:88%;overflow-y: auto">';
@@ -846,8 +845,6 @@ function beginPlayerTransition(){
     changeActivePlayer(1);
     (debug ? console.log("New Active Player: " + activePlayer) : null);
 
-
-    //ISSUE: Implement the computer player here
     //If the next player is the computer player, need to have it make a move
     if(computerPlayer && Number(activePlayer)===(playersArray.length-1)){
         (debug ? console.log("COMP PLAYER MOVE STARTS") : null);
@@ -863,13 +860,8 @@ function beginPlayerTransition(){
         //Hide the overlay
 
 
-
-
         //Advance to the next player.
-        //TODO: Removed while testing
         changeActivePlayer(1);
-
-
     }
 
 
@@ -951,33 +943,22 @@ function computerPlayerMove(){
         //Actually, this isn't needed. The UI hasn't been updated yet to show the next players hand.
         //Computer player is always the last one in the players array
     //document.getElementById("WTF IS THE ID!!!?!?!?!?!?!"); //PERFECT CODE, no notes
-    /*
-    let computerPlayerHand = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
-    for(let i=0; i<computerPlayerHand.length; i++){
-        computerPlayerHand[i].className="backOfCardImages";
-        computerPlayerHand[i].removeAttribute('onclick');
-        (debug ? console.log(computerPlayerHand[i]) : null);
-    }
-     */
 
 
     //Loop over the computer players hand, and see if any cards are playable.  If they are, play the card.
-    //  This will end up duplicating a lot of the Process Card function.  But there are a number of tweaks needed in this case
+    //  This will end up duplicating a lot of the Process Card function.  But there are a number of tweaks needed for the comp player
     let compHand = playersArray[activePlayer].getPlayerHand();
-    ///let compPlayedCard = false;  //TODO: Could this be eliminated by just checking if cardToPlayNum != null?
     let compPlayedWild = false;
     let cardToPlayNum = null;
 
     for(let i = 0; i< compHand.length; i++){
 
-
         //Go through the various valid plays, to see if any of them apply to the card
-        //  Doesn't matter if another card is playable later in the hand and this overwrites the previously playable card.  Any card can be played
+        //      Doesn't matter if another card is playable later in the hand and this overwrites the previously playable card.  Any card can be played
         //Valid play: match either by the number, color, or the symbol/Action
         if(!wildPlayed && (String(compHand[i].getColor()) === String(discardCard.getColor()) || Number(compHand[i].getNumber()) === Number(discardCard.getNumber()))){
             console.log("COMP PLAYER: Matched on number/color/symbol")
             console.log(compHand[i]);
-            //compPlayedCard = true;
             cardToPlayNum = compHand[i].getGlobalNumber();
             console.log(compHand[i].getGlobalNumber());
         }
@@ -985,19 +966,17 @@ function computerPlayerMove(){
         else if(Number(compHand[i].getNumber()) === 11 || Number(compHand[i].getNumber()) === 14){
             console.log("COMP PLAYER: Wild is able to be played")
             console.log(compHand[i]);
-            //compPlayedCard = true;
             compPlayedWild = true;
             cardToPlayNum = compHand[i].getGlobalNumber();
             console.log(compHand[i].getGlobalNumber());
 
         }
-        //OR If a wild was played the last turn, make sure it matches the color selected
+        //OR If a wild was played the last turn, see if a card matches the wild color selected
         else if(wildPlayed){
             let wildElement = document.getElementById("wildColorSelected").children; //Only 1 child element
             if(String(compHand[i].getColor()) === String(wildElement[0].id)){
                 console.log("COMP PLAYER: Matched on previous wild card color")
                 console.log(compHand[i]);
-                //compPlayedCard = true;
                 cardToPlayNum = compHand[i].getGlobalNumber();
                 console.log(compHand[i].getGlobalNumber());
 
@@ -1005,11 +984,8 @@ function computerPlayerMove(){
         }
     }
 
-    //ISSUE: FOR TESTING CARD DRAWING:
-    cardToPlayNum = null;
 
     //A card is able to be played
-
     if(cardToPlayNum != null){
         console.log("Computer player, PLAYABLE CARD FOUND");
 
@@ -1130,8 +1106,6 @@ function computerPlayerMove(){
         //Update the UI to add in the new card
         let activePlayerHandDraw = document.getElementById("playerHand" + (activePlayer)); //This is actually a pseudo-array, not a real array
         const newCardElement = document.createElement("img");
-
-        //back of card:
         newCardElement.setAttribute("id", newCard.getGlobalNumber());
         newCardElement.setAttribute("class", "backOfCardImages");
         newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
@@ -1139,7 +1113,6 @@ function computerPlayerMove(){
         activePlayerHandDraw.appendChild(newCardElement);
 
     }
-
 
     //Return to the original function so that it can move onto the next player
     return true;

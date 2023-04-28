@@ -19,7 +19,7 @@
             animation: gradient 30s ease infinite;  /* transition effect for the background, loops infinitely */
             height: 98vh; /* 98% to avoid the columns being too tall, and also to avoid needing overflow-y: hidden; */
             overflow-y: hidden; /* Actually comment above is incorrect, overflow-y is still needed */
-            font-family:Calibri, sans-serif;
+            font-family:Arial-Bold, sans-serif;
             padding: 0;
         }
         @keyframes gradient {
@@ -143,6 +143,25 @@
         .buttonContinue:hover {
             background-color: #363434;
             color: white;
+        }
+
+        .playerNamesClass{
+            text-align: center;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            padding-top: .5%;
+            padding-bottom: 1%;
+            padding-left: 1%;
+            font-size: 2.5vh; /* Font size scales with the screen height */
+            color: white;
+            text-shadow: /*Creates the black border around the player names */
+                    -1px -1px 0 #000,
+                    1px -1px 0 #000,
+                    -1px 1px 0 #000,
+                    1px 1px 0 #000;
         }
 
 
@@ -283,7 +302,7 @@
 <div class="row">
     <div style="flex: 60% !important; min-width: 60%">
         <div id="playerBox0" class="playerBoxShow">
-            <div id="playerName0">Player 1</div>
+            <div id="playerName0" style="text-shadow: 2px 2px red;">Player 1</div>
             <div id="playerHand0" class="playerHand"> HAND!!!</div>
         </div>
         <div id="playerBox1" class="playerBoxShow">
