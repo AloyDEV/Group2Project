@@ -859,8 +859,6 @@ function beginPlayerTransition(){
         //Computer player move
         computerPlayerMove();
 
-        throw new Error("EXITING");
-
 
         //Hide the overlay
 
@@ -869,7 +867,7 @@ function beginPlayerTransition(){
 
         //Advance to the next player.
         //TODO: Removed while testing
-        //changeActivePlayer(1);
+        changeActivePlayer(1);
 
 
     }
@@ -1007,7 +1005,11 @@ function computerPlayerMove(){
         }
     }
 
+    //ISSUE: FOR TESTING CARD DRAWING:
+    cardToPlayNum = null;
+
     //A card is able to be played
+
     if(cardToPlayNum != null){
         console.log("Computer player, PLAYABLE CARD FOUND");
 
@@ -1116,9 +1118,8 @@ function computerPlayerMove(){
     }
     //No card to be played, draw a card
     else{
-        //ISSUE: This needs to be tailored to the computer player.  All code in this block is from the regular player
-        //How about for simplicity, we just never play the drawn card?  Puts the computer player at a disadvantage, but fuck that guy.
-        //  Ahem, I mean the game favors the human players slightly.  The house does NOT always win.
+        //How about for simplicity, we just never play the drawn card?  Puts the computer player at a disadvantage, but screw that guy.
+        //  I mean the game favors the human players slightly.  The house does NOT always win.
 
         //Draw a card from the deck
         let newCard = gameDeck.removeTopCard();
@@ -1131,7 +1132,6 @@ function computerPlayerMove(){
         const newCardElement = document.createElement("img");
 
         //back of card:
-            //<img id="95" class="backOfCardImages" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
         newCardElement.setAttribute("id", newCard.getGlobalNumber());
         newCardElement.setAttribute("class", "backOfCardImages");
         newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
