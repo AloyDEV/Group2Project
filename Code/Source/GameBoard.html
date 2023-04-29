@@ -186,10 +186,11 @@
             2 issues:
                1. If using Scale only, the top of the top row overlaps the player name box slightly
                2. If using Transform, if the mouse if hovered at the very top of the card, it'll flicker infinitely.
-            Fixes for both would require refactoring the code, so they're not viable right now
+            Fixes for both would require refactoring the code, so the current implementation isn't perfect
          */
         .playerActive:hover{
             scale: 1.05;
+            transform: translateY(2px);
         }
         #UIDeck:hover{
             scale: 1.05;
@@ -265,11 +266,22 @@
             background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
         }
 
+        .modalBackgroundComputer {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 100; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
 
 
 
         /* Modal Content */
-        .modalContent, .modalContentWild, .modalContentContinue {
+        .modalContent, .modalContentWild, .modalContentContinue, .modalContentComputer {
             background-color: #fefefe;
             margin: auto;
             padding: 20px;
@@ -277,7 +289,7 @@
             width: 70%;
             border-radius:2em; /* Rounded so it looks similar to the cards */
             cursor: default;
-
+            overflow-x: clip;
         }
 
         /* Modal Close Button */
@@ -293,6 +305,10 @@
             color: #000;
             text-decoration: none;
             cursor: pointer;
+        }
+
+        input[type='radio'] {
+            accent-color: #9b19f1;
         }
     </style>
 </head>
@@ -340,7 +356,7 @@
                 </div>
             </div>
             <div id="miscMessageUI" style='text-align: center;'></div>
-            <div id="continueButtonNextPlayer" style='visibility: hidden; text-align: center; padding: 10px;' ><button onclick="beginPlayerTransition()" class="buttonContinue">Continue: End your turn instead of playing a card & Continue to next player</button></div>
+            <div id="continueButtonNextPlayer" style='visibility: hidden; text-align: center; padding: 10px;' ><button onclick="beginPlayerTransition()" class="buttonContinue">End Current Player's Turn</button></div>
             <div id="wildColorUI" ></div>
         </div>
         <div style="height: 45%; display: flex; overflow-x: auto;">
@@ -368,20 +384,20 @@
     <div class="modalContentWild">
         <div id="modalContentWild" style="text-align: center">
             <h2>Select the color of the Wild card:</h2>
-            <br>
+            <h3>
             <div id='wildInput' style="display: inline-block; text-align: left;">
                 <input type="radio" id="BlueSelection" name="wildcolorsradio" value="Blue" class="wildColorInput" checked>
-                <label for="BlueSelection">Blue</label><br>
+                <label for="BlueSelection">Blue</label><br><br>
                 <input type="radio" id="GreenSelection" name="wildcolorsradio" value="Green" class="wildColorInput">
-                <label for="GreenSelection">Green</label><br>
+                <label for="GreenSelection">Green</label><br><br>
                 <input type="radio" id="RedSelection" name="wildcolorsradio" value="Red" class="wildColorInput">
-                <label for="RedSelection">Red</label><br>
+                <label for="RedSelection">Red</label><br><br>
                 <input type="radio" id="YellowSelection" name="wildcolorsradio" value="Yellow" class="wildColorInput">
-                <label for="YellowSelection">Yellow</label><br>
-                <br>
+                <label for="YellowSelection">Yellow</label><br><br>
                 <br>
                 <button id="wildContinue" onclick="wildColor()"> Continue </button>
             </div>
+            </h3>
         </div>
     </div>
 </div>
@@ -396,9 +412,12 @@
     </div>
 </div>
 
-<div id="computerPlayerOverlay" class="computerPlayerOverlay">
-    <h2>
-    </h2>
+<div id="modalBackgroundComputer" class="modalBackgroundComputer">
+    <div class="modalContentComputer">
+        <div>
+            Computron is playing their turn.
+        </div>
+    </div>
 </div>
 
 </body>

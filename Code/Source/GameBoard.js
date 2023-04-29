@@ -2,7 +2,7 @@
     //If performance of it is a problem, it can be minimized.
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = false;
+let debug = true;
 
 
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
@@ -476,7 +476,7 @@ let cardDrawn = document.getElementById("UIDeck");
 cardDrawn.onclick = function(mouseEvent) {
 
     if(alreadyDrawnCard){
-        showModalBoxFunction(null, "<h2>You've already drawn a card this turn.  <br>Play a card in your hand, or click Continue to end your turn & advance to the next player</h2>");
+        showModalBoxFunction(null, "<h2>You've already drawn a card this turn.  <br>Play a card in your hand, or click 'End Current Player's Turn' to end your turn & advance to the next player</h2>");
     }
     else {
 
@@ -1170,8 +1170,8 @@ var modalBackgroundContinue = document.getElementById("modalBackgroundContinue")
 document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
     showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  They can either play a card by clicking it, or draw a card by clicking the deck.</p>" +
-        "<p> After you play, the game board will be hidden as the next players cards are dispalyed.  Click Continue for the next player to begin their turn.</p>" +
-        "<p>To start the game & Player 1's turn, click the X on the right or outside of this box.</p>");
+        "<p> After you play, the game board will be hidden as the next player's cards are dispalyed.  Click 'Continue' for the next player to begin their turn.</p>" +
+        "<p>To start the game & Player 1's turn, click the X on the right.</p>");
 
     //When starting the game, black out the background so no-one is able to see the starting players cards
     document.getElementById("modalBackground").style.background = "rgba(0,0,0)"
@@ -1188,11 +1188,11 @@ helpButton.onclick = function(mouseEvent) {
         "<p>Every player views his/her cards and tries to match the card in the Discard Pile." +
         "<p>Variation from official rules: No need to shout UNO.  Wild 4 does not require you to NOT have other playable cards</p>" +
         "\n" +
-        "You have to match either by the number, color, or the symbol/Action. For instance, if the Discard Pile has a red card that is an 8 you have to place either a red card or a card with an 8 on it. You can also play a Wild card (which can alter current color in play).\n" +
+        "You have to match either by the number, color, or the symbol/Action. For instance, if the Discard Pile has a red card that is an 8 you have to play either a red card, a card with an 8 on it, or a wild card.\n" +
         "\n" +
-        "If the player has no matches or they choose not to play any of their cards even though they might have a match, they must draw a card from the Draw pile. If that card can be played, play it. Otherwise, keep the card, and the game moves on to the next person in turn. You can also play a Wild card, or a Wild Draw Four card on your turn.\n" +
+        "If the player has no matches or they choose not to play any of their cards even though they might have a match, they must draw a card from the Deck. You can then play a card, or click End Current Player's Turn to move onto the next player.\n" +
         "\n" +
-        "Take note that you can only put down one card at a time; you cannot stack two or more cards together on the same turn. For example, you cannot put down a Draw Two on top of another Draw Two, or Wild Draw Four during the same turn, or put down two Wild Draw Four cards together.\n" +
+        "Take note that you can only put down one card at a time; you cannot stack two or more cards together on the same turn.\n" +
         "\n" +
         "The game continues until a player has no cards left.  That player then wins the game” </p>");
 }
