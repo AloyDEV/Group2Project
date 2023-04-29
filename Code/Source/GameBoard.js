@@ -1,11 +1,8 @@
 //This file handles all the code for the actual game
     //If performance of it is a problem, it can be minimized.
 
-
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
 let debug = true;
-
-
 
 
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
@@ -21,87 +18,6 @@ var wildPlayed = false;
 var computerPlayer = false;
 
 (debug ? console.log("Game Board JS is loading") : null);
-
-
-
-//TODO for the overall game:
-    /*
-
-    How to track which card is which?  store its Global Number somewhere in the HTML?
-        Tie each card to an OnClick function, that passes in the card identifier
-        DONE!!!!
-
-    Fix the Flexbox for the player boxes
-
-
-    Change the GlobalID for a card to ALWAYS BE A NUMBER.  No implicit conversions to numbers/strings
-        EX: let num = Number(cardID);
-        DONE!!!
-
-
-    The left hand column of the game board is too tall.  Even when the modal DIVs were removed, it was slightly taller than the viewport
-        Its actually both columns that are too tall
-        Fixed by adding overflow-y: hidden; to the BODY CSS
-        DONE!!!
-
-
-    The Discard & Deck cards have too much right spacing on the Prod site.
-        DONE!!!!
-           Fixed the discard & draw cards having too much padding in Prod by adding max-width:45% to both
-
-
-    The GameBoard is like 95% responsive right now.  What doesn't work is the buttons across the top (They can slide out of view, with no scrollbar)
-        And the Discard/Deck section, the Deck card can slide out of view.
-        Pretty much done.  When I tested on my phone, it was responsive enough to be playable.
-
-
-    Move up the Modal box, so its closer to the top of the page
-        Also I don't think any modals are that responsive right now.
-        DONE!!! Moved up.  And when tested on a phone, modals were fine.
-
-
-    Put the name of the next player into the Transition box
-        DONE!!!
-
-
-    When playing Wild 4, it looks like it hides the current players cards before the color selection popup.
-        Whereas during Wild 1, player cards are still visible.
-
-
-    When there are 2 players, the cards are too big.  They fill up the box too quickly so that it goes into multiple rows too fast.
-        Might want to make the boxes smaller or the cards smaller.
-
-
-
-    ISSUE: When looping over players, player 1 and the computer player have the columns resized to be 50% incorrectly.
-        Possibly fixed by adjusting the columns min & max widths.  BUT need to test more
-        And not sure why it resized in the first place.  Should probably check that.
-
-    Issue: If you reach the point where there are no more cards available in the deck, and then play a Draw 2 card, it allows the active player to play the draw 2 then to play another card
-        Also the continue button doesn't appear.  But i'm not sure if thats okay or not yet
-
-
-    Things removed that might be added back later:
-        Challenges to Wild+4
-                    With this card, you must have no other alternative cards to play that matches the color of the card previously played.
-                    If you play this card illegally, you may be challenged by the other player to show your hand to him/her. If guilty, you need to draw 4 cards.
-                    If not, the challenger needs to draw 6 cards instead.
-        Calling UNO at the end of the game
-        The first discard card being a non-number card.
-        Removing the ability to play a different card after drawing a new card (Only the newly drawn card can be played) .
-
-
-
-    Note: Functionality that would be good to add:
-        Table status SAVE, where all player data is written to a cookie
-            const today = new Date();
-            document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
-            Just dump everything into JSON, then convert that to base64 to store in the cookie
-        Advanced Computer Player, where it makes intelligent moves not just whatever move next is valid.
-
-
-     */
-
 
 //Player Class to hold the details on each player
 class Player {
@@ -440,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         playersArray.push(player0, player1, player2, player3);  //If there's no cookie, default to their being a computer player (For simplicity)
 
     }
-    //ISSUE: Double check the computer player logic is correct, when there is NO computer player
+
     else{
         let playersTempArray = playersCookie.split("|");
         //TODO: Future improvement: to make this more robust, add in checks that the split actually returns an array & there are values in it (Otherwise default player names)
@@ -449,7 +365,10 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
             playersArray.push(new Player(iPlayerSetup, playersTempArray[iPlayerSetup]));
         }
         //Add the computer player
-        computerPlayer = Boolean(playersTempArray[iPlayerSetup]);
+        //  Needed because String to Boolean was not working as expected.
+        computerPlayer = ((String(playersTempArray[iPlayerSetup]).toLowerCase() == "true") ? true: false);
+        (debug ? console.log("Computer Player: " + computerPlayer) : null);
+
         if(computerPlayer) {
             playersArray.push(new Player(playersArray.length, "Computron (Computer Player)"));
         }
