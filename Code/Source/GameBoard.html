@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UNO Game Board</title>
+    <title>UNO In The Browser</title>
+    <link rel="icon" href="http://www.unointhebrowser.com/Code/Cards/Deck_Small2.png">
     <style>
         /* 100% page height for a background: https://stackoverflow.com/questions/712689/css-div-stretch-100-page-height */
         html{
@@ -11,12 +12,15 @@
             position:relative;
         }
 
-        /* Background effect: https://1stwebdesigner.com/15-css-background-effects/ */
+        /* Background effect taken from: https://1stwebdesigner.com/15-css-background-effects/ */
         body{
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradient 30s ease infinite;  /* transition effect for the background, loops infinitely */
-            height: 100vh;
+            height: 98vh; /* 98% to avoid the columns being too tall, and also to avoid needing overflow-y: hidden; */
+            overflow-y: hidden; /* Actually comment above is incorrect, overflow-y is still needed */
+            font-family:Arial-Bold, sans-serif;
+            padding: 0;
         }
         @keyframes gradient {
             0% {
@@ -31,8 +35,9 @@
         }
 
         .row {
-            border: green solid 3px;
-            display: flex;
+            display: flex; /* So the Columns in the row display next to each other */
+            flex-flow: row;
+
             /* Sets the column container to 100% height, matching the HTML & BODY tags */
             position:absolute;
             top:0;
@@ -41,26 +46,180 @@
             right:0;
         }
 
-        .column {
-            border: red solid 3px;
-            flex: 50%;
-        }
         .playerBoxShow{
-            border: blue solid 3px;
-            height:20%
+            border-radius: 1em;
+            border: 4px solid white;
+
+            /* Doesn't work with border-radius:
+            border-width: 4px;
+            border-style: solid;
+            border-image: linear-gradient(to right, darkblue, darkorchid) 1; */
+            /*
+            background: linear-gradient(to right, white, white) padding-box,
+            linear-gradient(to right, blue, green, red, yellow) border-box;
+            border-radius: 1em;
+            border: 4px solid transparent;
+             */
+
+             /*HEIGHT BEING REMOVED RESULTS IN THE CARDS RESIZING TO THEIR DEFAULT SIZE!!!! */
+            /*Otherwise the play box doesn't HAVE a height, so it auto-resizes to the size of the cards.
+            Then the card height having a % in it doesn't matter, cuz its a percent of nothing
+             */
+            height:23%;
+            margin: .2%;
+        }
+        button{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #9b19f1;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: 0.2s;
+        }
+
+        .buttonHelp{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #1976f1;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: 0.2s;
+        }
+        .buttonShuffle{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #f5c320;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: 0.2s;
+        }
+        .buttonReset{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #d53232;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: 0.2s;
+        }
+        .buttonContinue{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: 0.2s;
+        }
+        button:hover {
+            background-color: #363434;
+            color: white;
+        }
+        .buttonHelp:hover {
+            background-color: #363434;
+            color: white;
+        }
+        .buttonShuffle:hover {
+            background-color: #363434;
+            color: white;
+        }
+        .buttonReset:hover {
+            background-color: #363434;
+            color: white;
+        }
+        .buttonContinue:hover {
+            background-color: #363434;
+            color: white;
+        }
+
+        .playerNamesClass{
+            text-align: center;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            padding-top: .25%;
+            padding-left: 1%;
+            font-size: 2.5vh; /* Font size scales with the screen height */
+            color: white;
+            text-shadow: /*Creates the black border around the player names */
+                    -1px -1px 0 #000,
+                    1px -1px 0 #000,
+                    -1px 1px 0 #000,
+                    1px 1px 0 #000;
+        }
+
+
+        .playerActive:hover, .playerActive:focus{
+            cursor: pointer;
+        }
+
+        /*
+        .hideElement{
+            display:none;
         }
         .playerBoxHide {
             display:none;
         }
+         */
 
-        /*------------------------------Modal Box Styling -------------------------------------------------*/
+        /* For all non-active players, this is used to have all IMG tags only display the back of the card */
+        .backOfCardImages{
+            content:url("/Code/Cards/Deck.png") !important;
+        }
+
+        /* TODO: This didn't work super well to popout the card slightly when hovering over it.
+            2 issues:
+               1. If using Scale only, the top of the top row overlaps the player name box slightly
+               2. If using Transform, if the mouse if hovered at the very top of the card, it'll flicker infinitely.
+            Fixes for both would require refactoring the code, so they're not viable right now
+         */
+        .playerActive:hover{
+            scale: 1.05;
+        }
+        #UIDeck:hover{
+            scale: 1.05;
+        }
+
+
+
+        @keyframes flash {
+            0% {
+                box-shadow: inset 0px 0px 200px 200px rgb(217, 6, 6);
+            }
+            100% {
+                box-shadow: inset 0px 0px 0px 0px rgb(217, 6, 6);
+            }
+        }
+
+        .borderFlash {
+            animation: flash .5s 1;
+        }
+
+
+
+        /*------------------------------Modal Boxes Styling -------------------------------------------------*/
 
         /* The Modal (background) */
         .modalBackground {
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
             z-index: 1; /* Sit on top */
-            padding-top: 20em; /* Location of the box from the top of the page*/
+            padding-top: 15%; /* Location of the box from the top of the page*/
             left: 0;
             top: 0;
             width: 100%; /* Full width */
@@ -71,18 +230,57 @@
             cursor: pointer; /* To indicate to the user that they can click outside the box to close it */
         }
 
+        /* The Modal background for WILD cards & when CONTINUING to the next player*/
+        .modalBackgroundWild {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 2; /* Sit on top */
+            padding-top: 15%; /* Location of the box from the top of the page*/
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        .modalBackgroundContinue{
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 3; /* Sit on top */
+            padding-top: 15%; /* Location of the box from the top of the page*/
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgb(0,0,0); /* Black */
+        }
+        /* The Modal (background) */
+        .modalBackground {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 4; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+
+
+
         /* Modal Content */
-        .modal-content {
+        .modalContent, .modalContentWild, .modalContentContinue {
             background-color: #fefefe;
             margin: auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 80%;
+            width: 70%;
             border-radius:2em; /* Rounded so it looks similar to the cards */
             cursor: default;
+
         }
 
-        /* The Close Button */
+        /* Modal Close Button */
         .close {
             color: #aaaaaa;
             float: right;
@@ -104,39 +302,53 @@
 
 
 <div class="row">
-    <div class="column">
-        <div id="player1Box" class="playerBoxShow">
-            <div id="player1Name">Player 1</div>
-            <div id="player1Hand" class="playerHand"> HAND!!!</div>
+    <div style="flex: 60% !important; min-width: 60%">
+        <div id="playerBox0" class="playerBoxShow">
+            <div id="playerName0" style="text-shadow: 2px 2px red;">Player 1</div>
+            <div id="playerHand0" class="playerHand"> HAND!!!</div>
         </div>
-        <div id="player2Box" class="playerBoxShow">
-            <div id="player2Name">Player 2</div>
-            <div id="player2Hand" class="playerHand"> HAND!!!</div>
+        <div id="playerBox1" class="playerBoxShow">
+            <div id="playerName1">Player 2</div>
+            <div id="playerHand1" class="playerHand"> HAND!!!</div>
         </div>
-        <div id="player3Box" class="playerBoxShow">
-            <div id="player3Name">Player 3</div>
-            <div id="player3Hand" class="playerHand"> HAND!!!</div>
+        <div id="playerBox2" class="playerBoxShow">
+            <div id="playerName2">Player 3</div>
+            <div id="playerHand2" class="playerHand"> HAND!!!</div>
         </div>
-        <div id="player4Box" class="playerBoxShow">
-            <div id="player4Name">Player 4/Computer</div>
-            <div id="player4Hand" class="playerHand"> HAND!!!</div>
+        <div id="playerBox3" class="playerBoxShow">
+            <div id="playerName3">Player 4 AKA Computer</div>
+            <div id="player4Hand3" class="playerHand"> HAND!!!</div>
         </div>
 
 
     </div>
-    <div class="column">
-        <div style="border: yellow solid 3px; height:40%">
-            Game State.  Current User playing.  Shuffle Deck button.  Help Menu & Game Rules
-            <div id="help">
-                <button id="helpButton" onclick="">Help & Game Rules</button>
+    <div style="flex: 39% !important; max-width: 40%; flex-flow: column">
+        <div style="height:45%; width: 100%; overflow-x: auto;">
+            <div id="buttonBar" style='text-align: center; margin-bottom: 3%;'>
+                <button id="helpButton" class="buttonHelp" onclick="">Help & Game Rules</button>
+                <button id="shuffleButton" class="buttonShuffle" onclick="">Shuffle Deck</button>
+                <button id="resetButton" class="buttonReset" onclick="">Reset Game</button>
             </div>
+            <div style="border: 4px solid white; border-radius: 1em; display: flex; flex-direction: column; margin: auto; max-width: 80%">
+                <div id="activePlayerUI" style='text-align: center; overflow-x: clip;'>
+                    <div id="activePlayerUItitle">Current player:</div>
+                    <div id="activePlayerUIplayer"></div>
+                </div>
+                <div id="nextPlayerUI" style='text-align: center; overflow-x: clip;'>
+                    <div id="nextPlayerUItitle">Next player:</div>
+                    <div id="nextPlayerUIplayer"></div>
+                </div>
+            </div>
+            <div id="miscMessageUI" style='text-align: center;'></div>
+            <div id="continueButtonNextPlayer" style='visibility: hidden; text-align: center; padding: 10px;' ><button onclick="beginPlayerTransition()" class="buttonContinue">Continue: End your turn instead of playing a card & Continue to next player</button></div>
+            <div id="wildColorUI" ></div>
         </div>
-        <div style="border: yellow solid 3px; width: 100%; height:40%; position: fixed; bottom: 0; display:flex;">
-            <div style="height:100%; border:orange solid 3px; margin-left:5%;">
-                <img id="UIDiscardCard" src="/Code/Assets/Blue_0.png" alt="Top Card" style="height:100%;width:auto;"/>
+        <div style="height: 45%; display: flex; overflow-x: auto;">
+            <div style="height:90%; margin-left:1%; margin-bottom:3%; margin-top: 2%; max-width:45%" title="Discard Card">
+                <img id="UIDiscardCard" src="/Code/Cards/Deck.png" alt="Discard Card" style="height:100%;width:auto;"/>
             </div>
-            <div style="height:100%; border:orange solid 3px; margin-left:5%;">
-                <img id="UIDeck" src="/Code/Assets/Deck.png" alt="Deck" style="height:100%;width:auto;"/>
+            <div style="height:90%; margin-left:2%;margin-bottom:3%; margin-top: 2%; max-width:45%" title="Game Deck: Click to draw a card">
+                <img id="UIDeck" src="/Code/Cards/Deck.png" alt="Deck" style="height:100%;width:auto; cursor: pointer"/>
             </div>
         </div>
     </div>
@@ -144,73 +356,49 @@
 
 
 
-<div id="myModal" class="modalBackground">
-    <div class="modal-content">
+<div id="modalBackground" class="modalBackground">
+    <div class="modalContent">
         <span class="close">&times;</span>
         <div id="modalContentDiv">
         </div>
     </div>
 </div>
 
-<div id="cardPlaceholder" style="display:none;" class="cardPlaceholder">
-    <img src="/Code/Cards/Blue_0.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_1.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_2.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_3.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_4.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_5.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_6.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_7.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_8.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_9.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_20.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_21.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Blue_22.png" class="cardIndividual"/>
+<div id="modalBackgroundWild" class="modalBackgroundWild">
+    <div class="modalContentWild">
+        <div id="modalContentWild" style="text-align: center">
+            <h2>Select the color of the Wild card:</h2>
+            <br>
+            <div id='wildInput' style="display: inline-block; text-align: left;">
+                <input type="radio" id="BlueSelection" name="wildcolorsradio" value="Blue" class="wildColorInput" checked>
+                <label for="BlueSelection">Blue</label><br>
+                <input type="radio" id="GreenSelection" name="wildcolorsradio" value="Green" class="wildColorInput">
+                <label for="GreenSelection">Green</label><br>
+                <input type="radio" id="RedSelection" name="wildcolorsradio" value="Red" class="wildColorInput">
+                <label for="RedSelection">Red</label><br>
+                <input type="radio" id="YellowSelection" name="wildcolorsradio" value="Yellow" class="wildColorInput">
+                <label for="YellowSelection">Yellow</label><br>
+                <br>
+                <br>
+                <button id="wildContinue" onclick="wildColor()"> Continue </button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <img src="/Code/Cards/Green_0.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_1.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_2.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_3.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_4.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_5.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_6.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_7.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_8.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_9.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_20.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_21.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Green_22.png" class="cardIndividual"/>
+<div id="modalBackgroundContinue" class="modalBackgroundContinue">
+    <div class="modalContentContinue" style="text-align: center">
+        <div id="modalContentContinue" style="margin:0px;">
+            <div style="margin:20px;">Next Player:</div>
+            <h2><div id="nextPlayerName">Player ?</div></h2>
+            <button id="playerContinue" onclick="endPlayerTransition()" style="margin:20px;"> Continue to next player</button>
+        </div>
+    </div>
+</div>
 
-    <img src="/Code/Cards/Red_0.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_1.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_2.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_3.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_4.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_5.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_6.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_7.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_8.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_9.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_20.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_21.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Red_22.png" class="cardIndividual"/>
-
-    <img src="/Code/Cards/Yellow_0.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_1.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_2.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_3.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_4.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_5.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_6.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_7.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_8.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_9.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_20.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_21.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Yellow_22.png" class="cardIndividual"/>
-
-    <img src="/Code/Cards/Wild_11.png" class="cardIndividual"/>
-    <img src="/Code/Cards/Wild_14.png" class="cardIndividual"/>
+<div id="computerPlayerOverlay" class="computerPlayerOverlay">
+    <h2>
+    </h2>
 </div>
 
 </body>
