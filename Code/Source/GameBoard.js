@@ -501,9 +501,6 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     switch(Number(playersArray.length)) {
         case 3:
             (debug ? console.log("Case 3") : null);
-
-            //ISSUE: Incorporate the computer player logic here.
-
             //TODO:  Probably could use Flex to fill available space instead of defining a height
 
             //Elements need to be removed in order for the game loop to process correctly.
@@ -576,6 +573,17 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         }
     }
 
+    //Show the computer player hand during testing
+    if(debug && computerPlayer){
+        let compHand = document.getElementById("playerHand" + (playersArray.length-1)).children; //This is actually a pseudo-array, not a real array
+
+
+        for(let i=0; i<compHand.length; i++){
+            compHand[i].setAttribute("class","");
+            compHand[i].setAttribute("src","/Code/Cards/" + playersArray[playersArray.length-1].peekPlayerCard(Number(compHand[i].id)).getFile());
+        }
+    }
+
     //Put starting player & next player into the UI
     document.getElementById("activePlayerUIplayer").innerHTML = "<div style='font-size: xx-large; font-weight: bold; padding: 4px'>" + playersArray[Number(activePlayer)].getPlayerName() + "</div>";
     document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
@@ -621,7 +629,7 @@ cardDrawn.onclick = function(mouseEvent) {
         (debug ? console.log(playersArray[activePlayer].getPlayerHand()) : null);
 
         //The player can play the card they just picked up, so display the CONTINUE button to allow them to end their turn without playing a card.
-        document.getElementById("continueButtonNextPlayer").setAttribute("style", "text-align: center; padding: 10px;")
+        document.getElementById("continueButtonNextPlayer").setAttribute("style", "text-align: center; padding: 10px; visibility: visible;")
 
         //At this point, instead of the making the deck un-clickable, keep it clickable.
         //So that if the player clicks the deck again out of confusion, it'll direct them what to do next.
@@ -827,7 +835,7 @@ function beginPlayerTransition(){
     alreadyDrawnCard = false;
 
     //Hide the Continue button, it only displays if a card was drawn, but to be safe always un-display it
-    document.getElementById("continueButtonNextPlayer").setAttribute("style","display:none; text-align: center; padding: 10px;")
+    document.getElementById("continueButtonNextPlayer").setAttribute("style","visibility: hidden; text-align: center; padding: 10px;")
 
     //Update the player hands in the UI.  Active player cards updated to the class that only displays the back
     let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
@@ -998,7 +1006,6 @@ function computerPlayerMove(){
         //TODO: use a transition here, to make it slightly more interactive.
         document.getElementById(String(cardToPlayNum)).remove();
 
-
         //Put the old discard card into the deck
         gameDeck.addCard(discardCard);
 
@@ -1025,11 +1032,20 @@ function computerPlayerMove(){
 
         //Wild 1
         if(Number(tempCard.getNumber()) === 11){
+            wildPlayed = true;
+            //Choose a color for the wild card, randomly
+            let wildColorUI = document.getElementById("wildColorUI")
+            const wildColors = ["Blue", "Green", "Red", "Yellow"];
+            // Returns a random integer from 0 to 3:
+            let rand = Math.floor(Math.random() * 4);
 
+            wildColorUI.innerHTML = "<div style='background: black; padding: 10px; border: 10px solid white; border-radius: .5em;'><div>Wild Card Color: </div><div id='wildColorSelected'><div id='"+String(wildColors[rand])+"'>" + String(wildColors[rand]) +"</div></div></div>";
+            wildColorUI.setAttribute("style", "width: 50%; text-align: center; margin: auto; font-weight: bold; font-size: xx-large; margin-top: 2%; color:" + String(wildColors[rand])+";");
         }
 
         //Wild 4 (+4 and Skip)
         else if(Number(tempCard.getNumber()) === 14) {
+            wildPlayed = true;
 
             //Draw 4 cards from the deck, and add them to the NEXT player (Not the active player)
             for(let i = 0; i < 4; i++) {
@@ -1050,6 +1066,15 @@ function computerPlayerMove(){
             }
             //Skip the next player
             skipPlayer();
+
+            //Choose a color for the wild card, randomly
+            let wildColorUI = document.getElementById("wildColorUI")
+            const wildColors = ["Blue", "Green", "Red", "Yellow"];
+            // Returns a random integer from 0 to 3:
+            let rand = Math.floor(Math.random() * 4);
+
+            wildColorUI.innerHTML = "<div style='background: black; padding: 10px; border: 10px solid white; border-radius: .5em;'><div>Wild Card Color: </div><div id='wildColorSelected'><div id='"+String(wildColors[rand])+"'>" + String(wildColors[rand]) +"</div></div></div>";
+            wildColorUI.setAttribute("style", "width: 50%; text-align: center; margin: auto; font-weight: bold; font-size: xx-large; margin-top: 2%; color:" + String(wildColors[rand])+";");
         }
 
         // Draw Two (+2 and Skip)
@@ -1090,11 +1115,6 @@ function computerPlayerMove(){
             console.log("COMPUTER PLAYER CARD WAS NOT A VALID NUMBER:");
             console.log(tempCard.getNumber());
         }
-
-        //todo: Special handling for WILD
-        if(compPlayedWild){
-
-        }
     }
     //No card to be played, draw a card
     else{
@@ -1116,7 +1136,6 @@ function computerPlayerMove(){
         newCardElement.setAttribute("title", "");
 
         activePlayerHandDraw.appendChild(newCardElement);
-
     }
 
     //Return to the original function so that it can move onto the next player
