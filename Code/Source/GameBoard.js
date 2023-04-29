@@ -10,7 +10,7 @@ let debug = true;
 
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
 //Note: There's 1 more global, var gameDeck, after the Deck class (Otherwise it threw an error)
-//TODO: Might want to put them in a wrapper or namespace for better handling
+//  Might want to put them in a wrapper or namespace for better handling
 //  EX: https://stackoverflow.com/questions/1841916/how-to-avoid-global-variables-in-javascript
 var playersArray = [];
 var discardCard;
@@ -81,7 +81,7 @@ var computerPlayer = false;
         Also the continue button doesn't appear.  But i'm not sure if thats okay or not yet
 
 
-    TODO: Things removed that might be added back later:
+    Things removed that might be added back later:
         Challenges to Wild+4
                     With this card, you must have no other alternative cards to play that matches the color of the card previously played.
                     If you play this card illegally, you may be challenged by the other player to show your hand to him/her. If guilty, you need to draw 4 cards.
@@ -234,12 +234,10 @@ class Deck{
         //Anytime this function is called, make sure a number is passed into it
         let cardGlobalIDNum = Number(cardGlobalID);
 
-        //TODO: Refactor this logic, could be a single IF
         //Removed based on the cards Global Number
         if(this.deck.length < 1){
             console.log("No more cards, the game is unplayable!!!!!!")
             alert("NO MORE CARDS IN THE DECK!!! THE GAME IS UNPLAYABLE!!!!!  Click Reset Game to start over");
-            //TODO: Actually, should a new deck just be created here?  Or will that throw of GlobalIDs?
             return false;
         }
         else {
@@ -259,7 +257,6 @@ class Deck{
         if(this.deck.length < 1){
             console.log("No more cards!!!!!, game is unplayable???")
             alert("NO MORE CARDS IN THE DECK!!! Play a card in order to continue.  If there are no valid plays, reset the game to start over");
-            //TODO: Actually, should a new deck just be created here?  Or will that throw of GlobalIDs?
             return false;
         }
         else {
@@ -1319,8 +1316,6 @@ resetButton.onclick = function(mouseEvent){
     (debug ? console.log("Game being reset") : null);
     showModalBoxFunction(mouseEvent, "<h3> Click to confirm the game should be reset:<br> <button onclick='window.location.reload();'>RESET GAME</button></h3>");
 }
-
-//TODO: Start over with new player names button?
 
 
 

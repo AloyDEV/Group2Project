@@ -188,11 +188,14 @@
                1. If using Scale only, the top of the top row overlaps the player name box slightly
                2. If using Transform, if the mouse if hovered at the very top of the card, it'll flicker infinitely.
             Fixes for both would require refactoring the code, so they're not viable right now
+         */
         .playerActive:hover{
             scale: 1.05;
-            transform: translateY(10%);
         }
-         */
+        #UIDeck:hover{
+            scale: 1.05;
+        }
+
 
 
         @keyframes flash {
@@ -342,10 +345,10 @@
             <div id="wildColorUI" ></div>
         </div>
         <div style="height: 45%; display: flex; overflow-x: auto;">
-            <div style="height:90%; margin-left:1%; margin-bottom:5%; max-width:45%">
+            <div style="height:90%; margin-left:1%; margin-bottom:3%; margin-top: 2%; max-width:45%">
                 <img id="UIDiscardCard" src="/Code/Cards/Deck.png" alt="Discard Card" style="height:100%;width:auto;"/>
             </div>
-            <div style="height:90%; margin-left:1%;margin-bottom:5%; max-width:45%">
+            <div style="height:90%; margin-left:2%;margin-bottom:3%; margin-top: 2%; max-width:45%">
                 <img id="UIDeck" src="/Code/Cards/Deck.png" alt="Deck" style="height:100%;width:auto; cursor: pointer"/>
             </div>
         </div>
