@@ -2,7 +2,7 @@
     //If performance of it is a problem, it can be minimized.
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = true;
+let debug = false;
 
 
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
@@ -27,12 +27,6 @@ class Player {
         this.playerHand = [];
     }
 
-    /*
-    getPlayerNumber() {
-        return this.playerNumber;
-    }
-     */
-
     getPlayerName() {
         return this.playerName;
     }
@@ -40,12 +34,6 @@ class Player {
     getPlayerHand() {
         return this.playerHand;
     }
-
-    /*
-    getPlayerHandSize() {
-        return Number(this.playerHand.length);
-    }
-     */
 
     addPlayerCard(addedCard){
         let handLengthStart = this.playerHand.length;
@@ -132,41 +120,9 @@ class Deck{
         this.deck = []; //Javascript doesn't support hashmaps by default, so just using an array.
     }
 
-    /*
-    getSize(){
-        return Number(this.deck.length);
-    }
-
-    getDeckContents(){
-        return this.deck;
-    }
-     */
     addCard(newCard){
         this.deck[this.deck.length] = newCard;
     }
-
-    /*
-    removeCardByGlobalID(cardGlobalID){
-        //Anytime this function is called, make sure a number is passed into it
-        let cardGlobalIDNum = Number(cardGlobalID);
-
-        //Removed based on the cards Global Number
-        if(this.deck.length < 1){
-            console.log("No more cards, the game is unplayable!!!!!!")
-            alert("NO MORE CARDS IN THE DECK!!! THE GAME IS UNPLAYABLE!!!!!  Click Reset Game to start over");
-            return false;
-        }
-        else {
-            for (let iDeck = 0; iDeck < this.deck.length; iDeck++){
-                if(Number(this.deck[iDeck].getGlobalNumber()) === Number(cardGlobalIDNum)){
-                    let removedCard = this.deck.splice(iDeck,1);
-                    return removedCard[0]; //SPLICE returns an array
-                }
-            }
-            return false;
-        }
-    }
-    */
 
     removeTopCard(){
         //Make sure there is at least 1 card in the deck
