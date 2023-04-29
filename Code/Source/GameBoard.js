@@ -561,13 +561,13 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
                 //Starting player
                 if(iUIPnames === 0){
                     playerHTML = playerHTML + '<img class="playerActive" onclick="processCard(this.id)" id="'+playerHand[iUIPhand].getGlobalNumber()+
-                        '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:45%; margin-left: 1%; margin-bottom: .5%;"/>';
+                        '" src="/Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:45%; margin-left: 1%; margin-bottom: .5%;" title="Click to play this card"/>';
                     activePlayer = iUIPnames;
                 }
                 //Other/non-active players get the back of the card
                 else{
                     playerHTML = playerHTML + '<img id="'+playerHand[iUIPhand].getGlobalNumber()+
-                        '" class="backOfCardImages" style="height:45%; margin-left: 1%; margin-bottom: .5%;"/>';
+                        '" class="backOfCardImages" style="height:45%; margin-left: 1%; margin-bottom: .5%;" title=""/>';
                 }
 
             }
@@ -611,6 +611,7 @@ cardDrawn.onclick = function(mouseEvent) {
         newCardElement.setAttribute("id", newCard.getGlobalNumber());
         newCardElement.setAttribute("class", "playerActive");
         newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+        newCardElement.setAttribute("title", "Click to play this card");
         newCardElement.setAttribute("src", "/Code/Cards/" + newCard.getFile());
         newCardElement.setAttribute("onclick", "processCard(this.id)");
 
@@ -754,6 +755,7 @@ function processCard(cardID){
             newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
             newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
             newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+            newCardElementWild.setAttribute("title", "Click to play this card");
 
             nextPlayerHand.appendChild(newCardElementWild);
         }
@@ -783,6 +785,7 @@ function processCard(cardID){
             newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
             newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
             newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+            newCardElementWild.setAttribute("title", "Click to play this card");
 
             nextPlayerHand.appendChild(newCardElementWild);
         }
@@ -831,6 +834,7 @@ function beginPlayerTransition(){
     for(let i=0; i<activePlayerHandOld.length; i++){
         activePlayerHandOld[i].className="backOfCardImages";
         activePlayerHandOld[i].removeAttribute('onclick');
+        activePlayerHandOld[i].setAttribute("title","");
         //Removing the src attribute causes all the cards to go to their default height.  Not sure why, the CSS appears to be identical
         //  Instead, just leave the src attribute in place.  The updated class will override it by using !important
         //  Creates a tiny chance of someone cheating by inspecting the source.  But that risk is acceptable, this is a casual game.
@@ -867,6 +871,7 @@ function beginPlayerTransition(){
     for(let i=0; i<activePlayerHandNew.length; i++){
         activePlayerHandNew[i].className="playerActive";
         activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
+        activePlayerHandNew[i].setAttribute("title","Click to play this card");
         activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
         (debug ? console.log(activePlayerHandNew[i]) : null);
     }
@@ -1039,6 +1044,7 @@ function computerPlayerMove(){
                 newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
                 newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
                 newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+                newCardElementWild.setAttribute("title", "Click to play this card");
 
                 nextPlayerHand.appendChild(newCardElementWild);
             }
@@ -1061,6 +1067,7 @@ function computerPlayerMove(){
                 newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
                 newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
                 newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+                newCardElementWild.setAttribute("title", "Click to play this card");
 
                 nextPlayerHand.appendChild(newCardElementWild);
             }
@@ -1106,6 +1113,7 @@ function computerPlayerMove(){
         newCardElement.setAttribute("id", newCard.getGlobalNumber());
         newCardElement.setAttribute("class", "backOfCardImages");
         newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
+        newCardElement.setAttribute("title", "");
 
         activePlayerHandDraw.appendChild(newCardElement);
 
