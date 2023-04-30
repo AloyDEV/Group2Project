@@ -1261,15 +1261,25 @@ shuffleButton.onclick = function(mouseEvent){
     showModalBoxFunction(mouseEvent, "<h3> Deck Shuffled </h3>");
 }
 
-
-
 //Reset game function
-    //Just refresh the page?  That resets everything but the player names.
-//resetButton
+    //Just refreshes the page. That resets everything but the player names.
 var resetButton = document.getElementById("resetButton");
 resetButton.onclick = function(mouseEvent){
     (debug ? console.log("Game being reset") : null);
     showModalBoxFunction(mouseEvent, "<h2> Click to confirm the game should be reset:<br> <button onclick='window.location.reload();'>RESET GAME</button></h2>");
+}
+
+//End game function
+var endButton = document.getElementById("endButton");
+endButton.onclick = function(mouseEvent){
+    (debug ? console.log("Game ended") : null);
+    let startPage = "https://www.unointhebrowser.com/index.html";
+    //Test
+    if(debug){
+        startPage =  "/Group2Project/Code/Source/index.html";
+    }
+
+    showModalBoxFunction(mouseEvent, "<h2> Click to end the game and return to the start page:<br> <button onclick='window.location.href = \" "+startPage+" \";'>END GAME</button></h2>");
 }
 
 
