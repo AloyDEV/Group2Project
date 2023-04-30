@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     //At this point, there is no need to check that the deck has enough cards
     for(let i = 0; i < playersArray.length; i++){
         let dealingNumber = 0;
-        while(dealingNumber < 7){
+        while(dealingNumber < 3){
             //TODO: Make sure it returns TRUE after each push
             playersArray[i].addPlayerCard(gameDeck.removeTopCard());
             dealingNumber++;
@@ -896,6 +896,13 @@ function computerPlayerMove(){
         }
     }
 
+    //If a wild card was played previously, cancel it out the next time a valid card is played
+    if(wildPlayed){
+        let wildUI = document.getElementById("wildColorUI");
+        wildUI.innerHTML = "";
+        wildUI.setAttribute("style", "display:none");
+        wildPlayed = false;
+    }
 
     //A card is able to be played
     if(cardToPlayNum != null){
@@ -904,15 +911,14 @@ function computerPlayerMove(){
         //Remove the card from the players hand
         let tempCard = playersArray[activePlayer].removePlayerCard(cardToPlayNum);
 
+        console.log(playersArray[activePlayer].getPlayerHand());
+
         //ISSUE: The SECOND CARD PLAYED, the animation does not work correctly for
         //  Actually looks like it doesn't work for Skip, Reverse, wild cards.  Seems to work for regular cards.
 
         //Update the UI that the card has been removed.
         //Use a transition here, to make it slightly more interesting.
         let animatedPlayCard = document.getElementById(String(cardToPlayNum));
-
-        //In order for the card to not stay in the player box, temporarily remove the overflow from it?
-        document.getElementById(String(cardToPlayNum));
 
         //APPEND a class to the element for the animated transition
         animatedPlayCard.classList.add("compPlayerDiscardTransition");
@@ -921,12 +927,10 @@ function computerPlayerMove(){
 
             //Put the old discard card into the deck
             gameDeck.addCard(discardCard);
+        }, 2000);
 
-            //Set the played card as the new discard card
-            updateDiscardCard(tempCard);
-        }, 3000);
-
-
+        //Set the played card as the new discard card
+        updateDiscardCard(tempCard);
 
         //Check if the computer player won by playing their card
         if (checkWinCondition()){
@@ -1026,11 +1030,7 @@ function computerPlayerMove(){
         else if(Number(tempCard.getNumber()) === 22){
             skipPlayer();
         }
-        //Something has gone VERY wrong
-        else {
-            console.log("COMPUTER PLAYER CARD WAS NOT A VALID NUMBER:");
-            console.log(tempCard.getNumber());
-        }
+
     }
     //No card to be played, draw a card
     else{
@@ -1122,6 +1122,8 @@ function getNextPlayer(){
 
 
 function checkWinCondition(){
+    (debug ? console.log("WIN CHECK: Current players hand length: " + playersArray[activePlayer].getPlayerHand().length) : null);
+    (debug ? console.log("WIN CHECK: Current player: " + activePlayer) : null);
 
     //If the last play results in a player having 0 cards, they win and the game ends.
     //Check if the active player's hand is now empty
