@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     //At this point, there is no need to check that the deck has enough cards
     for(let i = 0; i < playersArray.length; i++){
         let dealingNumber = 0;
-        while(dealingNumber < 3){
+        while(dealingNumber < 7){
             //TODO: Make sure it returns TRUE after each push
             playersArray[i].addPlayerCard(gameDeck.removeTopCard());
             dealingNumber++;
@@ -591,7 +591,7 @@ function processCard(cardID){
         //Done before any card processing, since playing the card isn't actually needed as long as its valid (And the discard card will already be displayed).
     if(checkWinCondition()){
         //Prod
-        let startPage = "http://www.unointhebrowser.com/index.html";
+        let startPage = "https://www.unointhebrowser.com/index.html";
         //Test
         if(debug){
             startPage =  "/Group2Project/Code/Source/index.html";
@@ -843,6 +843,10 @@ function skipPlayer(){
     let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
     if(!debug) {  //For easier troubleshooting, keep the cards visible when debug is TRUE
         for (let i = 0; i < activePlayerHandOld.length; i++) {
+            //If the computer player is the active one, append the class instead of replacing it, so the animation can complete.
+            if(computerPlayer && Number(activePlayer)===(playersArray.length-1)){
+                activePlayerHandOld[i].classList.add("backOfCardImages");
+            }
             activePlayerHandOld[i].className = "backOfCardImages";
             activePlayerHandOld[i].removeAttribute('onclick');
         }
@@ -898,25 +902,20 @@ function computerPlayerMove(){
         }
     }
 
-    //If a wild card was played previously, cancel it out the next time a valid card is played
-    if(wildPlayed){
-        let wildUI = document.getElementById("wildColorUI");
-        wildUI.innerHTML = "";
-        wildUI.setAttribute("style", "display:none");
-        wildPlayed = false;
-    }
-
     //A card is able to be played
     if(cardToPlayNum != null){
-        console.log("Computer player, PLAYABLE CARD FOUND");
+        (debug ? console.log("Computer player, PLAYABLE CARD FOUND") : null);
+
+        //If a wild card was played previously, cancel it out the next time a valid card is played
+        if(wildPlayed){
+            let wildUI = document.getElementById("wildColorUI");
+            wildUI.innerHTML = "";
+            wildUI.setAttribute("style", "display:none");
+            wildPlayed = false;
+        }
 
         //Remove the card from the players hand
         let tempCard = playersArray[activePlayer].removePlayerCard(cardToPlayNum);
-
-        //ISSUE: The SECOND CARD PLAYED, the animation does not work correctly for
-        //  Actually looks like it doesn't work for Skip, Reverse, wild cards.  Seems to work for regular cards.
-        //      The transition class is never added to the element.
-        //  This should now be resolved.
 
         //Update the UI that the card has been removed.
         //Use a transition here, to make it slightly more interesting.
