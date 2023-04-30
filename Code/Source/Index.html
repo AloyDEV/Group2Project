@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>UNO In The Browser</title>
-    <link rel="icon" href="http://www.unointhebrowser.com/Code/Cards/Deck_Small2.png">
+    <link rel="icon" href="https://www.unointhebrowser.com/Code/Cards/Deck_Small2.png">
     <style>
         body{
             background: linear-gradient(45deg, #cb1a1a, #d9bd66, #23a6d5, #2b883b); /*e74646 1cb08d*/
@@ -124,7 +124,12 @@
         </div>
         <br>
         <br>
-        *Cookies & Javascript must be enabled in your browser in order for this game to work.
+        <div style="background: rgba(255,255,255,0.25); box-shadow: 0px 0px 5px 2px black; /* offset, offset, blur, spread radius*/ padding: 2em; border-radius: 2em" >
+            Cookies & Javascript must be enabled in your browser in order for this game to work.
+            <br>
+            <br>
+            If playing on a phone or tablet, the game experience is better in Landscape mode.
+        </div>
     </div>
 </body>
 
@@ -180,15 +185,14 @@
                     const today = new Date();
 
                     //using "path=/": the cookie will be available to all directories on the domain it is set from
-                    //Set the cookie to expire a year from now
-                    document.cookie = "UNOusers="+ playerInputs+";expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
+                    //Set the cookie to expire 3 months from now
+                    document.cookie = "UNOusers="+ playerInputs+";expires=" + today.setTime(today.getTime() + (90*24*60*60*1000)); + "; path=/";
 
                     //Go to the game board
                     window.location.href = "GameBoard.html";
                 }
                 else{
-                    alert("Cookies were not able to be created.  Enable them and try again.");
-                    //TODO: Future improvement, use another method to store all of the user & game info if cookies aren't working.
+                    //There's a fallback on the game board if there wasn't a cookie, no need for special handling.
                 }
             }
             else{

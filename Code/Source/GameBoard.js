@@ -22,7 +22,7 @@ var computerPlayer = false;
 //Player Class to hold the details on each player
 class Player {
     constructor(playerNumber, playerName) {
-        this.playerNumber = playerNumber;
+        //this.playerNumber = playerNumber;
         this.playerName = playerName;
         this.playerHand = [];
     }
@@ -866,7 +866,6 @@ function computerPlayerMove(){
     //Loop over the computer players hand, and see if any cards are playable.  If they are, play the card.
     //  This will end up duplicating a lot of the Process Card function.  But there are a number of tweaks needed for the comp player
     let compHand = playersArray[activePlayer].getPlayerHand();
-    let compPlayedWild = false;
     let cardToPlayNum = null;
 
     for(let i = 0; i< compHand.length; i++){
@@ -875,29 +874,21 @@ function computerPlayerMove(){
         //      Doesn't matter if another card is playable later in the hand and this overwrites the previously playable card.  Any card can be played
         //Valid play: match either by the number, color, or the symbol/Action
         if(!wildPlayed && (String(compHand[i].getColor()) === String(discardCard.getColor()) || Number(compHand[i].getNumber()) === Number(discardCard.getNumber()))){
-            console.log("COMP PLAYER: Matched on number/color/symbol")
-            console.log(compHand[i]);
+            (debug ? console.log("COMP PLAYER: Matched on number/color/symbol") : null);
             cardToPlayNum = compHand[i].getGlobalNumber();
-            console.log(compHand[i].getGlobalNumber());
         }
         //OR a wild is being played (Then it works regardless of if a previous wild was played)
         else if(Number(compHand[i].getNumber()) === 11 || Number(compHand[i].getNumber()) === 14){
-            console.log("COMP PLAYER: Wild is able to be played")
-            console.log(compHand[i]);
-            compPlayedWild = true;
+            (debug ? console.log("COMP PLAYER: Wild is able to be played") : null);
             cardToPlayNum = compHand[i].getGlobalNumber();
-            console.log(compHand[i].getGlobalNumber());
 
         }
         //OR If a wild was played the last turn, see if a card matches the wild color selected
         else if(wildPlayed){
             let wildElement = document.getElementById("wildColorSelected").children; //Only 1 child element
             if(String(compHand[i].getColor()) === String(wildElement[0].id)){
-                console.log("COMP PLAYER: Matched on previous wild card color")
-                console.log(compHand[i]);
+                (debug ? console.log("COMP PLAYER: Matched on previous wild card color") : null);
                 cardToPlayNum = compHand[i].getGlobalNumber();
-                console.log(compHand[i].getGlobalNumber());
-
             }
         }
     }
@@ -920,8 +911,6 @@ function computerPlayerMove(){
         //Update the UI that the card has been removed.
         //Use a transition here, to make it slightly more interesting.
         let animatedPlayCard = document.getElementById(String(cardToPlayNum));
-        console.log("Card to be animated: ");
-        console.log(animatedPlayCard);
 
         //APPEND a class to the element for the animated transition
         animatedPlayCard.classList.add("compPlayerDiscardTransition");
@@ -941,7 +930,7 @@ function computerPlayerMove(){
         //Check if the computer player won by playing their card
         if (checkWinCondition()){
             //Prod
-            let startPage = "http://www.unointhebrowser.com/index.html";
+            let startPage = "https://www.unointhebrowser.com/index.html";
             //Test
             if(debug){
                 startPage =  "/Group2Project/Code/Source/index.html";
