@@ -2,7 +2,7 @@
     //If performance of it is a problem, it can be minimized.
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = true;
+let debug = false;
 
 
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
@@ -599,7 +599,7 @@ function processCard(cardID){
 
         showModalBoxFunction(null, "<div><h2>"+playersArray[activePlayer].getPlayerName()+" won the game!</h2></div>" +
             "<br><div>Click here to start a new game with the same players: <br><button onclick='window.location.reload();'>NEW GAME</button></div><br>" +
-            "<br><div>Click here to select the number of players & enter player names before starting the game: <br><button onclick='window.location.href = \" "+startPage+" \";'>NEW PLAYERS & NEW GAME</button></div>");
+            "<br><div>Click here to go to the player selection screen before starting the game: <br><button onclick='window.location.href = \" "+startPage+" \";'>NEW PLAYERS & NEW GAME</button></div>");
         return false;
     }
 
@@ -841,9 +841,11 @@ function skipPlayer(){
 
     //Update the UI to hide the current player's cards
     let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
-    for(let i=0; i<activePlayerHandOld.length; i++){
-        activePlayerHandOld[i].className="backOfCardImages";
-        activePlayerHandOld[i].removeAttribute('onclick');
+    if(!debug) {  //For easier troubleshooting, keep the cards visible when debug is TRUE
+        for (let i = 0; i < activePlayerHandOld.length; i++) {
+            activePlayerHandOld[i].className = "backOfCardImages";
+            activePlayerHandOld[i].removeAttribute('onclick');
+        }
     }
 
     //Advance a player
@@ -911,26 +913,31 @@ function computerPlayerMove(){
         //Remove the card from the players hand
         let tempCard = playersArray[activePlayer].removePlayerCard(cardToPlayNum);
 
-        console.log(playersArray[activePlayer].getPlayerHand());
-
         //ISSUE: The SECOND CARD PLAYED, the animation does not work correctly for
         //  Actually looks like it doesn't work for Skip, Reverse, wild cards.  Seems to work for regular cards.
+        //      The transition class is never added to the element.
+        //  This should now be resolved.
 
         //Update the UI that the card has been removed.
         //Use a transition here, to make it slightly more interesting.
         let animatedPlayCard = document.getElementById(String(cardToPlayNum));
+        console.log("Card to be animated: ");
+        console.log(animatedPlayCard);
 
         //APPEND a class to the element for the animated transition
         animatedPlayCard.classList.add("compPlayerDiscardTransition");
         setTimeout(function () {
-            animatedPlayCard.remove();
+            animatedPlayCard.classList.remove("compPlayerDiscardTransition");
 
-            //Put the old discard card into the deck
-            gameDeck.addCard(discardCard);
+            animatedPlayCard.remove();
         }, 2000);
+
+        //Put the old discard card into the deck
+        gameDeck.addCard(discardCard);
 
         //Set the played card as the new discard card
         updateDiscardCard(tempCard);
+
 
         //Check if the computer player won by playing their card
         if (checkWinCondition()){
@@ -1054,7 +1061,14 @@ function computerPlayerMove(){
         newCardElement.setAttribute("class", "backOfCardImages");
         newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
         newCardElement.setAttribute("title", "");
+
+        if(debug){ //For easier troubleshooting, keep the cards visible when debug is TRUE
+            newCardElement.setAttribute("class", "");
+            newCardElement.setAttribute("src", "/Code/Cards/" + newCard.getFile());
+        }
         activePlayerHandDraw.appendChild(newCardElement);
+
+
 
         setTimeout(function() {
             animatedDrawCard.classList.remove("compPlayerDrawTransition")
@@ -1082,7 +1096,6 @@ function updateDiscardCard(newDiscardCard){
 }
 
 function changeActivePlayer(numPlayersToAdvance){
-    //TODO: This can't actually advance multiple players the way its implemented.  It can only advance one player.
 
     activePlayer = Number(getNextPlayer());
 
