@@ -737,41 +737,68 @@ function beginPlayerTransition(){
         //compDiv.className = "";
         //compDiv.style.display = "block";
 
+        var modalBackgroundComputer = document.getElementById("modalBackgroundComputer");
+        modalBackgroundComputer.style.display = "block";
+
         //Computer player move
         computerPlayerMove();
 
 
-        //Hide the overlay
+        //Hide the overlay after 5 seconds, enough time for computron to make their move
+        // All code after the timeout runs immediately.  Fixed by putting the entire rest of the function into setTimeout.
+        setTimeout(function () {
+            modalBackgroundComputer.style.display = "none";
+
+            //Advance to the next player.
+            changeActivePlayer(1);
+
+            //And set the new active player to display their cards in the UI
+            let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer)).children; //This is actually a pseudo-array, not a real array
+            for(let i=0; i<activePlayerHandNew.length; i++){
+                activePlayerHandNew[i].className="playerActive";
+                activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
+                activePlayerHandNew[i].setAttribute("title","Click to play this card");
+                activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
+                (debug ? console.log(activePlayerHandNew[i]) : null);
+            }
 
 
-        //Advance to the next player.
-        changeActivePlayer(1);
+            //Update the UI to match the active player in the info panel
+            document.getElementById("activePlayerUIplayer").innerHTML = "<div style='font-size: xx-large; font-weight: bold; padding: 4px'>" + playersArray[Number(activePlayer)].getPlayerName() + "</div>";
+            document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
+
+
+            //Hide the screen when transitioning between players.  And the next player needs to click Continue to advance (No clicking outside the modal)
+            document.getElementById("nextPlayerName").innerText=playersArray[activePlayer].getPlayerName();
+            if(!debug){
+                showContinueModal();
+            }
+
+        }, 2500);
     }
+    else{
+        //And set the new active player to display their cards in the UI
+        let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer)).children; //This is actually a pseudo-array, not a real array
+        for(let i=0; i<activePlayerHandNew.length; i++){
+            activePlayerHandNew[i].className="playerActive";
+            activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
+            activePlayerHandNew[i].setAttribute("title","Click to play this card");
+            activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
+            (debug ? console.log(activePlayerHandNew[i]) : null);
+        }
 
 
-    //And set the new active player to display their cards in the UI
-    let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer)).children; //This is actually a pseudo-array, not a real array
-    for(let i=0; i<activePlayerHandNew.length; i++){
-        activePlayerHandNew[i].className="playerActive";
-        activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
-        activePlayerHandNew[i].setAttribute("title","Click to play this card");
-        activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
-        (debug ? console.log(activePlayerHandNew[i]) : null);
+        //Update the UI to match the active player in the info panel
+        document.getElementById("activePlayerUIplayer").innerHTML = "<div style='font-size: xx-large; font-weight: bold; padding: 4px'>" + playersArray[Number(activePlayer)].getPlayerName() + "</div>";
+        document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
+
+
+        //Hide the screen when transitioning between players.  And the next player needs to click Continue to advance (No clicking outside the modal)
+        document.getElementById("nextPlayerName").innerText=playersArray[activePlayer].getPlayerName();
+        if(!debug){
+            showContinueModal();
+        }
     }
-
-
-    //Update the UI to match the active player in the info panel
-    document.getElementById("activePlayerUIplayer").innerHTML = "<div style='font-size: xx-large; font-weight: bold; padding: 4px'>" + playersArray[Number(activePlayer)].getPlayerName() + "</div>";
-    document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
-
-
-    //Hide the screen when transitioning between players.  And the next player needs to click Continue to advance (No clicking outside the modal)
-    document.getElementById("nextPlayerName").innerText=playersArray[activePlayer].getPlayerName();
-    if(!debug){
-        showContinueModal();
-    }
-
-
 }
 
 function endPlayerTransition(){
@@ -877,15 +904,29 @@ function computerPlayerMove(){
         //Remove the card from the players hand
         let tempCard = playersArray[activePlayer].removePlayerCard(cardToPlayNum);
 
+        //ISSUE: The SECOND CARD PLAYED, the animation does not work correctly for
+        //  Actually looks like it doesn't work for Skip, Reverse, wild cards.  Seems to work for regular cards.
+
         //Update the UI that the card has been removed.
-        //TODO: use a transition here, to make it slightly more interactive.
-        document.getElementById(String(cardToPlayNum)).remove();
+        //Use a transition here, to make it slightly more interesting.
+        let animatedPlayCard = document.getElementById(String(cardToPlayNum));
 
-        //Put the old discard card into the deck
-        gameDeck.addCard(discardCard);
+        //In order for the card to not stay in the player box, temporarily remove the overflow from it?
+        document.getElementById(String(cardToPlayNum));
 
-        //Set the played card as the new discard card
-        updateDiscardCard(tempCard);
+        //APPEND a class to the element for the animated transition
+        animatedPlayCard.classList.add("compPlayerDiscardTransition");
+        setTimeout(function () {
+            animatedPlayCard.remove();
+
+            //Put the old discard card into the deck
+            gameDeck.addCard(discardCard);
+
+            //Set the played card as the new discard card
+            updateDiscardCard(tempCard);
+        }, 3000);
+
+
 
         //Check if the computer player won by playing their card
         if (checkWinCondition()){
@@ -1002,15 +1043,24 @@ function computerPlayerMove(){
         //Add the card to the player hand
         playersArray[activePlayer].addPlayerCard(newCard);
 
-        //Update the UI to add in the new card
+        //Animate the card drawing
+        let animatedDrawCard = document.getElementById("UIDeck")
+        animatedDrawCard.classList.add("compPlayerDrawTransition")
+
         let activePlayerHandDraw = document.getElementById("playerHand" + (activePlayer)); //This is actually a pseudo-array, not a real array
+        //Update the UI to add in the new card
         const newCardElement = document.createElement("img");
         newCardElement.setAttribute("id", newCard.getGlobalNumber());
         newCardElement.setAttribute("class", "backOfCardImages");
         newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
         newCardElement.setAttribute("title", "");
-
         activePlayerHandDraw.appendChild(newCardElement);
+
+        setTimeout(function() {
+            animatedDrawCard.classList.remove("compPlayerDrawTransition")
+        }, 2000)
+
+
     }
 
     //Return to the original function so that it can move onto the next player
@@ -1216,7 +1266,7 @@ shuffleButton.onclick = function(mouseEvent){
 var resetButton = document.getElementById("resetButton");
 resetButton.onclick = function(mouseEvent){
     (debug ? console.log("Game being reset") : null);
-    showModalBoxFunction(mouseEvent, "<h3> Click to confirm the game should be reset:<br> <button onclick='window.location.reload();'>RESET GAME</button></h3>");
+    showModalBoxFunction(mouseEvent, "<h2> Click to confirm the game should be reset:<br> <button onclick='window.location.reload();'>RESET GAME</button></h2>");
 }
 
 
