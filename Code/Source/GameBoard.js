@@ -2,7 +2,7 @@
     //If performance of it is a problem, it can be minimized.
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = false;
+let debug = true;
 
 
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     (debug ? console.log(playersArray) : null);
 
     //Fourth pick the first card for the discard pile.
-    //To make life easier, if it's a WIlD/SKIP/DRAW/REVERSE card, just draw another card, then shuffle the deck again at the end.
+    //To make the starting logic simpler, if it's a WIlD/SKIP/DRAW/REVERSE card, just draw another card, then shuffle the deck again at the end.
     discardCard = gameDeck.removeTopCard();
     while(Number(discardCard.getNumber()) > 10){
         (debug ? console.log(discardCard) : null);
@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     gameDeck.shuffle();
 
 
-    //Last, update the UI to hide un-needed players, match player names, display hands, show the new discard card, and the state of the game.
+    //Fifth, update the UI to hide un-needed players, match player names, display hands, show the new discard card, and the state of the game.
 
     //Set the top discard card
     let UIDiscardCard = document.getElementById("UIDiscardCard");
@@ -449,14 +449,13 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     }
 
     //Show the computer player hand during testing
-    if(debug && computerPlayer){
-        let compHand = document.getElementById("playerHand" + (playersArray.length-1)).children; //This is actually a pseudo-array, not a real array
+    if(debug ){
+         let compHand = document.getElementById("playerHand" + (playersArray.length-1)).children; //This is actually a pseudo-array, not a real array
 
-
-        for(let i=0; i<compHand.length; i++){
-            compHand[i].setAttribute("class","");
-            compHand[i].setAttribute("src","/Code/Cards/" + playersArray[playersArray.length-1].peekPlayerCard(Number(compHand[i].id)).getFile());
-        }
+         for(let i=0; i<compHand.length; i++){
+             compHand[i].setAttribute("class","");
+             compHand[i].setAttribute("src","/Code/Cards/" + playersArray[playersArray.length-1].peekPlayerCard(Number(compHand[i].id)).getFile());
+         }
     }
 
     //Put starting player & next player into the UI
@@ -471,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
 
 // ********************************************************************************************************************************************
-//FUNCTION WHEN A CARD IS DRAWN INSTEAD OF ONE PLAYED
+//FUNCTION WHEN A CARD IS DRAWN
 let cardDrawn = document.getElementById("UIDeck");
 cardDrawn.onclick = function(mouseEvent) {
 
@@ -525,7 +524,7 @@ function processCard(cardID){
     (debug ? console.log("CARD CLICKED. Card ID:" + playersArray.length) : null);
     (debug ? console.log(cardIDNum) : null);
 
-    //Get the info of the card that was played, before removing it from the player's hand
+    //Get the info of the card that was played, before removing it from the player's hand, for the valid polay check
     let playedCard = playersArray[activePlayer].peekPlayerCard(cardIDNum);
 
     //Make sure that a valid card is being played
@@ -704,7 +703,7 @@ function processCard(cardID){
 
 
 function beginPlayerTransition(){
-    (debug ? console.log("Continuing.  Previously drawn card from deck: " + alreadyDrawnCard) : null);
+    (debug ? console.log("TRANSITIONING.  Previously drawn card from deck: " + alreadyDrawnCard) : null);
 
     //Reset the ability to draw a card for the next player.
     alreadyDrawnCard = false;
@@ -722,7 +721,7 @@ function beginPlayerTransition(){
         //  Instead, just leave the src attribute in place.  The updated class will override it by using !important
         //  Creates a tiny chance of someone cheating by inspecting the source.  But that risk is acceptable, this is a casual game.
         //activePlayerHandOld[i].removeAttribute('src');
-        (debug ? console.log(activePlayerHandOld[i]) : null);
+        //(debug ? console.log(activePlayerHandOld[i]) : null);
     }
 
     //Advance to the next player
@@ -743,7 +742,6 @@ function beginPlayerTransition(){
         //Computer player move
         computerPlayerMove();
 
-
         //Hide the overlay after 5 seconds, enough time for computron to make their move
         // All code after the timeout runs immediately.  Fixed by putting the entire rest of the function into setTimeout.
         setTimeout(function () {
@@ -759,7 +757,7 @@ function beginPlayerTransition(){
                 activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
                 activePlayerHandNew[i].setAttribute("title","Click to play this card");
                 activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
-                (debug ? console.log(activePlayerHandNew[i]) : null);
+                //(debug ? console.log(activePlayerHandNew[i]) : null);
             }
 
 
@@ -784,7 +782,7 @@ function beginPlayerTransition(){
             activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
             activePlayerHandNew[i].setAttribute("title","Click to play this card");
             activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
-            (debug ? console.log(activePlayerHandNew[i]) : null);
+            //(debug ? console.log(activePlayerHandNew[i]) : null);
         }
 
 
@@ -811,7 +809,7 @@ function endPlayerTransition(){
 function wildColor(){
     (debug ? console.log("Wildcard function begin") : null);
     //How to hide the wild color after it's been used?
-    //  ANSWER: It's built into the card processing function, as part of the separate flow for validation after a wild play
+    //  It's built into the card processing function, as part of the separate flow for validation after a wild play
 
     let inputColors = document.getElementsByClassName("wildColorInput");
 
@@ -838,19 +836,21 @@ function wildColor(){
 }
 
 function skipPlayer(){
-
+    console.log("Active player going into Skip Player: " + activePlayer)
     //Update the UI to hide the current player's cards
     let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
-    if(!debug) {  //For easier troubleshooting, keep the cards visible when debug is TRUE
-        for (let i = 0; i < activePlayerHandOld.length; i++) {
+    for (let i = 0; i < activePlayerHandOld.length; i++) {
             //If the computer player is the active one, append the class instead of replacing it, so the animation can complete.
             if(computerPlayer && Number(activePlayer)===(playersArray.length-1)){
                 activePlayerHandOld[i].classList.add("backOfCardImages");
             }
-            activePlayerHandOld[i].className = "backOfCardImages";
-            activePlayerHandOld[i].removeAttribute('onclick');
-        }
+            else {
+                activePlayerHandOld[i].className = "backOfCardImages";
+                activePlayerHandOld[i].removeAttribute('onclick');
+            }
+
     }
+
 
     //Advance a player
     changeActivePlayer(1);
@@ -915,6 +915,7 @@ function computerPlayerMove(){
         //APPEND a class to the element for the animated transition
         animatedPlayCard.classList.add("compPlayerDiscardTransition");
         setTimeout(function () {
+
             animatedPlayCard.classList.remove("compPlayerDiscardTransition");
 
             animatedPlayCard.remove();
@@ -1056,8 +1057,6 @@ function computerPlayerMove(){
         }
         activePlayerHandDraw.appendChild(newCardElement);
 
-
-
         setTimeout(function() {
             animatedDrawCard.classList.remove("compPlayerDrawTransition")
         }, 2000)
@@ -1071,7 +1070,6 @@ function computerPlayerMove(){
 }
 
 function updateDiscardCard(newDiscardCard){
-    //TODO: Make sure that a Card type object is passed in.
 
     discardCard = newDiscardCard;
 
@@ -1085,6 +1083,7 @@ function updateDiscardCard(newDiscardCard){
 
 function changeActivePlayer(numPlayersToAdvance){
 
+    console.log("Changing the active player.  Current player: " + activePlayer);
     activePlayer = Number(getNextPlayer());
 
     return true;
@@ -1093,8 +1092,6 @@ function changeActivePlayer(numPlayersToAdvance){
 
 //Returns the array position number of the next player
 function getNextPlayer(){
-
-    (debug ? console.log("Active Player: " + activePlayer) : null);
 
     let nextPlayer = -1;
 
@@ -1115,8 +1112,6 @@ function getNextPlayer(){
             nextPlayer = activePlayer - 1;
         }
     }
-
-    (debug ? console.log("Next Player: " + nextPlayer) : null);
 
     return Number(nextPlayer);
 }
