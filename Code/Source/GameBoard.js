@@ -837,7 +837,6 @@ function wildColor(){
 }
 
 function skipPlayer(){
-    console.log("Active player going into Skip Player: " + activePlayer)
     //Update the UI to hide the current player's cards
     let activePlayerHandOld = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
     for (let i = 0; i < activePlayerHandOld.length; i++) {
