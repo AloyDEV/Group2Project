@@ -98,14 +98,44 @@
             transition-duration: 0.2s;
         }
 
-        input[type='radio'] {
-            accent-color: #9b19f1;
+
+        #BlueSelection{
+            accent-color: blue;
+        }
+        #GreenSelection{
+            accent-color: green;
+        }
+        #RedSelection{
+            accent-color: red;
+        }
+        #YellowSelection{
+            accent-color: yellow;
+        }
+        #BlueSelectionLabel:hover{
+            background: rgba(2, 34, 197, 0.5);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #GreenSelectionLabel:hover{
+            background: rgba(47, 197, 13, 0.5);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #RedSelectionLabel:hover{
+            background: rgba(197, 13, 41, 0.5);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #YellowSelectionLabel:hover{
+            background: rgba(197, 160, 13, 0.5);
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        label:hover{
-            background: rgba(96, 13, 197, 0.5);
-            border-radius: 5px;
-        }
+        /*label:hover{*/
+        /*    background: rgba(96, 13, 197, 0.5);*/
+        /*    border-radius: 5px;*/
+        /*}*/
 
 
 
@@ -362,13 +392,13 @@
             <h3>
             <div id='wildInput' style="display: inline-block; text-align: left;">
                 <input type="radio" id="BlueSelection" name="wildcolorsradio" value="Blue" class="wildColorInput" checked >
-                <label for="BlueSelection" style="padding:5px">Blue</label><br>
+                <label for="BlueSelection" id="BlueSelectionLabel" style="padding:5px">Blue</label><br>
                 <input type="radio" id="GreenSelection" name="wildcolorsradio" value="Green" class="wildColorInput">
-                <label for="GreenSelection" style="padding:5px">Green</label><br>
+                <label for="GreenSelection" id="GreenSelectionLabel" style="padding:5px">Green</label><br>
                 <input type="radio" id="RedSelection" name="wildcolorsradio" value="Red" class="wildColorInput">
-                <label for="RedSelection" style="padding:5px">Red</label><br>
+                <label for="RedSelection" id="RedSelectionLabel" style="padding:5px">Red</label><br>
                 <input type="radio" id="YellowSelection" name="wildcolorsradio" value="Yellow" class="wildColorInput">
-                <label for="YellowSelection" style="padding:5px">Yellow</label><br>
+                <label for="YellowSelection" id="YellowSelectionLabel" style="padding:5px">Yellow</label><br>
                 <br>
                 <button id="wildContinue" onclick="wildColor()"> Continue </button>
             </div>
