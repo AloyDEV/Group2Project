@@ -2,7 +2,7 @@
     //If performance of it is a problem, it can be minimized.
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = true;
+let debug = false;
 
 
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
@@ -309,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
         var player1 = new Player(1,"Player2");
         var player2 = new Player(2,"Player3");
         var player3 = new Player(3,"Computron (Computer Player)");
+        computerPlayer = true;
         playersArray.push(player0, player1, player2, player3);  //If there's no cookie, default to their being a computer player (For simplicity)
 
     }
