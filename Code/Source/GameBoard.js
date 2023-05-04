@@ -2,7 +2,7 @@
     //If performance of it is a problem, it can be minimized.
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
-let debug = true;
+let debug = false;
 
 
 //Global variables.  Not strictly best practice, but it's easier to track the deck & players globally than constantly passing them between functions, since they are referenced frequently
@@ -16,7 +16,6 @@ var gameDirection = Boolean(true); //true = top to bottom, false = bottom to top
 var alreadyDrawnCard = false; //Makes the deck inactive after a player has drawn a card.
 var wildPlayed = false;
 var computerPlayer = false;
-var compPlayerSkipped = false;
 
 (debug ? console.log("Game Board JS is loading") : null);
 
@@ -599,7 +598,7 @@ function processCard(cardID){
         }
 
         showModalBoxFunction(null, "<div><h2>"+playersArray[activePlayer].getPlayerName()+" won the game!</h2></div>" +
-            "<br><div>Click here to start a new game with the same players: <br><button onclick='window.location.reload();'>NEW GAME</button></div><br>" +
+            "<br><div>Click here to start a new game with the same players: <br><button onclick='window.location.reload();'>NEW GAME</button></div>" +
             "<br><div>Click here to go to the player selection screen before starting the game: <br><button onclick='window.location.href = " + startPage + ";'>NEW PLAYERS & NEW GAME</button></div>");
         return false;
     }
@@ -735,21 +734,6 @@ function beginPlayerTransition(){
         computerPlayerTransition();
     }
     else{
-        //And set the new active player to display their cards in the UI
-        let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer)).children; //This is actually a pseudo-array, not a real array
-        for(let i=0; i<activePlayerHandNew.length; i++){
-            activePlayerHandNew[i].className="playerActive";
-            activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
-            activePlayerHandNew[i].setAttribute("title","Click to play this card");
-            activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
-            //(debug ? console.log(activePlayerHandNew[i]) : null);
-        }
-
-
-        //Update the UI to match the active player in the info panel
-        document.getElementById("activePlayerUIplayer").innerHTML = "<div style='font-size: xx-large; font-weight: bold; padding: 4px'>" + playersArray[Number(activePlayer)].getPlayerName() + "</div>";
-        document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
-
 
         //Hide the screen when transitioning between players.  And the next player needs to click Continue to advance (No clicking outside the modal)
         document.getElementById("nextPlayerName").innerText=playersArray[activePlayer].getPlayerName();
@@ -760,6 +744,25 @@ function beginPlayerTransition(){
 }
 
 function endPlayerTransition(){
+
+    //With the computer player timeout, sometimes the computer cards were displayed unexpectedly.
+        //Only display player hands when the Continue modal is up & has been clicked.
+
+    //Set the active player to display their cards in the UI
+    let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer)).children; //This is actually a pseudo-array, not a real array
+    for(let i=0; i<activePlayerHandNew.length; i++){
+        activePlayerHandNew[i].className="playerActive";
+        activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
+        activePlayerHandNew[i].setAttribute("title","Click to play this card");
+        activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
+        //(debug ? console.log(activePlayerHandNew[i]) : null);
+    }
+
+
+    //Update the UI to match the active player in the info panel
+    document.getElementById("activePlayerUIplayer").innerHTML = "<div style='font-size: xx-large; font-weight: bold; padding: 4px'>" + playersArray[Number(activePlayer)].getPlayerName() + "</div>";
+    document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
+
     hideContinueModal();
 
     //TODO: Should this include a double check that the correct cards & names are all displaying on the UI?  Might be good to have a fallback for that.
@@ -782,35 +785,6 @@ function computerPlayerTransition(){
 
         //Advance to the next player.
         changeActivePlayer(1);
-
-        console.log("PLAYERS ARRAY LENGTH: " + playersArray.length);
-        if(compPlayerSkipped && playersArray.length===2){
-            changeActivePlayer(1)
-        }
-        compPlayerSkipped = false;
-
-        //ISSUE:
-        //  When there are 2 players (1 human 1 computer), and a SKIP type card is played, the computer player turns into a regular player
-        //      It's due to the player advancing function.
-        //  SKIP advances to the next player, and then the line on 752 advances back to the computer player, but this time as a REGULAR player
-
-        //The compPlayerSkipped boolean isn't working correctly.
-
-        //And set the new active player to display their cards in the UI
-        let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer)).children; //This is actually a pseudo-array, not a real array
-        for(let i=0; i<activePlayerHandNew.length; i++){
-            activePlayerHandNew[i].className="playerActive";
-            activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
-            activePlayerHandNew[i].setAttribute("title","Click to play this card");
-            activePlayerHandNew[i].setAttribute("src","/Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
-            //(debug ? console.log(activePlayerHandNew[i]) : null);
-        }
-
-
-        //Update the UI to match the active player in the info panel
-        document.getElementById("activePlayerUIplayer").innerHTML = "<div style='font-size: xx-large; font-weight: bold; padding: 4px'>" + playersArray[Number(activePlayer)].getPlayerName() + "</div>";
-        document.getElementById("nextPlayerUIplayer").innerHTML = "<div style='font-size: large; font-weight: bold; padding: 4px'>" + playersArray[Number(getNextPlayer())].getPlayerName() + "</div>";
-
 
         //Hide the screen when transitioning between players.  And the next player needs to click Continue to advance (No clicking outside the modal)
         document.getElementById("nextPlayerName").innerText=playersArray[activePlayer].getPlayerName();
@@ -864,17 +838,62 @@ function skipPlayer(){
 
     }
 
+    // If the computer player is doing a skip, immediately have the computer player make another move.
+
+    //This DOES work for MOST situations. NOPE it breaks a LOT
+    // Need to test 2 wild cards in the comp player's hand
+    // if(Number(computerPlayer && activePlayer === playersArray.length-1 &&playersArray.length===2)){
+    //     computerPlayerTransition();
+    // }
+
+    /*NOTE: SKIPs work correctly when a human player is making their move (1 player with comp).  Tested all 3 different types
+
+    SO, the problem.
+    When the computer player plays a SKIP card
+
+COMP PLAYER: Wild is able to be played
+GameBoard.js:937 Computer player, PLAYABLE CARD FOUND
+GameBoard.js:1123 Discard card updated, new card:
+GameBoard.js:1124 Card {color: 'Wild', number: 14, file: 'Wild_14.png', globalNumber: 107}
+GameBoard.js:1165 WIN CHECK: Current players hand length: 5
+GameBoard.js:1166 WIN CHECK: Current player: 1
+
+GameBoard.js:1130 Changing the active player.  Current player: 1
+GameBoard.js:1132 Active player after the change: 0
+GameBoard.js:1130 Changing the active player.  Current player: 0
+GameBoard.js:1132 Active player after the change: 1
+GameBoard.js:1130 Changing the active player.  Current player: 1
+GameBoard.js:1132 Active player after the change: 0
+
+
+SO what is happening:
+
+
+
+     */
+
+    //WHAT I"M SEEING ON THURSDAY:
+    //     The CONTINUE box pops up, that the next player is the computer player.  SO even though the unhide/display cards is part of the endTransition,
+    //      the computer players hand is still visible.
+    //      So the issue isn't really the computer player hand displaying.  Its that the computer player is treated like a normal player
+
+
 
     //Advance a player
     changeActivePlayer(1);
 }
 
 function computerPlayerMove(){
-    compPlayerSkipped = false;
     //Hide the computer players hand
-        //Actually, this isn't needed. The UI hasn't been updated yet to show the next players hand.
-        //Computer player is always the last one in the players array
-    //document.getElementById("WTF IS THE ID!!!?!?!?!?!?!"); //PERFECT CODE, no notes
+    //  Shouldn't be needed.  But to be safe, always hide the computers hand
+    // let activePlayerHandComp = document.getElementById("playerHand" + activePlayer).children; //This is actually a pseudo-array, not a real array
+    // for (let i = 0; i < activePlayerHandComp.length; i++) {
+    //
+    //     activePlayerHandComp[i].className = "backOfCardImages";
+    //     activePlayerHandComp[i].removeAttribute('onclick');
+    //     activePlayerHandComp[i].removeAttribute('title');
+    //
+    // }
 
 
     //Loop over the computer players hand, and see if any cards are playable.  If they are, play the card.
@@ -907,7 +926,7 @@ function computerPlayerMove(){
         }
     }
 
-    //A card is able to be played
+    //One of the computer's cards is playable.
     if(cardToPlayNum != null){
         (debug ? console.log("Computer player, PLAYABLE CARD FOUND") : null);
 
@@ -952,7 +971,7 @@ function computerPlayerMove(){
             }
 
             showModalBoxFunction(null, "<div><h2>"+playersArray[activePlayer].getPlayerName()+" won the game!</h2></div>" +
-                "<br><div>Click here to start a new game with the same players: <br><button onclick='window.location.reload();'>NEW GAME</button></div><br>" +
+                "<br><div>Click here to start a new game with the same players: <br><button onclick='window.location.reload();'>NEW GAME</button></div>" +
                 "<br><div>Click here to go to the player selection screen before starting the game: <br><button onclick='window.location.href =  " + startPage + ";'>NEW PLAYERS & NEW GAME</button></div>");
             return false;
         }
@@ -969,6 +988,7 @@ function computerPlayerMove(){
             // Returns a random integer from 0 to 3:
             let rand = Math.floor(Math.random() * 4);
 
+            console.log("Wild color chosen: " + wildColors[rand]);
             wildColorUI.innerHTML = "<div style='background: black; padding: 10px; border: 10px solid white; border-radius: .5em;'><div>Wild Card Color: </div><div id='wildColorSelected'><div id='"+String(wildColors[rand])+"'>" + String(wildColors[rand]) +"</div></div></div>";
             wildColorUI.setAttribute("style", "width: 50%; text-align: center; margin: auto; font-weight: bold; font-size: xx-large; margin-top: 2%; color:" + String(wildColors[rand])+";");
         }
@@ -990,22 +1010,24 @@ function computerPlayerMove(){
                 newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
                 newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
                 newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
-                newCardElementWild.setAttribute("title", "Click to play this card");
+                //newCardElementWild.setAttribute("title", "Click to play this card");
 
                 nextPlayerHand.appendChild(newCardElementWild);
             }
-            //Skip the next player
-            skipPlayer();
-            compPlayerSkipped = true;
-
             //Choose a color for the wild card, randomly
             let wildColorUI = document.getElementById("wildColorUI")
             const wildColors = ["Blue", "Green", "Red", "Yellow"];
             // Returns a random integer from 0 to 3:
             let rand = Math.floor(Math.random() * 4);
 
+            console.log("Wild color chosen: " + wildColors[rand]);
             wildColorUI.innerHTML = "<div style='background: black; padding: 10px; border: 10px solid white; border-radius: .5em;'><div>Wild Card Color: </div><div id='wildColorSelected'><div id='"+String(wildColors[rand])+"'>" + String(wildColors[rand]) +"</div></div></div>";
             wildColorUI.setAttribute("style", "width: 50%; text-align: center; margin: auto; font-weight: bold; font-size: xx-large; margin-top: 2%; color:" + String(wildColors[rand])+";");
+
+            //Skip the next player
+            if (playersArray.length > 2){
+                skipPlayer();
+            }
         }
 
         // Draw Two (+2 and Skip)
@@ -1023,14 +1045,14 @@ function computerPlayerMove(){
                 newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
                 newCardElementWild.setAttribute("src", "/Code/Cards/" + newCard.getFile());
                 newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
-                newCardElementWild.setAttribute("title", "Click to play this card");
+                //newCardElementWild.setAttribute("title", "Click to play this card");
 
                 nextPlayerHand.appendChild(newCardElementWild);
             }
             //Skip the next player
-            skipPlayer();
-            compPlayerSkipped = true;
-
+            if (playersArray.length > 2){
+                skipPlayer();
+            }
         }
         //Reverse
         else if(Number(tempCard.getNumber()) === 21){
@@ -1041,11 +1063,11 @@ function computerPlayerMove(){
 
         //Skip
         else if(Number(tempCard.getNumber()) === 22){
-            skipPlayer();
-            compPlayerSkipped = true;
-
+            //Skip the next player
+            if (playersArray.length > 2){
+                skipPlayer();
+            }
         }
-
     }
     //No card to be played, draw a card
     else{
@@ -1083,6 +1105,17 @@ function computerPlayerMove(){
 
     }
 
+
+    //To be safe, hide the computer player's cards
+    // let activePlayerHandCompEnd = document.getElementById("playerHand" + String(playersArray.length-1)).children; //This is actually a pseudo-array, not a real array
+    // for (let i = 0; i < activePlayerHandCompEnd.length; i++) {
+    //
+    //     activePlayerHandCompEnd[i].classList.add ("backOfCardImages");
+    //     activePlayerHandCompEnd[i].removeAttribute('onclick');
+    //     activePlayerHandCompEnd[i].removeAttribute('title');
+    //
+    // }
+
     //Return to the original function so that it can move onto the next player
     return true;
 
@@ -1096,7 +1129,9 @@ function updateDiscardCard(newDiscardCard){
     let UIDiscardCard = document.getElementById("UIDiscardCard");
     UIDiscardCard.src = "/Code/Cards/" + discardCard.getFile();
     (debug ? console.log("Discard card updated, new card:"):null);
+    console.log("Discard card updated, new card:");
     (debug ? console.log(discardCard):null);
+    console.log(discardCard);
 
 }
 
@@ -1104,7 +1139,7 @@ function changeActivePlayer(numPlayersToAdvance){
 
     console.log("Changing the active player.  Current player: " + activePlayer);
     activePlayer = Number(getNextPlayer());
-
+    console.log("Active player after the change: " + activePlayer);
     return true;
 
 }
@@ -1236,9 +1271,9 @@ var modalBackgroundContinue = document.getElementById("modalBackgroundContinue")
 //Start game box: Notify the users about how to play the game.
 document.addEventListener('DOMContentLoaded', (event) => { //DOMContentLoaded
     (debug ? console.log('The DOM is fully loaded, displaying welcome message') : null)
-    showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player 1 goes first.  They can either play a card by clicking it, or draw a card by clicking the deck.</p>" +
-        "<p> After you play, the game board will be hidden as the next player's cards are dispalyed.  Click 'Continue' for the next player to begin their turn.</p>" +
-        "<p>To start the game & Player 1's turn, click the X on the right.</p>");
+    showModalBoxFunction(event, "<h3>How to play the game</h3><p>Player " +playersArray[0].getPlayerName()+ " goes first.  They can either play a card by clicking it, or draw a card by clicking the deck.</p>" +
+        "<p>After you play, the game board will be hidden as the next player's cards are displayed.  Click 'Continue' for the next player to begin their turn.</p>" +
+        "<p>To start the game & "+playersArray[0].getPlayerName()+"'s turn, click the X on the right.</p>");
 
     //When starting the game, black out the background so no-one is able to see the starting players cards
     document.getElementById("modalBackground").style.background = "rgba(0,0,0)"
@@ -1250,18 +1285,18 @@ var helpButton = document.getElementById("helpButton");
 helpButton.onclick = function(mouseEvent) {
     showModalBoxFunction(mouseEvent, "<p><h3>Game Rules & Help Menu</h3></p>" +
         //TODO: Reformat & cleanup the text below.  Also additional rules for 2 & 4 player games
-        "<p>See here for offical rules: <a href='https://www.unorules.com/'>www.unorules.com</a></p>" +
+        "<p>See here for official rules: <a href='https://www.unorules.com/'>www.unorules.com</a></p>" +
         "<p>This game is based on a 108 card deck</p>" +
         "<p>Every player views his/her cards and tries to match the card in the Discard Pile." +
         "<p>Variation from official rules: No need to shout UNO.  Wild 4 does not require you to NOT have other playable cards</p>" +
         "\n" +
-        "You have to match either by the number, color, or the symbol/Action. For instance, if the Discard Pile has a red card that is an 8 you have to play either a red card, a card with an 8 on it, or a wild card.\n" +
+        "When playing a card, it needs to match either the number, color, or the symbol/Action. For instance, if the Discard Card has a red card that is an 8 you have to play either a red card, a card with an 8 on it, or a wild card.\n" +
         "\n" +
         "If the player has no matches or they choose not to play any of their cards even though they might have a match, they must draw a card from the Deck. You can then play a card, or click End Current Player's Turn to move onto the next player.\n" +
         "\n" +
         "Take note that you can only put down one card at a time; you cannot stack two or more cards together on the same turn.\n" +
         "\n" +
-        "The game continues until a player has no cards left.  That player then wins the game” </p>");
+        "The game continues until a player has no cards left.  That player then wins the game!” </p>");
 }
 
 
