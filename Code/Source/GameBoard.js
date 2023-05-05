@@ -842,12 +842,15 @@ function skipPlayer(){
 
     //This DOES work for MOST situations. NOPE it breaks a LOT
     // Need to test 2 wild cards in the comp player's hand
-    // if(Number(computerPlayer && activePlayer === playersArray.length-1 &&playersArray.length===2)){
-    //     computerPlayerTransition();
-    // }
+    if(Number(computerPlayer && activePlayer === playersArray.length-1 && playersArray.length===2)){
+         computerPlayerMove();
+    }
+    else{
+        //Advance a player
+        changeActivePlayer(1);
+    }
 
-    /*NOTE: SKIPs work correctly when a human player is making their move (1 player with comp).  Tested all 3 different types
-
+/*
     SO, the problem.
     When the computer player plays a SKIP card
 
@@ -865,22 +868,7 @@ GameBoard.js:1132 Active player after the change: 1
 GameBoard.js:1130 Changing the active player.  Current player: 1
 GameBoard.js:1132 Active player after the change: 0
 
-
-SO what is happening:
-
-
-
      */
-
-    //WHAT I"M SEEING ON THURSDAY:
-    //     The CONTINUE box pops up, that the next player is the computer player.  SO even though the unhide/display cards is part of the endTransition,
-    //      the computer players hand is still visible.
-    //      So the issue isn't really the computer player hand displaying.  Its that the computer player is treated like a normal player
-
-
-
-    //Advance a player
-    changeActivePlayer(1);
 }
 
 function computerPlayerMove(){
@@ -1025,9 +1013,11 @@ function computerPlayerMove(){
             wildColorUI.setAttribute("style", "width: 50%; text-align: center; margin: auto; font-weight: bold; font-size: xx-large; margin-top: 2%; color:" + String(wildColors[rand])+";");
 
             //Skip the next player
-            if (playersArray.length > 2){
-                skipPlayer();
-            }
+            // if (playersArray.length > 2){
+            //     skipPlayer();
+            // }
+            skipPlayer();
+
         }
 
         // Draw Two (+2 and Skip)
@@ -1050,9 +1040,10 @@ function computerPlayerMove(){
                 nextPlayerHand.appendChild(newCardElementWild);
             }
             //Skip the next player
-            if (playersArray.length > 2){
-                skipPlayer();
-            }
+            // if (playersArray.length > 2){
+            //     skipPlayer();
+            // }
+            skipPlayer();
         }
         //Reverse
         else if(Number(tempCard.getNumber()) === 21){
@@ -1064,9 +1055,10 @@ function computerPlayerMove(){
         //Skip
         else if(Number(tempCard.getNumber()) === 22){
             //Skip the next player
-            if (playersArray.length > 2){
-                skipPlayer();
-            }
+            // if (playersArray.length > 2){
+            //     skipPlayer();
+            // }
+            skipPlayer();
         }
     }
     //No card to be played, draw a card
