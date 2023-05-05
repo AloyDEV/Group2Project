@@ -590,12 +590,9 @@ function processCard(cardID){
     //Check if the player won the game.
         //Done before any card processing, since playing the card isn't actually needed as long as its valid (And the discard card will already be displayed).
     if(checkWinCondition()){
-        //Prod
-        let startPage = "https://www.unointhebrowser.com/index.html";
-        //Test
-        if(debug){
-            startPage =  "/Group2Project/Code/Source/index.html";
-        }
+        //Grab the directory that we're in, so this always leads to the correct location regardless of where the game is being played (server or locally)
+        let currentDirectory = new URL(".", location.href);
+        let startPage = currentDirectory.href + "index.html";
 
         document.getElementById("modalCloseX").remove();
         showModalBoxFunction(null, "<div><h2>"+playersArray[activePlayer].getPlayerName()+" won the game!</h2></div>" +
@@ -865,12 +862,9 @@ function computerPlayerMove(){
 
         //Check if the computer player won by playing their card
         if (checkWinCondition()){
-            //Prod
-            let startPage = "https://www.unointhebrowser.com/index.html";
-            //Test
-            if(debug){
-                startPage =  "/Group2Project/Code/Source/index.html";
-            }
+            //Grab the directory that we're in, so this always leads to the correct location regardless of where the game is being played (server or locally)
+            let currentDirectory = new URL(".", location.href);
+            let startPage = currentDirectory.href + "index.html";
 
             //If the computer player wins, this pops the WIN box on top of the CONTINUE box, so that its a slightly bette experience
             //  Ideally, the ability to click outside of the WIN modal should also be removed.
@@ -1269,12 +1263,11 @@ resetButton.onclick = function(mouseEvent){
 //End game function
 var endButton = document.getElementById("endButton");
 endButton.onclick = function(mouseEvent){
+
     (debug ? console.log("Game ended") : null);
-    let startPage = "https://www.unointhebrowser.com/index.html";
-    //Test
-    if(debug){
-        startPage =  "/Group2Project/Code/Source/index.html";
-    }
+    //Grab the directory that we're in, so this always leads to the correct location regardless of where the game is being played (server or locally)
+    let currentDirectory = new URL(".", location.href);
+    let startPage = currentDirectory.href + "index.html";
 
     showModalBoxFunction(mouseEvent, "<h2> Click to end the game and return to the start page:<br> <button onclick='window.location.href =  \" "+startPage+" \"'>END GAME</button></h2>");
 }
