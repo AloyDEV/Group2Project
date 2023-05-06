@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .testBorders{
+            font-size: 30px;
+            color: red;
+            /*text-shadow: 2px 0 #000000, -2px 0 #000000, 0 2px #000000, 0 -2px #000000, 1px 1px #000000, -1px -1px #000000, 1px -1px #000000, -1px 1px #000000;*/
+            text-shadow: 0 0 10px #000000;
+        }
+    </style>
+</head>
+<body>
+<p class="testBorders">
+    Flexbox I THINK is working/being used for the player hand & wrapping it around.
+</p>
+<p>
+    Need to convert the overall player boxes to flexboxes though, so they grow automatically.
+</p>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<p>
+Work in progress site is temporarily housed at:
+https://objectstorage.us-ashburn-1.oraclecloud.com/n/idvgefsg3hgo/b/bucket-20230214-2044/o/GameStart.html
+</p>
+<p>
+It was setup using this tutorial:
+https://blog.osdev.org/oci/2020/10/15/oci-objectstorage-website.html
+</p>
+<p>
+Which just uses basic object storage.
+</p>
+<br>
+<br>
+<br>
+<p>
+Change over to a real VM instance in OCI running a proper HTTP server for when it goes live.
+</p>
+
+Flash button, stored here in case its needed
+< button onclick="(function(){
+let temp = document.getElementsByTagName('body');
+    temp[0].className = 'borderFlash';
+
+//After the animation runs, the class needs to be changed back.
+//best way to do that: https://stackoverflow.com/questions/50742142/run-js-script-after-css-animation-is-finished
+//Other way to do that: https://stackoverflow.com/questions/14226803/wait-5-seconds-before-executing-next-line
+})();return false;
+
+">click to blink</button >
+
+
+
+
+//TODO for the overall game:
+/*
+
+How to track which card is which?  store its Global Number somewhere in the HTML?
+Tie each card to an OnClick function, that passes in the card identifier
+DONE!!!!
+
+Fix the Flexbox for the player boxes
+
+
+Change the GlobalID for a card to ALWAYS BE A NUMBER.  No implicit conversions to numbers/strings
+EX: let num = Number(cardID);
+DONE!!!
+
+
+The left hand column of the game board is too tall.  Even when the modal DIVs were removed, it was slightly taller than the viewport
+Its actually both columns that are too tall
+Fixed by adding overflow-y: hidden; to the BODY CSS
+DONE!!!
+
+
+The Discard & Deck cards have too much right spacing on the Prod site.
+DONE!!!!
+Fixed the discard & draw cards having too much padding in Prod by adding max-width:45% to both
+
+
+The GameBoard is like 95% responsive right now.  What doesn't work is the buttons across the top (They can slide out of view, with no scrollbar)
+And the Discard/Deck section, the Deck card can slide out of view.
+Pretty much done.  When I tested on my phone, it was responsive enough to be playable.
+
+
+Move up the Modal box, so its closer to the top of the page
+Also I don't think any modals are that responsive right now.
+DONE!!! Moved up.  And when tested on a phone, modals were fine.
+
+
+Put the name of the next player into the Transition box
+DONE!!!
+
+
+When playing Wild 4, it looks like it hides the current players cards before the color selection popup.
+Whereas during Wild 1, player cards are still visible.
+
+
+When there are 2 players, the cards are too big.  They fill up the box too quickly so that it goes into multiple rows too fast.
+Might want to make the boxes smaller or the cards smaller.
+
+
+
+ISSUE: When looping over players, player 1 and the computer player have the columns resized to be 50% incorrectly.
+Possibly fixed by adjusting the columns min & max widths.  BUT need to test more
+And not sure why it resized in the first place.  Should probably check that.
+NOPE NOT FIXED COMPLETELY
+
+Issue: If you reach the point where there are no more cards available in the deck, and then play a Draw 2 card, it allows the active player to play the draw 2 then to play another card
+Also the continue button doesn't appear.
+
+
+Things removed that might be added back later:
+Challenges to Wild+4
+With this card, you must have no other alternative cards to play that matches the color of the card previously played.
+If you play this card illegally, you may be challenged by the other player to show your hand to him/her. If guilty, you need to draw 4 cards.
+If not, the challenger needs to draw 6 cards instead.
+Calling UNO at the end of the game
+The first discard card being a non-number card.
+Removing the ability to play a different card after drawing a new card (Only the newly drawn card can be played) .
+
+
+
+Note: Functionality that would be good to add:
+Table status SAVE, where all player data is written to a cookie
+const today = new Date();
+document.cookie = "UNOGameState=None;expires=" + today.setTime(today.getTime() + (365*24*60*60*1000)); + "; path=/";
+Just dump everything into JSON, then convert that to base64 to store in the cookie
+Advanced Computer Player, where it makes intelligent moves not just whatever move next is valid.
+
+
+*/
+
+
+
+
+</body>
+</html>
