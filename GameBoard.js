@@ -155,7 +155,7 @@ class Deck{
 
 // BEGIN DECK BUILDING ---------------------------------------------------------------------------------------------------------------------
 //Since there is no backend, the JS can't access files on the server directly.  To get all the card files, names of them are hardcoded below.
-//  Folder with the cards: /Code/Cards/
+//  Folder with the cards: ./Cards/
 
 const cardFilenames = [
     "Blue_0.png",
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
     //Set the top discard card
     let UIDiscardCard = document.getElementById("UIDiscardCard");
-    UIDiscardCard.src = "./Code/Cards/" + discardCard.getFile();
+    UIDiscardCard.src = "./Cards/" + discardCard.getFile();
 
     //Adjust the player boxes to match # of players
     let playerBoxes;
@@ -434,7 +434,8 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
                 //Starting player
                 if(iUIPnames === 0){
                     playerHTML = playerHTML + '<img class="playerActive" onclick="processCard(this.id)" id="'+playerHand[iUIPhand].getGlobalNumber()+
-                        '" src="./Code/Cards/'+playerHand[iUIPhand].getFile()+'" style="height:45%; margin-left: 1%; margin-bottom: .5%;" title="Click to play this card"/>';
+                    playerHTML = playerHTML + '<img class="playerActive" onclick="processCard(this.id)" id="'+playerHand[iUIPhand].getGlobalNumber()+
+                        '" src="./Cards/'+playerHand[iUIPhand].getFile()+'" style="height:45%; margin-left: 1%; margin-bottom: .5%;" title="Click to play this card"/>';
                     activePlayer = iUIPnames;
                 }
                 //Other/non-active players get the back of the card
@@ -455,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 
          for(let i=0; i<compHand.length; i++){
              compHand[i].setAttribute("class","");
-             compHand[i].setAttribute("src","./Code/Cards/" + playersArray[playersArray.length-1].peekPlayerCard(Number(compHand[i].id)).getFile());
+             compHand[i].setAttribute("src","./Cards/" + playersArray[playersArray.length-1].peekPlayerCard(Number(compHand[i].id)).getFile());
          }
     }
 
@@ -490,12 +491,12 @@ cardDrawn.onclick = function(mouseEvent) {
         //Update the UI to add in the new card
         let activePlayerHandDraw = document.getElementById("playerHand" + (activePlayer)); //This is actually a pseudo-array, not a real array
         const newCardElement = document.createElement("img");
-        //Example: <img class="playerActive" onclick="processCard(this.id)" id="3" src="/Code/Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
+        //Example: <img class="playerActive" onclick="processCard(this.id)" id="3" src="./Cards/Blue_1.png" style="height:45%; margin-left: 1%; margin-bottom: .5%;">
         newCardElement.setAttribute("id", newCard.getGlobalNumber());
         newCardElement.setAttribute("class", "playerActive");
         newCardElement.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
         newCardElement.setAttribute("title", "Click to play this card");
-        newCardElement.setAttribute("src", "./Code/Cards/" + newCard.getFile());
+        newCardElement.setAttribute("src", "./Cards/" + newCard.getFile());
         newCardElement.setAttribute("onclick", "processCard(this.id)");
 
         activePlayerHandDraw.appendChild(newCardElement);
@@ -634,7 +635,7 @@ function processCard(cardID){
             const newCardElementWild = document.createElement("img");
             newCardElementWild.setAttribute("class", "backOfCardImages");
             newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
-            newCardElementWild.setAttribute("src", "./Code/Cards/" + newCard.getFile());
+            newCardElementWild.setAttribute("src", "./Cards/" + newCard.getFile());
             newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
             newCardElementWild.setAttribute("title", "Click to play this card");
 
@@ -660,11 +661,11 @@ function processCard(cardID){
             playersArray[getNextPlayer()].addPlayerCard(newCard);
 
             //Update the UI to add in the new card
-            let nextPlayerHand = document.getElementById("playerHand" + (getNextPlayer())); //This is actually a pseudo-array, not a real array
+            let nextPlayerHand = document.getElementById("playerHand" + (getNextPlayer()));
             const newCardElementWild = document.createElement("img");
             newCardElementWild.setAttribute("class", "backOfCardImages");
             newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
-            newCardElementWild.setAttribute("src", "./Code/Cards/" + newCard.getFile());
+            newCardElementWild.setAttribute("src", "./Cards/" + newCard.getFile());
             newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
             newCardElementWild.setAttribute("title", "Click to play this card");
 
@@ -747,12 +748,12 @@ function endPlayerTransition(){
         //Only display player hands when the Continue modal is up & has been clicked.
 
     //Set the active player to display their cards in the UI
-    let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer)).children; //This is actually a pseudo-array, not a real array
+    let activePlayerHandNew = document.getElementById("playerHand" + (activePlayer)).children;
     for(let i=0; i<activePlayerHandNew.length; i++){
         activePlayerHandNew[i].className="playerActive";
         activePlayerHandNew[i].setAttribute("onclick","processCard(this.id)");
         activePlayerHandNew[i].setAttribute("title","Click to play this card");
-        activePlayerHandNew[i].setAttribute("src","./Code/Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
+        activePlayerHandNew[i].setAttribute("src","./Cards/" + playersArray[activePlayer].peekPlayerCard(Number(activePlayerHandNew[i].id)).getFile());
         //(debug ? console.log(activePlayerHandNew[i]) : null);
     }
 
@@ -906,11 +907,11 @@ function computerPlayerMove(){
                 playersArray[getNextPlayer()].addPlayerCard(newCard);
 
                 //Update the UI to add in the new card
-                let nextPlayerHand = document.getElementById("playerHand" + (getNextPlayer())); //This is actually a pseudo-array, not a real array
+                let nextPlayerHand = document.getElementById("playerHand" + (getNextPlayer()));
                 const newCardElementWild = document.createElement("img");
                 newCardElementWild.setAttribute("class", "backOfCardImages");
                 newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
-                newCardElementWild.setAttribute("src", "./Code/Cards/" + newCard.getFile());
+                newCardElementWild.setAttribute("src", "./Cards/" + newCard.getFile());
                 newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
                 //newCardElementWild.setAttribute("title", "Click to play this card");
 
@@ -947,7 +948,7 @@ function computerPlayerMove(){
                 const newCardElementWild = document.createElement("img");
                 newCardElementWild.setAttribute("class", "backOfCardImages");
                 newCardElementWild.setAttribute("id", newCard.getGlobalNumber());
-                newCardElementWild.setAttribute("src", "./Code/Cards/" + newCard.getFile());
+                newCardElementWild.setAttribute("src", "./Cards/" + newCard.getFile());
                 newCardElementWild.setAttribute("style", "height:45%; margin-left: 1%; margin-bottom: .5%;");
                 //newCardElementWild.setAttribute("title", "Click to play this card");
 
@@ -1000,7 +1001,7 @@ function computerPlayerMove(){
 
         if(debug){ //For easier troubleshooting, keep the cards visible when debug is TRUE
             newCardElement.setAttribute("class", "");
-            newCardElement.setAttribute("src", "./Code/Cards/" + newCard.getFile());
+            newCardElement.setAttribute("src", "./Cards/" + newCard.getFile());
         }
         activePlayerHandDraw.appendChild(newCardElement);
 
@@ -1076,7 +1077,7 @@ function updateDiscardCard(newDiscardCard){
 
     //Update the UI with the new discard card
     let UIDiscardCard = document.getElementById("UIDiscardCard");
-    UIDiscardCard.src = "./Code/Cards/" + discardCard.getFile();
+    UIDiscardCard.src = "./Cards/" + discardCard.getFile();
     (debug ? console.log("Discard card updated, new card:"):null);
     (debug ? console.log(discardCard):null);
 

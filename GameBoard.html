@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>UNO In The Browser</title>
-    <link rel="icon" href="https://www.unointhebrowser.com/Code/Cards/Deck_Small2.png">
+    <link rel="icon" href="./Cards/Deck_Small2.png">
     <style>
         html{
             /* Setting the HTML tag to be with height of the viewport */
@@ -212,7 +212,7 @@
 
         /* For all non-active players, this is used to have all IMG tags only display the back of the card */
         .backOfCardImages{
-            content:url("./Code/Cards/Deck.png") !important;
+            content:url("./Cards/Deck.png") !important;
         }
 
         .playerActive:hover{
@@ -364,10 +364,10 @@
         </div>
         <div style="height: 45%; display: flex; overflow-x: auto; overflow-y: clip;">
             <div style="height:90%; margin-left:1%; margin-bottom:3%; margin-top: 2%; max-width:45%" title="Discard Card">
-                <img id="UIDiscardCard" src="./Code/Cards/Deck.png" alt="Discard Card" style="height:100%;width:auto;"/>
+                <img id="UIDiscardCard" src="./Cards/Deck.png" alt="Discard Card" style="height:100%;width:auto;"/>
             </div>
             <div style="height:90%; margin-left:2%;margin-bottom:3%; margin-top: 2%; max-width:45%" title="Game Deck: Click to draw a card">
-                <img id="UIDeck" src="./Code/Cards/Deck.png" alt="Deck" style="height:100%;width:auto; cursor: pointer"/>
+                <img id="UIDeck" src="./Cards/Deck.png" alt="Deck" style="height:100%;width:auto; cursor: pointer"/>
             </div>
         </div>
     </div>
