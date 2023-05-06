@@ -1156,6 +1156,8 @@ function getCookie(cookieName) {
 // BEGIN MODAL BOX FUNCTIONS ------------------------------------------------------------------------------------------------------------------
 function hideModalBoxFunction(mouseEvent){
     if (mouseEvent.target == modalBackground || mouseEvent.target ==modalCloseButton) {
+        //The first time the modal box is displayed, at the start of the game, the background is blacked out.
+        //  This ensures that its set to transparent anytime its displayed in the future.
         document.getElementById("modalBackground").style.background = "rgba(0,0,0,0.4)";
         (debug ? console.log("Modal box element clicked: " + mouseEvent.target) : null);
         modalBackground.style.display = "none";
