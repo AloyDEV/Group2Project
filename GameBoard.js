@@ -434,7 +434,6 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
                 //Starting player
                 if(iUIPnames === 0){
                     playerHTML = playerHTML + '<img class="playerActive" onclick="processCard(this.id)" id="'+playerHand[iUIPhand].getGlobalNumber()+
-                    playerHTML = playerHTML + '<img class="playerActive" onclick="processCard(this.id)" id="'+playerHand[iUIPhand].getGlobalNumber()+
                         '" src="./Cards/'+playerHand[iUIPhand].getFile()+'" style="height:45%; margin-left: 1%; margin-bottom: .5%;" title="Click to play this card"/>';
                     activePlayer = iUIPnames;
                 }
