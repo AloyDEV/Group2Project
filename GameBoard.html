@@ -1,3 +1,9 @@
+<!--
+CSC 478 - Group 2 Capstone Project - Uno In The Browser
+
+Game board page, includes skeleton layout, all buttons, and the various modal boxes used.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,6 +80,9 @@
             to {rotate: 360deg}
 
         }
+
+        /* Requirement 	3.2.0	Match the overall look & color scheme to a standard UNO card.  CSS here is used to accomplish that styling. */
+        /* Colors below: Requirement 3.2.2	Bold colors for all buttons */
 
         button{
             margin: 5px;
@@ -320,6 +329,7 @@
 
 
 <div class="row">
+    <!-- Requirement 3.1.1	Left column contains all player hands -->
     <div style="flex: 60% !important; min-width: 60%">
         <div id="playerBox0" class="playerBoxShow">
             <div id="playerName0" style="text-shadow: 2px 2px red;">Player 1</div>
@@ -340,12 +350,20 @@
 
 
     </div>
+    <!-- Requirement 3.1.2	Right column displays all buttons, game state, discard pile, and game deck. -->
     <div style="flex: 39% !important; max-width: 40%; flex-flow: column">
         <div style="height:45%; width: 100%; overflow-x: auto;">
             <div id="buttonBar" style='text-align: center; margin-bottom: 3%;'>
+                <!-- Requirement 3.3.1 Help Page button -->
                 <button id="helpButton" class="buttonHelp" onclick="">Help & Game Rules</button>
+                <!-- Requirement 3.3.2	Shuffle Deck button
+                    & Requirement 2.3.0 Anyone can shuffle the deck at anytime. -->
                 <button id="shuffleButton" class="buttonShuffle" onclick="">Shuffle Deck</button>
+                <!-- Requirement 3.3.3	Reset Game button (Retain current players)
+                    Requirement 2.4.0 Anyone can reset the game at anytime. -->
                 <button id="resetButton" class="buttonReset" onclick="">Reset Game</button>
+                <!-- Requirement 3.3.4	End Game button (Select new players)
+                    & Requirement 2.2.0 Anyone can end a game at anytime. -->
                 <button id="endButton" class="buttonEnd" onclick="">End Game</button>
             </div>
             <div style="border: 4px solid white; border-radius: 1em; display: flex; flex-direction: column; margin: auto; max-width: 80%">

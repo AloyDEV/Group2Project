@@ -1,5 +1,10 @@
-//This file handles all the code for the actual game
-    //If performance of it is a problem, it can be minimized.
+/*
+CSC 478 - Group 2 Capstone Project - Uno In The Browser
+
+This file contains all code to run the actual game.
+
+ */
+
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
 let debug = false;
@@ -220,6 +225,8 @@ const cardFilenames = [
 
 var gameDeck = new Deck();
 function createDeck(){
+    //Requirement 1.0.0 The game should use a 108 card deck.
+
     //Build the deck, then shuffle it
     //Used to globally identify different cards, since there are duplicates of almost every card.
     let cardGlobalNumber = 1; //Start global number at 1, up to 108, for slightly easier tracking
@@ -362,6 +369,8 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     gameDeck.shuffle();
 
 
+    //Requirement 2.1.0 Number of cards in a player’s hand is visible on the UI
+
     //Fifth, update the UI to hide un-needed players, match player names, display hands, show the new discard card, and the state of the game.
 
     //Set the top discard card
@@ -474,6 +483,7 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
 //FUNCTION WHEN A CARD IS DRAWN
 let cardDrawn = document.getElementById("UIDeck");
 cardDrawn.onclick = function(mouseEvent) {
+// Requirement 2.0.2 Player can pickup a card from the deck.
 
     if(alreadyDrawnCard){
         showModalBoxFunction(null, "<h2>You've already drawn a card this turn.  <br>Play a card in your hand, or click 'End Current Player's Turn' to end your turn & advance to the next player</h2>");
@@ -513,8 +523,8 @@ cardDrawn.onclick = function(mouseEvent) {
 }
 // ********************************************************************************************************************************************
 
-
-
+//Requirement 2.0.0 Players will be able to take a turn.
+//  Covered by processCard() & click of the UI element UIDeck
 
 //##################################################################################################################################################
 //FUNCTION when a player clicks one of their cards to play it
@@ -550,6 +560,8 @@ function processCard(cardID){
         }
     }
 
+    //Requirement 1.3.0 Invalid cards cannot be played.
+    // & Requirement 2.0.2.1 Player can discard a valid card into the discard pile.
     //If it wasn't a valid play, exit this function.  And throw up a message to the user
     if(!validPlay){
         showModalBoxFunction(null, "<div><h2>Invalid card played</h2></div>  <div>It must match the discard card's number, color, action, or be wild.  Click Help & Game Rules for information on valid plays.</div>");
@@ -578,6 +590,7 @@ function processCard(cardID){
         return false;
     }
 
+    //Requirement 2.0.1 Player can discard a valid card into the discard pile.
     //Put the current discard card into the deck
     gameDeck.addCard(discardCard);
 
@@ -702,6 +715,8 @@ function processCard(cardID){
 
 
 function beginPlayerTransition(){
+    //Requirement 1.1.0 Players take one turn and pass to next player
+
     (debug ? console.log("TRANSITIONING.  Previously drawn card from deck: " + alreadyDrawnCard) : null);
 
     //Reset the ability to draw a card for the next player.
@@ -742,6 +757,7 @@ function beginPlayerTransition(){
 }
 
 function endPlayerTransition(){
+    //Requirement 2.0.2.2 Player can pass to the next player/computer.
 
     //With the computer player timeout, sometimes the computer cards were displayed unexpectedly.
         //Only display player hands when the Continue modal is up & has been clicked.
@@ -768,6 +784,8 @@ function endPlayerTransition(){
 }
 
 function computerPlayerTransition(){
+    //Requirement 1.2.0 Computer player can take a turn if playing.
+
     (debug ? console.log("COMP PLAYER MOVE STARTS") : null);
     //Throw up an overlay, so that the UI can't be interacted with while the computer is playing.
     var modalBackgroundComputer = document.getElementById("modalBackgroundComputer");
@@ -1027,6 +1045,7 @@ function wildColor(){
     for (let i = 0; i < inputColors.length ;i++) {
         if(inputColors[i].checked){
             (debug ? console.log(inputColors[i].value):null);
+            //Requirement 3.2.3	Wild Color box matches UNO card styling (White outline, black inside)
             let wildColorUI = document.getElementById("wildColorUI")
             //Store the color selected in the ID of the div, so that it can be retrieved later
             //Black background so that Yellow is visible.  White border to make it kinda look like a card.
