@@ -1,0 +1,445 @@
+<!--
+CSC 478 - Group 2 Capstone Project - Uno In The Browser
+
+Game board page, includes skeleton layout, all buttons, and the various modal boxes used.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UNO In The Browser</title>
+    <link rel="icon" href="./Cards/Deck_Small2.png">
+    <style>
+        html{
+            /* Setting the HTML tag to be with height of the viewport */
+            min-height:100%;/* make sure it is at least as tall as the viewport */
+            position:relative;
+        }
+
+        body{
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 30s ease infinite;  /* transition effect for the background, loops infinitely */
+            height: 98vh; /* 98% to avoid the columns being too tall, and also to avoid needing overflow-y: hidden; */
+            overflow-y: hidden; /* Actually comment above is incorrect, overflow-y is still needed */
+            font-family:Arial-Bold, sans-serif;
+            padding: 0;
+        }
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .row {
+            display: flex; /* So the Columns in the row display next to each other */
+            flex-flow: row;
+
+            /* Sets the column container to 100% height, matching the HTML & BODY tags */
+            position:absolute;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
+        }
+
+        .playerBoxShow{
+            border-radius: 1em;
+            border: 4px solid white;
+            height:23%;
+            margin: .2%;
+        }
+
+        .compPlayerDiscardTransition{
+            animation-name: discardTransition;
+            animation-duration: 2s;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+
+        }
+        @keyframes discardTransition {
+            from {rotate: 0deg}
+            to {rotate: 360deg}
+        }
+
+        .compPlayerDrawTransition{
+            animation-name: drawTransition;
+            animation-duration: 2s;
+            animation-iteration-count: 1;
+
+        }
+        @keyframes drawTransition {
+            from {rotate: 0deg}
+            to {rotate: 360deg}
+
+        }
+
+        /* Requirement 	3.2.0	Match the overall look & color scheme to a standard UNO card.  CSS here is used to accomplish that styling. */
+        /* Colors below: Requirement 3.2.2	Bold colors for all buttons */
+
+        button{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #9b19f1;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: 0.2s;
+        }
+        .buttonEnd{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #dc4812;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: 0.2s;
+        }
+
+
+        #BlueSelection{
+            accent-color: blue;
+            cursor: pointer;
+        }
+        #GreenSelection{
+            accent-color: green;
+            cursor: pointer;
+        }
+        #RedSelection{
+            accent-color: red;
+            cursor: pointer;
+        }
+        #YellowSelection{
+            accent-color: yellow;
+            cursor: pointer;
+        }
+        #BlueSelectionLabel:hover{
+            background: rgba(2, 34, 197, 0.5);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #GreenSelectionLabel:hover{
+            background: rgba(47, 197, 13, 0.5);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #RedSelectionLabel:hover{
+            background: rgba(197, 13, 41, 0.5);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #YellowSelectionLabel:hover{
+            background: rgba(197, 160, 13, 0.5);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+
+        .buttonHelp{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #1976f1;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: 0.2s;
+        }
+        .buttonShuffle{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #f5c320;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: 0.2s;
+        }
+        .buttonReset{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #d53232;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: 0.2s;
+        }
+        .buttonContinue{
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: 0.2s;
+        }
+        button:hover, .buttonEnd:hover, .buttonHelp:hover, .buttonShuffle:hover,.buttonReset:hover, .buttonContinue:hover {
+            background-color: #363434;
+            color: white;
+        }
+
+
+        .playerNamesClass{
+            text-align: center;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            padding-top: .25%;
+            padding-left: 1%;
+            font-size: 2.5vh; /* Font size scales with the screen height */
+            color: white;
+            text-shadow: /*Creates the black border around the player names */
+                    -1px -1px 0 #000,
+                    1px -1px 0 #000,
+                    -1px 1px 0 #000,
+                    1px 1px 0 #000;
+        }
+
+
+        .playerActive:hover, .playerActive:focus{
+            cursor: pointer;
+        }
+
+        /* For all non-active players, this is used to have all IMG tags only display the back of the card */
+        .backOfCardImages{
+            content:url("./Cards/Deck.png") !important;
+        }
+
+        .playerActive:hover{
+            scale: 1.05;
+            transform: translateY(2px);
+        }
+        #UIDeck:hover{
+            scale: 1.05;
+        }
+        .wildColorInput{
+            margin: 10px;
+        }
+
+
+        /*------------------------------Modal Boxes Styling -------------------------------------------------*/
+
+        /* The Modal (background) */
+        .modalBackground {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 15%; /* Location of the box from the top of the page*/
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            cursor: pointer; /* To indicate to the user that they can click outside the box to close it */
+        }
+
+        /* The Modal background for WILD cards & when CONTINUING to the next player*/
+        .modalBackgroundWild {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 2; /* Sit on top */
+            padding-top: 15%; /* Location of the box from the top of the page*/
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        .modalBackgroundContinue{
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 3; /* Sit on top */
+            padding-top: 15%; /* Location of the box from the top of the page*/
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgb(0,0,0); /* Black */
+        }
+
+        .modalBackgroundComputer {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            padding-top: 15%;
+            z-index: 100; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+
+
+
+        /* Modal Content */
+        .modalContent, .modalContentWild, .modalContentContinue, .modalContentComputer {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 70%;
+            border-radius:2em; /* Rounded so it looks similar to the cards */
+            cursor: default;
+            overflow-x: clip;
+        }
+
+        /* Modal Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 50px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+    </style>
+</head>
+<body>
+<!-- defer is used so that the entire DOM is loaded before the JS is run, so that the event handlers are correctly tied to their UI elements-->
+<script defer type="text/javascript" src="GameBoard.js"></script>
+
+
+<div class="row">
+    <!-- Requirement 3.1.1	Left column contains all player hands -->
+    <div style="flex: 60% !important; min-width: 60%">
+        <div id="playerBox0" class="playerBoxShow">
+            <div id="playerName0" style="text-shadow: 2px 2px red;">Player 1</div>
+            <div id="playerHand0" class="playerHand"> HAND!!!</div>
+        </div>
+        <div id="playerBox1" class="playerBoxShow">
+            <div id="playerName1">Player 2</div>
+            <div id="playerHand1" class="playerHand"> HAND!!!</div>
+        </div>
+        <div id="playerBox2" class="playerBoxShow">
+            <div id="playerName2">Player 3</div>
+            <div id="playerHand2" class="playerHand"> HAND!!!</div>
+        </div>
+        <div id="playerBox3" class="playerBoxShow">
+            <div id="playerName3">Player 4 AKA Computer</div>
+            <div id="player4Hand3" class="playerHand"> HAND!!!</div>
+        </div>
+
+
+    </div>
+    <!-- Requirement 3.1.2	Right column displays all buttons, game state, discard pile, and game deck. -->
+    <div style="flex: 39% !important; max-width: 40%; flex-flow: column">
+        <div style="height:45%; width: 100%; overflow-x: auto;">
+            <div id="buttonBar" style='text-align: center; margin-bottom: 3%;'>
+                <!-- Requirement 3.3.1 Help Page button -->
+                <button id="helpButton" class="buttonHelp" onclick="">Help & Game Rules</button>
+                <!-- Requirement 3.3.2	Shuffle Deck button
+                    & Requirement 2.3.0 Anyone can shuffle the deck at anytime. -->
+                <button id="shuffleButton" class="buttonShuffle" onclick="">Shuffle Deck</button>
+                <!-- Requirement 3.3.3	Reset Game button (Retain current players)
+                    Requirement 2.4.0 Anyone can reset the game at anytime. -->
+                <button id="resetButton" class="buttonReset" onclick="">Reset Game</button>
+                <!-- Requirement 3.3.4	End Game button (Select new players)
+                    & Requirement 2.2.0 Anyone can end a game at anytime. -->
+                <button id="endButton" class="buttonEnd" onclick="">End Game</button>
+            </div>
+            <div style="border: 4px solid white; border-radius: 1em; display: flex; flex-direction: column; margin: auto; max-width: 80%">
+                <div id="activePlayerUI" style='text-align: center; overflow-x: clip;'>
+                    <div id="activePlayerUItitle">Current player:</div>
+                    <div id="activePlayerUIplayer"></div>
+                </div>
+                <div id="nextPlayerUI" style='text-align: center; overflow-x: clip;'>
+                    <div id="nextPlayerUItitle">Next player:</div>
+                    <div id="nextPlayerUIplayer"></div>
+                </div>
+            </div>
+            <div id="miscMessageUI" style='text-align: center;'></div>
+            <div id="continueButtonNextPlayer" style='visibility: hidden; text-align: center; padding: 10px;' ><button onclick="beginPlayerTransition()" class="buttonContinue">End Current Player's Turn</button></div>
+            <div id="wildColorUI" ></div>
+        </div>
+        <div style="height: 45%; display: flex; overflow-x: auto; overflow-y: clip;">
+            <div style="height:90%; margin-left:1%; margin-bottom:3%; margin-top: 2%; max-width:45%" title="Discard Card">
+                <img id="UIDiscardCard" src="./Cards/Deck.png" alt="Discard Card" style="height:100%;width:auto;"/>
+            </div>
+            <div style="height:90%; margin-left:2%;margin-bottom:3%; margin-top: 2%; max-width:45%" title="Game Deck: Click to draw a card">
+                <img id="UIDeck" src="./Cards/Deck.png" alt="Deck" style="height:100%;width:auto; cursor: pointer"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="modalBackground" class="modalBackground">
+    <div class="modalContent">
+        <span id="modalCloseX" class="close">&times;</span>
+        <div id="modalContentDiv">
+        </div>
+    </div>
+</div>
+
+<div id="modalBackgroundWild" class="modalBackgroundWild">
+    <div class="modalContentWild">
+        <div id="modalContentWild" style="text-align: center">
+            <h2>Select the color of the Wild card:</h2>
+            <h3>
+            <div id='wildInput' style="display: inline-block; text-align: left;">
+                <input type="radio" id="BlueSelection" name="wildcolorsradio" value="Blue" class="wildColorInput" checked >
+                <label for="BlueSelection" id="BlueSelectionLabel" style="padding:5px">Blue</label><br>
+                <input type="radio" id="GreenSelection" name="wildcolorsradio" value="Green" class="wildColorInput">
+                <label for="GreenSelection" id="GreenSelectionLabel" style="padding:5px">Green</label><br>
+                <input type="radio" id="RedSelection" name="wildcolorsradio" value="Red" class="wildColorInput">
+                <label for="RedSelection" id="RedSelectionLabel" style="padding:5px">Red</label><br>
+                <input type="radio" id="YellowSelection" name="wildcolorsradio" value="Yellow" class="wildColorInput">
+                <label for="YellowSelection" id="YellowSelectionLabel" style="padding:5px">Yellow</label><br>
+                <br>
+                <button id="wildContinue" onclick="wildColor()"> Continue </button>
+            </div>
+            </h3>
+        </div>
+    </div>
+</div>
+
+<div id="modalBackgroundContinue" class="modalBackgroundContinue">
+    <div class="modalContentContinue" style="text-align: center">
+        <div id="modalContentContinue" style="margin:0px;">
+            <div style="margin:20px;">Next Player:</div>
+            <h2><div id="nextPlayerName">Player ?</div></h2>
+            <button id="playerContinue" onclick="endPlayerTransition()" style="margin:20px;"> Continue to next player</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalBackgroundComputer" class="modalBackgroundComputer">
+    <div class="modalContentComputer">
+        <div>
+            <h3>Computron is playing its turn. Please wait.</h3>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
