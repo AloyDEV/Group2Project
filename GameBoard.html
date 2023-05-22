@@ -1,14 +1,8 @@
-<!--
-CSC 478 - Group 2 Capstone Project - Uno In The Browser
-
-Game board page, includes skeleton layout, all buttons, and the various modal boxes used.
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UNO In The Browser</title>
+    <title>UNO In The Browser!</title>
     <link rel="icon" href="./Cards/Deck_Small2.png">
     <style>
         html{
@@ -320,6 +314,14 @@ Game board page, includes skeleton layout, all buttons, and the various modal bo
             cursor: pointer;
         }
 
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        tr:nth-child(even) {
+            background-color: #a4b0b0;
+        }
+
 
     </style>
 </head>
@@ -345,7 +347,7 @@ Game board page, includes skeleton layout, all buttons, and the various modal bo
         </div>
         <div id="playerBox3" class="playerBoxShow">
             <div id="playerName3">Player 4 AKA Computer</div>
-            <div id="player4Hand3" class="playerHand"> HAND!!!</div>
+            <div id="playerHand3" class="playerHand"> HAND!!!</div>
         </div>
 
 

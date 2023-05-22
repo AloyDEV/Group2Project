@@ -1,10 +1,3 @@
-/*
-CSC 478 - Group 2 Capstone Project - Uno In The Browser
-
-This file contains all code to run the actual game.
-
- */
-
 
 //For additional logging when debugging.  Flip to FALSE when ready to deploy.
 let debug = false;
@@ -297,7 +290,7 @@ function createDeck(){
 //GAME PREP -------------------------------------------------------------------------------------------------------------------------
 
 //Once the starting UI has loaded, begin the backend game prep
-//  It modifies some of the UI, so to avoid errors when finding UI elements it waits to initial DOM is loaded
+//  It modifies the skeleton UI, so to avoid errors when finding UI elements it waits to initial DOM is loaded
 document.addEventListener('DOMContentLoaded', function gamePrep(){
 
     //First build the deck
@@ -305,6 +298,20 @@ document.addEventListener('DOMContentLoaded', function gamePrep(){
     gameDeck.shuffle();
     (debug ? console.log("Starting deck has been built & shuffled:") : null);
     (debug ? console.log(gameDeck) : null);
+
+    //Preload all the card images that will be used, so that they're already present in the cache.  This way there won't be a slight delay when a players hand is displayed with previously-unused cards
+    function preloadImages(imagesArray) {
+        let imageList = [];
+        (debug ? console.log("Preloading Images") : null);
+        for (let i = 0; i < imagesArray.length; i++) {
+            let img = new Image();
+            imageList.push(img);
+            img.src = "./Cards/" + imagesArray[i];
+            (debug ? console.log(img.src) : null);
+        }
+    }
+
+    preloadImages(cardFilenames);
 
     //Second create the players by pulling their info out of the cookie
         //The computer player boolean is always stored at the very end
@@ -1249,6 +1256,15 @@ helpButton.onclick = function(mouseEvent) {
     showModalBoxFunction(mouseEvent, "<p><h3>Game Rules & Help Menu</h3></p>" +
         //TODO: Reformat & cleanup the text below.  Also additional rules for 2 & 4 player games
         "<p>See here for official rules: <a href='https://www.unorules.com/'>www.unorules.com</a></p>" +
+        "<table>" +
+        "<tr><th>Card</th><th>Image</th><th>Effect</th></tr>" +
+        "<tr><td>Number Card</td><td><img src='./Cards/Green_0.png' style=\"height:40px;\"/></td><td>  No special effect</td></tr>" +
+        "<tr><td>Reverse Card</td><td><img src='./Cards/Green_21.png' style=\"height:40px;\"/></td><td>  Reverses the order of play</td></tr>" +
+        "<tr><td>Skip Card</td><td><img src='./Cards/Green_22.png' style=\"height:40px;\"/></td><td>  Skips the next player</td></tr>" +
+        "<tr><td>+2</td><td><img src='./Cards/Green_20.png' style=\"height:40px;\"/></td><td>  Puts 2 cards into the next player's hand, then skips the next player.</td></tr>" +
+        "<tr><td>Wild</td><td><img src='./Cards/Wild_11.png' style=\"height:40px;\"/></td><td>  Able to be played on any card.  Player selects the color for the discard pile.</td></tr>" +
+        "<tr><td>Wild +4</td><td><img src='./Cards/Wild_14.png' style=\"height:40px;\"/></td><td>  Able to be played on any card.  Player selects the color for the discard pile. Puts 4 cards into the next player's hand, then skips the next player.</td></tr>" +
+        "</table>" +
         "<p>This game is based on a 108 card deck</p>" +
         "<p>Every player views his/her cards and tries to match the card in the Discard Pile." +
         "<p>Variation from official rules: No need to shout UNO.  Wild 4 does not require you to NOT have other playable cards</p>" +
